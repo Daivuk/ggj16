@@ -12,6 +12,13 @@ enum eTile : uint32_t
     TILE_FIREPLACE
 };
 
+enum class TimeOfDay
+{
+    Night,
+    Dawn,
+    Day,
+    Dusk
+};
 
 class DanceSequence;
 class Fireplace;
@@ -28,6 +35,11 @@ public:
     virtual void OnUpdate();
     virtual void OnRender();
 
+    TimeOfDay   GetTimeOfDay() const;
+    float       GetDayTime() const { return m_dayTime; }
+    float       GetDayTimeHour() const;
+    int         GetDay() const { return m_day; }
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -43,7 +55,9 @@ private:
     Tile *GetTileAt(const Vector2& position) const;
     Vector2 GetMapCenter() const;
 
-    seed::LightLayer* pGameLayer = nullptr;
+    void UpdateTime();
+
+    seed::LightLayer* m_pGameLayer = nullptr;
     onut::TiledMap* m_pTilemap = nullptr;
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
@@ -58,4 +72,7 @@ private:
     void UpdateDanceSequence();
     
     EntityVect      m_entities;
+
+    float           m_dayTime = DAWN_START;
+    int             m_day = 1;
 };

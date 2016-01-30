@@ -4,6 +4,8 @@
 #include "Fireplace.h"
 #include "DanceSequence.h"
 #include "LightLayer.h"
+#include "Tree.h"
+#include "Rock.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -34,9 +36,9 @@ GameView::~GameView()
 void GameView::OnShow()
 {
     // Create the main game node. Map + objects go in there and are affected by light
-    pGameLayer = CreateLightLayer();
-    pGameLayer->SetAmbient(Color(.10f, .15f, .2f, 1)); // Set that so something cool jason will decide on
-    AddNode(pGameLayer);
+    m_pGameLayer = CreateLightLayer();
+    m_pGameLayer->SetAmbient(Color(.10f, .15f, .2f, 1)); // Set that so something cool jason will decide on
+    AddNode(m_pGameLayer);
 
     // spawn players from the lobby data, for now assume one
     CreateTileMap();
@@ -55,6 +57,8 @@ void GameView::OnHide()
 
 void GameView::OnUpdate()
 {
+    UpdateTime();
+
     // To test map generation, never do that
     //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
 
@@ -65,8 +69,97 @@ void GameView::OnUpdate()
     GetRootNode()->SetPosition(-m_camera * m_zoom + OScreenf * .5f);
 }
 
+void GameView::UpdateTime()
+{
+    m_dayTime += ODT;
+    if (m_dayTime >= DAY_TOTAL_DURATION)
+    {
+        m_dayTime -= DAY_TOTAL_DURATION;
+        m_day++;
+    }
+
+    static const Color dayAmbient(1, 1, 1, 1);
+    static const Color nightAmbient(.10f, .15f, .2f, 1);
+    static const Color dawnAmbient(1, .75f, 0, 1);
+    static const Color duskAmbient(.75f, .35f, .55f, 1);
+
+    switch (GetTimeOfDay())
+    {
+        case TimeOfDay::Day:
+            m_pGameLayer->SetAmbient(dayAmbient);
+            break;
+        case TimeOfDay::Night:
+            m_pGameLayer->SetAmbient(nightAmbient);
+            break;
+        case TimeOfDay::Dawn:
+        {
+            const float fullStart = DAWN_START + (DAWN_END - DAWN_START) * .3f;
+            const float fullEnd = DAWN_START + (DAWN_END - DAWN_START) * .6f;
+            if (m_dayTime >= fullStart && m_dayTime <= fullEnd) m_pGameLayer->SetAmbient(dawnAmbient);
+            else if (m_dayTime < fullStart)
+            {
+                float dawnPercent = (m_dayTime - DAWN_START) / (fullStart - DAWN_START);
+                m_pGameLayer->SetAmbient(Color::Lerp(nightAmbient, dawnAmbient, dawnPercent));
+            }
+            else
+            {
+                float dawnPercent = (DAWN_END - m_dayTime) / (DAWN_END - fullEnd);
+                m_pGameLayer->SetAmbient(Color::Lerp(dayAmbient, dawnAmbient, dawnPercent));
+            }
+            break;
+        }
+        case TimeOfDay::Dusk:
+        {
+            const float fullStart = DUSK_START + (DUSK_END - DUSK_START) * .3f;
+            const float fullEnd = DUSK_START + (DUSK_END - DUSK_START) * .6f;
+            if (m_dayTime >= fullStart && m_dayTime <= fullEnd) m_pGameLayer->SetAmbient(duskAmbient);
+            else if (m_dayTime < fullStart)
+            {
+                float duskPercent = (m_dayTime - DUSK_START) / (fullStart - DUSK_START);
+                m_pGameLayer->SetAmbient(Color::Lerp(dayAmbient, duskAmbient, duskPercent));
+            }
+            else
+            {
+                float duskPercent = (DUSK_END - m_dayTime) / (DUSK_END - fullEnd);
+                m_pGameLayer->SetAmbient(Color::Lerp(nightAmbient, duskAmbient, duskPercent));
+            }
+            break;
+        }
+    }
+}
+
+float GameView::GetDayTimeHour() const
+{
+    return (m_dayTime / DAY_TOTAL_DURATION) * 24.f;
+}
+
+TimeOfDay GameView::GetTimeOfDay() const
+{
+    if (m_dayTime >= DAWN_END && m_dayTime <= DUSK_START) return TimeOfDay::Day;
+    if (m_dayTime >= DUSK_START && m_dayTime <= DUSK_END) return TimeOfDay::Dusk;
+    if (m_dayTime >= DAWN_START && m_dayTime <= DAWN_END) return TimeOfDay::Dawn;
+    return TimeOfDay::Night;
+}
+
 void GameView::OnRender()
 {
+    auto pFont = OGetBMFont("font.fnt");
+    pFont->draw("Time: " + std::to_string(GetDayTimeHour()), Vector2::Zero);
+    switch (GetTimeOfDay())
+    {
+        case TimeOfDay::Night:
+            pFont->draw("Night", Vector2(0, 20));
+            break;
+        case TimeOfDay::Dawn:
+            pFont->draw("Dawn", Vector2(0, 20));
+            break;
+        case TimeOfDay::Day:
+            pFont->draw("Day", Vector2(0, 20));
+            break;
+        case TimeOfDay::Dusk:
+            pFont->draw("Dusk", Vector2(0, 20));
+            break;
+    }
 }
 
 void GameView::SpawnPlayers()
@@ -101,7 +194,7 @@ void GameView::UpdateDanceSequence()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    pGameLayer->Attach(pTileMapNode);
+    m_pGameLayer->Attach(pTileMapNode);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");
@@ -129,7 +222,13 @@ void GameView::GenerateMap()
         for (int j = 0; j < count; ++j)
         {
             auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
-            //m_pTilemap->setTileAt(m_pTileLayer, (int)pos.x, (int)pos.y, 3);
+            pos.x = std::round(pos.x) + .5f;
+            pos.y = std::round(pos.y) + .5f;
+            if (pos.x >= center.x - 3 && pos.y >= center.y - 3 &&
+                pos.x <= center.x + 3 && pos.y <= center.y + 3) continue;
+            auto pRock = new Rock(this);
+            pRock->SetPosition(pos);
+            AddEntity(pRock);
         }
     }
 
@@ -141,7 +240,13 @@ void GameView::GenerateMap()
         for (int j = 0; j < count; ++j)
         {
             auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
-            //m_pTilemap->setTileAt(m_pTileLayer, (int)pos.x, (int)pos.y, 2);
+            pos.x = std::round(pos.x) + .5f;
+            pos.y = std::round(pos.y) + .5f;
+            if (pos.x >= center.x - 3 && pos.y >= center.y - 3 &&
+                pos.x <= center.x + 3 && pos.y <= center.y + 3) continue;
+            auto pTree = new Tree(this);
+            pTree->SetPosition(pos);
+            AddEntity(pTree);
         }
     }
 
@@ -186,7 +291,7 @@ void GameView::CreateEntities()
 
 void GameView::AddEntity(Entity* pEntity)
 {
-    pGameLayer->Attach(pEntity);
+    m_pGameLayer->Attach(pEntity);
     m_entities.push_back(m_pFireplace);
     auto pTile = GetTileAt(pEntity->GetPosition());
     if (pTile)
