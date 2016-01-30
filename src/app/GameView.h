@@ -3,6 +3,15 @@
 #include "Globals.h"
 #include "onut.h"
 
+enum eTile
+{
+    TILE_NONE = 0,
+    TILE_GRASS,
+    TILE_TREE,
+    TILE_ROCK,
+    TILE_FIREPLACE
+};
+
 class GameView : public seed::View
 {
 public:
@@ -23,9 +32,12 @@ private:
     void UpdatePlayers();
     void CreateTileMap();
     void CenterCamera();
+    void GenerateMap();
+    eTile GetTileAt(const Vector2& position);
 
     onut::TiledMap* m_pTilemap = nullptr;
+    onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
-    float m_zoom = 64.f;
+    float m_zoom = 32.f;
 };

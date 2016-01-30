@@ -71,6 +71,9 @@ namespace onut
 
         onut::Texture *getMinimap();
 
+        void setTileAt(sTileLayer *pLayer, int x, int y, int tileId);
+        uint32_t getTileAt(sTileLayer *pLayer, int x, int y);
+
     private:
         struct sTileSet
         {
