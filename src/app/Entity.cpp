@@ -42,3 +42,15 @@ bool Entity::PerformWallCollisions(const Vector2& from, Vector2& toOut)
 
     return false;
 }
+
+
+bool Entity::InflictDamage(float in_damage)
+{
+    m_health -= in_damage;
+    if (m_health <= 0)
+    {
+        m_health = 0;
+        return true;
+    }
+    return false;
+}

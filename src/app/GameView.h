@@ -26,6 +26,7 @@ class DanceSequence;
 class Fireplace;
 class Tile;
 class DancePedestral;
+class Monster;
 
 class GameView : public seed::View, public micropather::Graph
 {
@@ -55,6 +56,7 @@ public:
     Player*     GetClosestPlayer(const Vector2& position) const;
 
     vector<DancePedestral*>& GetPedestrals() { return m_pedestrals; }
+    vector<Entity*>          GetEntitiesInRadius(const Vector2& in_pos, float in_radius);
 
     void        OnGameOver();
 
@@ -66,6 +68,8 @@ public:
     void nodeToXY(void* node, int* x, int* y);
     void* xyToNode(int x, int y);
     bool passable(int x, int y);
+
+    void KillEntity(Entity* in_toKill);
 
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
@@ -86,6 +90,7 @@ private:
     void UpdateMonsterSpawning();
 
     void AddEntity(Entity* pEntity);
+    void ClearEntities();
     void StartDanceSequence();
     void StopDanceSequence();
     void OnTimeOfDayChanged(TimeOfDay timeOfDay);
@@ -118,6 +123,11 @@ private:
     bool        m_gameover = false;
     
     micropather::MicroPather *m_pPather = nullptr;
+
+    void FillVectorWithEntitiesInRadius(Tile* in_tile, const Vector2& in_pos, float in_radius, vector<Entity*>& inOut_result);
+
+    vector<Entity*> m_entitiesToKill;
+
 };
 
 extern GameView* g_gameView;

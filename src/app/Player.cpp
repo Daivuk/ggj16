@@ -5,6 +5,7 @@
 #include "DancePedestral.h"
 #include "GameView.h"
 #include "Tile.h"
+#include "Monster.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -158,29 +159,50 @@ void Player::Attack()
     m_slash->SetFlippedH(false);
     m_slash->SetFlippedV(false);
 
+    Vector2 attackOffset;
 
     if (m_currentDirection == ePlayerDirection::RIGHT)
     {
         m_slash->SetFlippedH(true);
         m_slash->GetAngleAnim().start(0, 140, .1f);
         Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(1, 0);
     }
     else if (m_currentDirection == ePlayerDirection::LEFT)
     {
         m_slash->GetAngleAnim().start(0, -140, .1f);
         Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(-1, 0);
     }
     else if (m_currentDirection == ePlayerDirection::DOWN)
     {
         m_slash->SetFlippedH(true);
         m_slash->GetAngleAnim().start(90, 270, .1f);
         Attach(m_slash, FRONT_Z_INDEX);
+        attackOffset = Vector2(0, 1);
     }
     else if (m_currentDirection == ePlayerDirection::UP)
     {
         m_slash->SetFlippedH(true);
         m_slash->GetAngleAnim().start(-90, 90, .1f);
         Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(0, 1);
+    }
+
+
+    // check if we hit enemies
+    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position, 2.f);
+    int nbMonster = 0;
+    for (Entity* e : enemies)
+    {
+        Monster* monster = dynamic_cast<Monster*>(e);
+        if (monster)
+        {
+            monster->InflictDamage(100);
+            Vector2 dir = monster->GetPosition() - m_position;
+            dir.Normalize();
+            monster->AfterDamagePush(dir);
+        }
     }
 }
 

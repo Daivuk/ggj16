@@ -22,6 +22,16 @@ Monster::Monster(MonsterType monsterType, seed::View* pView, const Vector2& posi
     Attach(pSprite);
 
     m_pPhysicBody = m_pView->CreateCirclePhysicsForNode(this, .25f, false);
+
+
+    m_damageBlood = m_pView->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
+    m_damageBlood->SetVisible(false);
+    Attach(m_damageBlood);
+
+    m_damageSound = m_pView->CreateSoundEmitter("RitualCues_Enemy_Hit.cue");
+    m_damageSound->SetPositionBasedBalance(false);
+    m_damageSound->SetPositionBasedVolume(false);
+    Attach(m_damageSound);
 }
 
 Monster::~Monster()
@@ -34,6 +44,27 @@ void Monster::Kill()
     // Go gore
 }
 
+void Monster::AfterDamagePush(const Vector2& in_direction)
+{
+    m_damageSound->Play();
+
+    m_damageBlood->SetVisible(true);
+    m_damageBlood->SetSpriteAnim("");
+    m_damageBlood->SetSpriteAnim("blood");
+    m_damageBlood->SetScale(Vector2(.1f, .1f));
+    m_damageBlood->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+
+
+    if (m_state != MonsterState::AFTER_DAMAGE_PUSH)
+    {
+        m_previousState = m_state;
+    }
+    m_state = MonsterState::AFTER_DAMAGE_PUSH;
+
+    const float pushForce = 20.f;
+    m_velPushAnim.start(in_direction * pushForce, Vector2(0, 0), .2f);
+}
+
 void Monster::UpdateEntity()
 {
     if (m_state == MonsterState::IDLE)
@@ -41,7 +72,7 @@ void Monster::UpdateEntity()
         auto pTile = g_gameView->GetTileAt(GetPosition());
         Seek();
     }
-
+    
     if (m_state == MonsterState::GO_TO)
     {
         Vector2 dir = m_targetPos - GetPosition();
@@ -67,6 +98,17 @@ void Monster::UpdateEntity()
             m_pPhysicBody->SetLinearVel(dir * m_speed);
         }
     }
+
+    if (m_state == MonsterState::AFTER_DAMAGE_PUSH)
+    {
+        m_pPhysicBody->SetLinearVel(m_velPushAnim);
+        if (!m_velPushAnim.isPlaying())
+        {
+            // we're done
+            m_state = m_previousState;
+        }
+    }
+
 
     Entity::UpdateEntity();
 }

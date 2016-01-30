@@ -95,6 +95,8 @@ void GameView::OnUpdate()
     UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
+
+    ClearEntities();
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -109,6 +111,79 @@ void GameView::UpdateMonsterSpawning()
         SpawnMonster();
     }
 }
+
+
+vector<Entity*> GameView::GetEntitiesInRadius(const Vector2& in_pos, float in_radius)
+{
+    vector<Entity*> res;
+    Tile* tile = GetTileAt(in_pos);
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    // get all the tiles around it
+    tile = GetTileAt(in_pos + Vector2(-1,0));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(-1, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(0, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, 0));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(0, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(-1, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+    return res;
+}
+
+void GameView::FillVectorWithEntitiesInRadius(Tile* in_tile, const Vector2& in_pos, float in_radius, vector<Entity*>& inOut_result)
+{
+    for (auto entity = in_tile->pEntities->Head(); entity; entity = in_tile->pEntities->Next(entity))
+    {
+        if ((entity->GetPosition() - in_pos).LengthSquared() < in_radius * in_radius)
+        {
+            inOut_result.push_back(entity);
+        }
+    }
+}
+
 
 void GameView::UpdateEntities()
 {
@@ -242,6 +317,30 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
             StopDanceSequence();
             m_day++;
             break;
+    }
+}
+
+void GameView::KillEntity( Entity* in_toKill )
+{
+    m_entitiesToKill.push_back(in_toKill);
+}
+void GameView::ClearEntities()
+{
+    for (Entity* e : m_entitiesToKill)
+    {
+        for (auto it = m_entities.begin(); it != m_entities.end();)
+        {
+            if ((*it) == e)
+            {
+                it = m_entities.erase(it);
+                DeleteNode(e);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
     }
 }
 

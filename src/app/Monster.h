@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Entity.h"
+#include "SoundEmitter.h"
+
 
 enum class MonsterType
 {
@@ -11,7 +13,8 @@ enum class MonsterState
 {
     IDLE,
     GO_TO,
-    ATTACK
+    ATTACK,
+    AFTER_DAMAGE_PUSH
 };
 
 class Monster : public Entity
@@ -29,6 +32,8 @@ public:
 
     std::vector<Vector2> m_path;
 
+    void AfterDamagePush(const Vector2& in_direction);
+
 private:
     seed::View* m_pView = nullptr;
     Vector2 m_targetPos;
@@ -37,4 +42,10 @@ private:
     bool m_nextUnghost = false;
 
     MonsterState m_state = MonsterState::IDLE;
+    MonsterState m_previousState = MonsterState::IDLE;
+
+
+    seed::Sprite*           m_damageBlood;
+    seed::SoundEmitter*     m_damageSound;
+    OAnim<Vector2> m_velPushAnim;
 };

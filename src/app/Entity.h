@@ -15,6 +15,8 @@ public:
     bool Collide() const { return m_collide; }
     float GetCollisionRadius() const { return m_collisionRadius; }
 
+    virtual bool InflictDamage(float in_damage); // return true if the damage killed it
+    
 protected:
     bool m_collide = false;
     float m_collisionRadius = .25f;
@@ -23,4 +25,6 @@ private:
     bool PerformWallCollisions(const Vector2& from, Vector2& toOut);
 
     Vector2 m_lastPosition;
+
+    float   m_health = 100;
 };

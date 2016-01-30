@@ -1,0 +1,11 @@
+<sheet texture="fx.png" spriteWidth="40" spriteHeight="40" originX="20" originY="20">
+  <anim name="blood" fps="24" loop="false">
+    <frame id="6"/>
+    <frame id="7"/>
+    <frame id="8"/>
+    <frame id="9"/>
+    <frame id="10"/>
+    <frame id="12"/>
+    <frame id="35"/>
+  </anim>
+</sheet>
