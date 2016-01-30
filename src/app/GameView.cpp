@@ -6,6 +6,7 @@
 #include "LightLayer.h"
 #include "Tree.h"
 #include "Rock.h"
+#include "MusicEmitter.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -41,6 +42,7 @@ void GameView::OnShow()
     AddNode(m_pGameLayer);
 
     // spawn players from the lobby data, for now assume one
+    CreateMusic();
     CreateTileMap();
     GenerateMap();
     CreateEntities();
@@ -53,6 +55,11 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
+}
+
+void GameView::CreateMusic()
+{
+    m_pMusic = CreateMusicEmitter();
 }
 
 void GameView::OnUpdate()
@@ -83,7 +90,8 @@ void GameView::UpdateTime()
     static const Color dawnAmbient(1, .75f, 0, 1);
     static const Color duskAmbient(.75f, .35f, .55f, 1);
 
-    switch (GetTimeOfDay())
+    auto timeOfDay = GetTimeOfDay();
+    switch (timeOfDay)
     {
         case TimeOfDay::Day:
             m_pGameLayer->SetAmbient(dayAmbient);
@@ -125,6 +133,22 @@ void GameView::UpdateTime()
             }
             break;
         }
+    }
+
+    if (timeOfDay != m_previousTimeOfDay)
+    {
+        m_previousTimeOfDay = timeOfDay;
+        OnTimeOfDayChanged(m_previousTimeOfDay);
+    }
+}
+
+void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
+{
+    switch (timeOfDay)
+    {
+        case TimeOfDay::Dusk:
+            m_pMusic->Play("RitualMusicAmbient.mp3", 1.f);
+            break;
     }
 }
 

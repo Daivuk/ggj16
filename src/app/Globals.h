@@ -24,3 +24,6 @@ typedef std::vector<Entity*>                    EntityVect;
 #define DAWN_END    (NIGHT_DURATION * .5f + DAWN_DURATION)
 #define DUSK_START  (NIGHT_DURATION * .5f + DAWN_DURATION + DAY_DURATION)
 #define DUSK_END    (NIGHT_DURATION * .5f + DAWN_DURATION + DAY_DURATION + DUSK_DURATION)
+
+#define MIDNIGHT 0.f
+#define NOON (NIGHT_DURATION * .5f + DAWN_DURATION + DAY_DURATION * .5f)

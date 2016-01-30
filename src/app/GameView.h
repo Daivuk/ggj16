@@ -14,6 +14,7 @@ enum eTile : uint32_t
 
 enum class TimeOfDay
 {
+    INVALID,
     Night,
     Dawn,
     Day,
@@ -43,6 +44,7 @@ public:
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
+    void CreateMusic();
     void SpawnPlayers();
     void CreateTileMap();
     void CenterCamera();
@@ -56,6 +58,7 @@ private:
     Vector2 GetMapCenter() const;
 
     void UpdateTime();
+    void OnTimeOfDayChanged(TimeOfDay timeOfDay);
 
     seed::LightLayer* m_pGameLayer = nullptr;
     onut::TiledMap* m_pTilemap = nullptr;
@@ -65,6 +68,7 @@ private:
     float m_zoom = 64.f;
     Fireplace* m_pFireplace = nullptr;
     Tile *m_pTiles = nullptr;
+    seed::MusicEmitter* m_pMusic = nullptr;
 
     DanceSequence*  m_activeDanceSequence = nullptr;
     int             m_difficulty = 1;
@@ -73,6 +77,7 @@ private:
     
     EntityVect      m_entities;
 
-    float           m_dayTime = DAWN_START;
+    TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
+    float           m_dayTime = NOON;
     int             m_day = 1;
 };
