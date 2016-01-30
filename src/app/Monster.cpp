@@ -57,8 +57,15 @@ void Monster::UpdateEntity()
         Vector2 dir = m_targetPos - GetPosition();
         dir.Normalize();
 
-        m_pPhysicBody->SetTransform(GetPosition(), 0);
-        m_pPhysicBody->SetLinearVel(dir * m_speed);
+        if (!m_pPhysicBody->GetB2Body()->IsActive())
+        {
+            m_pPhysicBody->SetTransform(GetPosition() + dir * m_speed * ODT, 0);
+        }
+        else
+        {
+            m_pPhysicBody->SetTransform(GetPosition(), 0);
+            m_pPhysicBody->SetLinearVel(dir * m_speed);
+        }
     }
 
     Entity::UpdateEntity();
@@ -85,11 +92,26 @@ void Monster::PathTo(const Vector2& position)
     }
     if (ret == micropather::MicroPather::NO_SOLUTION)
     {
-        //todo: go through walls (Use cost for that)
-        m_targetPos = position;
         return;
     }
     if (path.size() < 2) return;
     m_targetPos = path[1];
+    auto pTile = g_gameView->GetTileAt(m_targetPos);
+    if (pTile)
+    {
+        if (pTile->isOccupied)
+        {
+            m_pPhysicBody->GetB2Body()->SetActive(false);
+            m_nextUnghost = false;
+        }
+        else
+        {
+            if (!m_pPhysicBody->GetB2Body()->IsActive() && m_nextUnghost)
+            {
+                m_pPhysicBody->GetB2Body()->SetActive(true);
+            }
+            m_nextUnghost = true;
+        }
+    }
     m_state = MonsterState::GO_TO;
 }

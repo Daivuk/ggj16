@@ -34,6 +34,7 @@ private:
     Vector2 m_targetPos;
     float m_speed = 2.f;
     seed::PhysicsBody* m_pPhysicBody = nullptr;
+    bool m_nextUnghost = false;
 
     MonsterState m_state = MonsterState::IDLE;
 };
