@@ -9,10 +9,10 @@ DanceMoveButtonVect DanceSequence::s_possibleButtons =
     OBBtn,
     OXBtn,
     OYBtn,
-    OLTBtn,
-    OLBBtn,
-    ORTBtn,
-    ORBBtn,
+    //OLTBtn,
+    //OLBBtn,
+    //ORTBtn,
+    //ORBBtn,
 };
 
 

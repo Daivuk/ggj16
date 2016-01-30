@@ -137,13 +137,13 @@ void Monster::UpdateSpriteAnim(const Vector2& dir)
     if (dir.x < -0.70710678118654752440084436210485f)
     {
         // moving left
-        newAnim = "run_side";
+        newAnim = "run_down";
         flipped = false;
     }
 
     if (dir.x > 0.70710678118654752440084436210485f)
     {
-        newAnim = "run_side";
+        newAnim = "run_down";
         flipped = true;
     }
 
