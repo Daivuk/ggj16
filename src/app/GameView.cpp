@@ -10,15 +10,16 @@
 #include "DancePedestral.h"
 #include "Monster.h"
 #include "BloodLayer.h"
+#include "Stockpile.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
 
 const Vector2 g_playerSpawn[] = {
-    {15.f, 15.f},
-    {17.f, 17.f},
-    {15.f, 17.f},
-    {17.f, 15.f},
+    {14.5f, 14.5f},
+    {18.5f, 18.5f},
+    {14.5f, 18.5f},
+    {18.5f, 14.5f},
 };
 
 static float lerpf(float from, float to, float t)
@@ -447,6 +448,9 @@ void GameView::GenerateMap()
 {
     Vector2 mapCenter((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
 
+    m_pStockpile = new Stockpile(this, m_pTilemap->getWidth() / 2 + 1, m_pTilemap->getHeight() / 2 - 4);
+    AddEntity(m_pStockpile);
+
     // Spawn a bunch of trees
     for (int i = 0; i < TREE_DENSITY; ++i)
     {
@@ -565,7 +569,6 @@ void GameView::CreateEntities()
         m_pedestrals.push_back(pedes);
         AddEntity(pedes);
     }
-    
 }
 
 void GameView::AddEntity(Entity* pEntity)

@@ -27,6 +27,7 @@ class Fireplace;
 class Tile;
 class DancePedestral;
 class BloodLayer;
+class Stockpile;
 
 class GameView : public seed::View, public micropather::Graph
 {
@@ -117,6 +118,7 @@ private:
     void        GrowFire();
     bool        m_gameover = false;
     BloodLayer* m_pBloodLayer = nullptr;
+    Stockpile*  m_pStockpile = nullptr;
     
     micropather::MicroPather *m_pPather = nullptr;
 };

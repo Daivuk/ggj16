@@ -237,6 +237,9 @@
     <ClCompile Include="..\..\src\app\BloodLayer.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\Stockpile.cpp">
+      <Filter>app\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -499,6 +502,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\app\BloodLayer.h">
       <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Stockpile.h">
+      <Filter>app\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
