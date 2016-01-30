@@ -12,8 +12,14 @@ public:
     virtual ~DanceSequence() {};
 
     void Init(int in_difficultyLevel, Fireplace* in_fireplace, seed::View* in_container);
-    void Update();
-    
+    bool Update(); // returns true when the current dance move expired
+    void Skip();
+
+    bool PlayerNeedsToComplete(int in_playerControllerIndex);
+    bool IsNailed(DanceMoveButtonVect& in_playerInputs, int in_playerControllerIndex);
+
+    static DanceMoveButtonVect& GetPossibleButtons() { return s_possibleButtons;  }
+        
 private:
 
 
@@ -25,10 +31,10 @@ private:
     Fireplace*              m_fireplace = nullptr;
     seed::View*              m_container = nullptr;
 
-    int                     GetNbMovesForDifficulty(int in_difficulty);
-    DanceMove               GetDanceMoveForDifficulty(int in_difficulty);
+    int                     GetNbButtonsPerDanceMoveForDifficulty(int in_difficulty);
+    DanceMove               GetDanceMove(int in_nbButtons);
     void                    ShowNextMove();
 
-    static DanceMoveVect    s_possibleDanceMoves;
+    static DanceMoveButtonVect    s_possibleButtons;
 
 };

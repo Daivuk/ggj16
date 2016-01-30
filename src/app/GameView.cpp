@@ -70,7 +70,7 @@ void GameView::SpawnPlayers()
 {
     Player* player1 = new Player();
     // todo pass in what "skin" used
-    player1->Init(Vector2(16, 16), this, pGameLayer, 1);
+    player1->Init(Vector2(16, 16), this, pGameLayer, 0);
     m_players.push_back(player1);
 
     // todo spawn other players
@@ -86,7 +86,30 @@ void GameView::UpdateDanceSequence()
 {
     if (m_activeDanceSequence)
     {
-        m_activeDanceSequence->Update();
+        // gather each player inputs
+        for (Player* p : m_players)
+        {
+            if (m_activeDanceSequence->PlayerNeedsToComplete(p->GetControllerIndex()))
+            {
+                if (m_activeDanceSequence->IsNailed(p->GetInputSequence(), p->GetControllerIndex()))
+                {
+                    // yay
+                    p->OnDanceSequenceSuccess();
+                }
+            }
+            //else
+            //{
+            //    m_activeDanceSequence->Skip();
+            //}
+        }
+        
+        if (m_activeDanceSequence->Update())
+        {
+            for (Player* p : m_players)
+            {
+               p->ResetInputSequence();
+            }
+        }
     }
 }
 

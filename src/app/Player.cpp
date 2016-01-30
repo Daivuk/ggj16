@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Globals.h"
+#include "DanceSequence.h"
 
 Player::Player()
 {
@@ -104,7 +105,7 @@ float Clamp(float n, float lower, float upper)
 
 void Player::UpdateInputs()
 {
-    m_thumb = OLThumb(m_controllerIndex - 1);
+    m_thumb = OLThumb(m_controllerIndex);
     m_thumb.x = Clamp(m_thumb.x, -1.f, 1.f);
     m_thumb.y = Clamp(m_thumb.y, -1.f, 1.f);
 
@@ -112,5 +113,44 @@ void Player::UpdateInputs()
     {
         m_thumb.Normalize();
     }
+
+    DanceMoveButtonVect& buttons = DanceSequence::GetPossibleButtons();
+    for (size_t i = 0, size = buttons.size(); i < size; ++i)
+    {
+        if (OGamePadJustPressed(buttons[i], m_controllerIndex))
+        {
+            m_inputSequence.push_back(buttons[i]);
+        }
+    }
+}
+
+void Player::OnDanceSequenceSuccess()
+{
+    if (!m_danceMoveNailed)
+    {
+        m_danceMoveNailed = m_container->CreateSprite("danceOk.png");
+        m_sprite->Attach(m_danceMoveNailed);
+    }
+
+    m_danceMoveNailed->GetPositionAnim().start(Vector2(0, 0), Vector2(0, -20.f), .2f, OEaseBoth);
+    m_danceMoveNailed->GetScaleAnim().startKeyframed(
+        Vector2(0,0),
+        {
+            { Vector2(SPRITE_SCALE, SPRITE_SCALE) * 50.f, .1f, OEaseIn },
+            { Vector2(SPRITE_SCALE, SPRITE_SCALE) * 10.f, .1f, OEaseOut },
+        });
+
+    m_danceMoveNailed->GetColorAnim().startKeyframed(
+        Color(1.f, 1.f, 1.f, 0.f),
+        {
+            { Color(1.f, 1.f, 1.f, 1.f), .1f },
+            OAnimWait(Color(1.f, 1.f, 1.f, 1.f), .3f),
+            { Color(1.f, 1.f, 1.f, 0.f), .2f, OLinear },
+        });
+}
+
+void Player::ResetInputSequence()
+{
+    m_inputSequence.clear();
 }
 
