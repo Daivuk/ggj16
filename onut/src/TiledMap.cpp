@@ -300,6 +300,24 @@ namespace onut
         return nullptr;
     }
 
+    int TiledMap::getTileWidth() const
+    {
+        if (m_tileSets)
+        {
+            return m_tileSets[0].tileWidth;
+        }
+        return 0;
+    }
+
+    int TiledMap::getTileHeight() const
+    {
+        if (m_tileSets)
+        {
+            return m_tileSets[0].tileHeight;
+        }
+        return 0;
+    }
+
     static RECT getScreenRECTFromTransform(const Matrix& transform, const POINT& tileSize)
     {
         auto invTransform = transform.Invert();

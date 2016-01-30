@@ -16,7 +16,7 @@ void Player::Init( const Vector2& in_position, seed::View* in_container, int in_
     m_sprite = m_container->CreateSpriteWithSpriteAnim("baltAnims.spriteanim", "idle_down");
     m_sprite->SetPosition(in_position);
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    m_sprite->SetScale(Vector2(5,5));
+    m_sprite->SetScale(Vector2(.05f,.05f));
     m_container->AddNode(m_sprite);
 
     m_idleAnim = "idle_down";
@@ -35,7 +35,7 @@ void Player::OnRender()
 
 void Player::UpdateVel()
 {
-    const float maxSpeed = 200.f;
+    const float maxSpeed = 5.f;
     if (m_thumb.LengthSquared() == 0)
     {
         // not pressing anything, slowly decellerate
