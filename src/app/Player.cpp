@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Globals.h"
 #include "DanceSequence.h"
+#include "PhysicsBody.h"
 
 Player::Player()
 {
@@ -22,6 +23,8 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     Attach(m_sprite);
 
     m_idleAnim = "idle_down";
+
+    in_container->CreateCirclePhysicsForNode(this, .25f, false);
 }
 
 void Player::UpdateEntity()
@@ -50,9 +53,12 @@ void Player::UpdateVel()
         m_vel = m_thumb * maxSpeed;
     }
     UpdateSpriteAnim();
-    Vector2 newPos = GetPosition();
-    newPos += m_vel * ODT;
-    SetPosition(newPos);
+    //Vector2 newPos = GetPosition();
+    //newPos += m_vel * ODT;
+    
+    auto pPhysx = m_container->GetPhysicsForNode(this);
+    pPhysx->SetTransform(GetPosition(), 0);
+    pPhysx->SetLinearVel(m_vel);
 }
 
 void Player::UpdateSpriteAnim()

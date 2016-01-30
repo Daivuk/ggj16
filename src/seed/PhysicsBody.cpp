@@ -18,10 +18,12 @@ namespace seed
 
     void PhysicsBody::InitAsBox(const Vector2& in_position, const Vector2& in_dimensions, b2World* in_world, bool in_static)
     {
+        m_isStatic = in_static;
+
         b2BodyDef bodyDef;
         bodyDef.type = in_static ? b2_staticBody : b2_dynamicBody;
         bodyDef.position.Set(in_position.x, in_position.y);
-        bodyDef.gravityScale = 200.f;
+        //bodyDef.gravityScale = 200.f;
 
         m_body = in_world->CreateBody(&bodyDef);
 
@@ -52,6 +54,8 @@ namespace seed
 
     void PhysicsBody::InitAsCircle(const Vector2& in_position, float in_radius, b2World* in_world, bool in_static)
     {
+        m_isStatic = in_static;
+
         b2BodyDef bodyDef;
         bodyDef.type = in_static ? b2_staticBody : b2_dynamicBody;
         bodyDef.position.Set(in_position.x, in_position.y);
