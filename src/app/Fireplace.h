@@ -1,15 +1,15 @@
 #pragma once
 #include "Sprite.h"
 #include "View.h"
+#include "Entity.h"
 
 #include <string>
 
-class Fireplace
+class Fireplace : public Entity
 {
 public:
-    Fireplace(seed::View* pView, seed::Node* in_parent, const Vector2& position);
+    Fireplace(seed::View* pView, const Vector2& position);
     virtual ~Fireplace();
 
 private:
-    Vector2 m_position;
 };

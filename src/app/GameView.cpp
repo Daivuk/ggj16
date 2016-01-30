@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "TiledMapNode.h"
 #include "Fireplace.h"
+#include "DanceSequence.h"
 #include "LightLayer.h"
 
 #define TREE_DENSITY 50
@@ -30,7 +31,7 @@ void GameView::OnShow()
 {
     // Create the main game node. Map + objects go in there and are affected by light
     pGameLayer = CreateLightLayer();
-    pGameLayer->SetAmbient(Color(0, 0, 0, 1));
+    //pGameLayer->SetAmbient(Color(0, 0, 0, 1)); // Set that so something cool jason will decide on
     AddNode(pGameLayer);
 
     // spawn players from the lobby data, for now assume one
@@ -39,6 +40,9 @@ void GameView::OnShow()
     CreateEntities();
     CenterCamera();
     SpawnPlayers();
+
+    // temp
+    StartDanceSequence();
 }
 
 void GameView::OnHide()
@@ -51,6 +55,7 @@ void GameView::OnUpdate()
     //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
 
     UpdatePlayers();
+    UpdateDanceSequence();
 
     // Update camera based on the players position
     GetRootNode()->SetScale(Vector2(m_zoom));
@@ -69,6 +74,20 @@ void GameView::SpawnPlayers()
     m_players.push_back(player1);
 
     // todo spawn other players
+}
+
+void GameView::StartDanceSequence()
+{
+    m_activeDanceSequence = new DanceSequence();
+    m_activeDanceSequence->Init(m_difficulty, m_pFireplace);
+}
+
+void GameView::UpdateDanceSequence()
+{
+    if (m_activeDanceSequence)
+    {
+        m_activeDanceSequence->Update();
+    }
 }
 
 void GameView::UpdatePlayers()
@@ -158,5 +177,7 @@ Vector2 GameView::GetMapCenter() const
 
 void GameView::CreateEntities()
 {
-    m_pFireplace = new Fireplace(this, pGameLayer, GetMapCenter());
+    m_pFireplace = new Fireplace(this, GetMapCenter());
+    AddNode(m_pFireplace);
+    m_entities.push_back(m_pFireplace);
 }

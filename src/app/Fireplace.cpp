@@ -1,10 +1,12 @@
 #include "Fireplace.h"
 #include "Globals.h"
 
-Fireplace::Fireplace(seed::View* pView, seed::Node* in_parent, const Vector2& position)
+Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 {
+    m_position = position;
+
     auto pFireAnim = pView->CreateSpriteWithSpriteAnim("fireplace.spriteanim", "fire1");
-    pFireAnim->SetPosition(position);
+    Attach(pFireAnim);
     pFireAnim->SetScale(Vector2(SPRITE_SCALE));
     pFireAnim->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
 
@@ -19,8 +21,6 @@ Fireplace::Fireplace(seed::View* pView, seed::Node* in_parent, const Vector2& po
             {radius, .25f * SPRITE_SCALE, OEaseBoth},
             {radius + .5f * SPRITE_SCALE, .25f, OEaseBoth},
         }, OLoop);
-
-    in_parent->Attach(pFireAnim);
 }
 
 Fireplace::~Fireplace()

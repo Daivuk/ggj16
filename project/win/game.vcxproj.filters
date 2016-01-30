@@ -209,6 +209,9 @@
     <ClCompile Include="..\..\src\seed\LightLayer.cpp">
       <Filter>seed</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\Entity.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -443,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\seed\LightLayer.h">
       <Filter>seed</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Entity.h">
+      <Filter>app</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

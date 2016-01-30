@@ -131,6 +131,7 @@
     <ClCompile Include="..\..\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="..\..\src\app\DanceMove.cpp" />
     <ClCompile Include="..\..\src\app\DanceSequence.cpp" />
+    <ClCompile Include="..\..\src\app\Entity.cpp" />
     <ClCompile Include="..\..\src\app\Fireplace.cpp" />
     <ClCompile Include="..\..\src\app\GameView.cpp" />
     <ClCompile Include="..\..\src\app\Game.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="..\..\Box2D\Rope\b2Rope.h" />
     <ClInclude Include="..\..\src\app\DanceMove.h" />
     <ClInclude Include="..\..\src\app\DanceSequence.h" />
+    <ClInclude Include="..\..\src\app\Entity.h" />
     <ClInclude Include="..\..\src\app\Fireplace.h" />
     <ClInclude Include="..\..\src\app\GameView.h" />
     <ClInclude Include="..\..\src\app\Game.h" />

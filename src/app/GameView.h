@@ -50,5 +50,10 @@ private:
 
 
     DanceSequence*  m_activeDanceSequence = nullptr;
+    int             m_difficulty = 1;
+    void StartDanceSequence();
+    void UpdateDanceSequence();
+    
+    EntityVect    m_entities;
 
 };

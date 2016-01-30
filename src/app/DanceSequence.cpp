@@ -1,5 +1,4 @@
 #include "DanceSequence.h"
-#include "DanceMove.h"
 #include "Globals.h"
 
 DanceMoveVect DanceSequence::s_possibleDanceMoves =
@@ -56,13 +55,26 @@ DanceMoveVect DanceSequence::s_possibleDanceMoves =
 };
 
 
-void DanceSequence::Init(int in_difficultyLevel)
+void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace )
 {
+    m_timeActive = 0;
+    m_maxTime = 5.f - ((float)(in_difficultyLevel-1) * .2f);
+    m_fireplace = in_fireplace;
     const int nbMoves = GetNbMovesForDifficulty(in_difficultyLevel);
     for (int i = 0; i < nbMoves; ++i)
     {
         m_moves.push_back(GetDanceMoveForDifficulty(in_difficultyLevel));
     }
+}
+
+void DanceSequence::Update()
+{
+
+}
+
+void DanceSequence::ShowNextMove()
+{
+
 }
 
 DanceMove DanceSequence::GetDanceMoveForDifficulty(int in_difficulty)
