@@ -12,6 +12,7 @@ enum eTile
     TILE_FIREPLACE
 };
 
+class DanceSequence;
 class GameView : public seed::View
 {
 public:
@@ -40,4 +41,6 @@ private:
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
     float m_zoom = 32.f;
+
+    DanceSequence*  m_activeDanceSequence = nullptr;
 };

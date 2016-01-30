@@ -129,6 +129,8 @@
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Rope\b2Rope.cpp" />
+    <ClCompile Include="..\..\src\app\DanceMove.cpp" />
+    <ClCompile Include="..\..\src\app\DanceSequence.cpp" />
     <ClCompile Include="..\..\src\app\GameView.cpp" />
     <ClCompile Include="..\..\src\app\Game.cpp" />
     <ClCompile Include="..\..\src\app\Player.cpp" />
@@ -203,6 +205,8 @@
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.h" />
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.h" />
     <ClInclude Include="..\..\Box2D\Rope\b2Rope.h" />
+    <ClInclude Include="..\..\src\app\DanceMove.h" />
+    <ClInclude Include="..\..\src\app\DanceSequence.h" />
     <ClInclude Include="..\..\src\app\GameView.h" />
     <ClInclude Include="..\..\src\app\Game.h" />
     <ClInclude Include="..\..\src\app\Globals.h" />
