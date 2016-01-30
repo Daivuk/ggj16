@@ -10,23 +10,24 @@ Player::~Player()
 {
 }
 
-void Player::Init(const Vector2& in_position, seed::View* in_container, seed::Node* in_parent, int in_controllerIndex)
+void Player::Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex)
 {
     m_controllerIndex = in_controllerIndex;
     m_container = in_container;
+    SetPosition(in_position);
     m_sprite = m_container->CreateSpriteWithSpriteAnim("baltAnims.spriteanim", "idle_down");
-    m_sprite->SetPosition(in_position);
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    m_sprite->SetScale(Vector2(.05f,.05f));
-    in_parent->Attach(m_sprite);
+    m_sprite->SetScale(Vector2(SPRITE_SCALE));
+    Attach(m_sprite);
 
     m_idleAnim = "idle_down";
 }
 
-void Player::Update()
+void Player::UpdateEntity()
 {
     UpdateInputs();
     UpdateVel();
+    Entity::UpdateEntity();
 }
 
 void Player::OnRender()
@@ -48,9 +49,9 @@ void Player::UpdateVel()
         m_vel = m_thumb * maxSpeed;
     }
     UpdateSpriteAnim();
-    Vector2 newPos = m_sprite->GetPosition();
+    Vector2 newPos = GetPosition();
     newPos += m_vel * ODT;
-    m_sprite->SetPosition(newPos);
+    SetPosition(newPos);
 }
 
 void Player::UpdateSpriteAnim()

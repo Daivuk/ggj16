@@ -212,6 +212,15 @@
     <ClCompile Include="..\..\src\app\Entity.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\Tile.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Tree.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Rock.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -448,6 +457,15 @@
       <Filter>seed</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\Entity.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Tile.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Tree.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Rock.h">
       <Filter>app</Filter>
     </ClInclude>
   </ItemGroup>

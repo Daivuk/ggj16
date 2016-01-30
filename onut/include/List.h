@@ -105,6 +105,10 @@ template<typename T, typename U> size_t offsetOf(U T::*member)
 // Define a pointer to a list
 #define LIST_PTR(T) TList<T> *
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 
 /******************************************************************************
 *

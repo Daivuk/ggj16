@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="33" height="33" tilewidth="16" tileheight="16" nextobjectid="1">
- <tileset firstgid="1" name="tiles" tilewidth="16" tileheight="16">
-  <image source="tiles.png" width="128" height="128"/>
+ <tileset firstgid="1" name="GroundTiles" tilewidth="16" tileheight="16">
+  <image source="../textures/GroundTiles.png" width="64" height="64"/>
  </tileset>
  <layer name="backgrounds" width="33" height="33">
   <data encoding="base64" compression="zlib">
-   eJztwwEJAAAMBKH7/qXXYyi4aqqqqqrPH0ykBEI=
+   eJztwQENAAAAwqD3T20PBxQAAADAvwERBAAB
   </data>
  </layer>
  <layer name="tiles" width="33" height="33">
   <data encoding="base64" compression="zlib">
-   eJztzjEBAAAIA6Ad9s9si3kICUgAALrmOgAAvLQzFAAF
+   eJxt19uuqzAMBNAALaVAgf//2sOWvJRpdR6i0uA4vozH5tVaO+611Xre632vz72uey33Wmvv7918r7H2zpKZ7rXf61H/H/XurP0r9O1131HPSz2fpfNZv49ac929lo6l/k9l71nnr5Dxnp5XrbT9756h9p+ldyr5tXQPJf+ps2fJLPU8xJm5dI21N5SOT8TJvUe93+vMEXE+Yk8uxNjzUvet9cwOdrGfX3Kz1TPbhpIdSk584WGK935f4bvYbPFuKDv3sH+KJR6v1rHwaR0Ta8mdZTO/+ApDn9L/jPzwe/2xbQz/YWUsW+e6I/HwKLuPiPk74rxHroY6e8U5OBD3I868W8c0zE21N5fc2DpmXiXHT3kafnSLo1qD/aH1Gpnr/BixzNpPnXydSk4+xFkOxeYT8V7aN4eIOezJh5yI5VF7fIQF/o2t40Y8U9/YvjH+iLjx4R361AtOcGfWy1hLXJ/1/9l6jeE7+bzi156YwPQa8csaZe+ndT7FdXy94t3WOj+KH1/EJWt7jnvYP7WOA2fTz8Q3LOFsOHd+aZ1DYH2L/2oAp8Avfma/+OsHuAUO0o6sN3FLjsA7yatn6HWfeKmTufVaWFrvN7B8tu8ehDNhVBw8y5nYJ6dMcQ9swoS+xT61pQbEF4/hXjEb497kyHfo1Jum2kt+0rtw5idkkovkEdaukNMX1vbNdTAlNt6x05mz9ToW37N1nO7/0Zt9EMfiEL1R/cIKndkTyejBODJz6m49RF+BCfxhJhriPUyrfTiH4eSS7Flmq1fs4/vr567sG+w+4pyltjyrHVh4t457Nb21XjOWs2aFrfW6wbvO8gsfwHHONNmDE4s5Q42tzxBq8hFyOR/hAfMYDJofc4482jdG5AJe9CO8nfemP2vrdejOJWS9owv+5VLNqy3xyJldL8v+xc6Uybzpe/otXpTf5Mo9/MEjYqfHwRDf9AH9bgs59Wu+lpOsvezB6ukMvXIlr1vrfCRv5Jzfw7cj7oAhe3gRdnK+TB+W8i/nleQLvWQJGd8TaodtMMZecrhTz2K/PqCOsn59g7gTXrbWuZpt/DUD6QXyhgvYSTfewnuJP1im0/cDDMCwnM2RZ9xANz7QS2DDTKe+2PE7l/omzZkUX/EXLnJmkg+xtY872YlT5UutyRFbcAp/9GCcZ+YXK3rX0HfFym9NeRcPZxJzYp6242dzuZrkc+bawgmPH73ZAyy5cF/2fvpgQhzUgD4FFzlvi03at8TZnO2zh9P/Z8c/PKkklQ==
   </data>
  </layer>
 </map>

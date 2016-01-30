@@ -2,19 +2,20 @@
 #include "Sprite.h"
 #include "View.h"
 #include "Globals.h"
+#include "Entity.h"
 
 #include <string>
 
-class Player
+class Player : public Entity
 {
 public:
 
     Player();
     virtual ~Player();
 
-    void Init(const Vector2& in_position, seed::View* in_container, seed::Node* in_parent, int in_controllerIndex);
-    void Update();
+    void Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex);
 	void OnRender();
+    void UpdateEntity() override;
 
     DanceMoveButtonVect&    GetInputSequence() { return m_inputSequence; }
     int                     GetControllerIndex() { return m_controllerIndex; }
