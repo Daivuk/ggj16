@@ -7,7 +7,7 @@
 class Fireplace
 {
 public:
-    Fireplace(seed::View* pView, const Vector2& position);
+    Fireplace(seed::View* pView, seed::Node* in_parent, const Vector2& position);
     virtual ~Fireplace();
 
 private:

@@ -19,6 +19,8 @@ namespace seed
         m_angle = 0;
         m_color = Color(1.f, 1.f, 1.f, 1.f);
         m_visible = true;
+        lightRadius = 256.f;
+        lightColor = Color(1.f, 1.f, 1.f, 1.f);
     }
 
     Node::~Node()
@@ -287,6 +289,39 @@ namespace seed
         RenderChildren(m_fgChildren, &transform, m_color.get().w * in_parentAlpha);
     }
 
+    void Node::RenderLight(Matrix* in_parentMatrix, float in_parentAlpha)
+    {
+        if (!m_visible)
+        {
+            return;
+        }
+
+        // generate our matrix
+        Matrix transform = Matrix::Identity;
+        Matrix transformLight = Matrix::Identity;
+        transform *= Matrix::CreateScale(m_scale.get().x, m_scale.get().y, 1.f);
+        transform *= Matrix::CreateRotationZ(DirectX::XMConvertToRadians(m_angle));
+        transform *= Matrix::CreateTranslation(m_position.get().x, m_position.get().y, 0);
+
+        if (in_parentMatrix)
+        {
+            transform = transform * *in_parentMatrix;
+        }
+
+        // Haz0xrz
+        static OTexture *pLightTexture = OGetTexture("light.png");
+        if (lightEnabled)
+        {
+            OSB->drawSprite(pLightTexture, Matrix::CreateScale(lightRadius) * transform, lightColor);
+        }
+
+        // render bg children
+        RenderChildrenLight(m_bgChildren, &transform, m_color.get().w * in_parentAlpha);
+
+        // render fg children
+        RenderChildrenLight(m_fgChildren, &transform, m_color.get().w * in_parentAlpha);
+    }
+
     void Node::SetZindex(int in_zIndex)
     {
         m_zIndex = in_zIndex;
@@ -439,6 +474,14 @@ namespace seed
         for (Node* node : in_children)
         {
             node->Render(in_parentMatrix, in_parentAlpha);
+        }
+    }
+
+    void Node::RenderChildrenLight(NodeVect& in_children, Matrix* in_parentMatrix, float in_parentAlpha)
+    {
+        for (Node* node : in_children)
+        {
+            node->RenderLight(in_parentMatrix, in_parentAlpha);
         }
     }
 

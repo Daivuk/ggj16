@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\src\seed\Button.cpp" />
     <ClCompile Include="..\..\src\seed\Effect.cpp" />
     <ClCompile Include="..\..\src\seed\Emitter.cpp" />
+    <ClCompile Include="..\..\src\seed\LightLayer.cpp" />
     <ClCompile Include="..\..\src\seed\MusicEmitter.cpp" />
     <ClCompile Include="..\..\src\seed\Node.cpp" />
     <ClCompile Include="..\..\src\seed\PhysicsBody.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="..\..\src\seed\Button.h" />
     <ClInclude Include="..\..\src\seed\Effect.h" />
     <ClInclude Include="..\..\src\seed\Emitter.h" />
+    <ClInclude Include="..\..\src\seed\LightLayer.h" />
     <ClInclude Include="..\..\src\seed\MusicEmitter.h" />
     <ClInclude Include="..\..\src\seed\Node.h" />
     <ClInclude Include="..\..\src\seed\PhysicsBody.h" />

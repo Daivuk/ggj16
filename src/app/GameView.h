@@ -40,6 +40,7 @@ private:
     eTile GetTileAt(const Vector2& position) const;
     Vector2 GetMapCenter() const;
 
+    seed::LightLayer* pGameLayer = nullptr;
     onut::TiledMap* m_pTilemap = nullptr;
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
