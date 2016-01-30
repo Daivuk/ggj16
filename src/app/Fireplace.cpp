@@ -51,7 +51,7 @@ void Fireplace::UpdateEntity()
         const float diminishingFactor = 0.5f;
         
         // slowly diminish the fire
-        m_targetRadius -= diminishingFactor * ODT;
+        //m_targetRadius -= diminishingFactor * ODT;
         lightRadius = m_targetRadius;
 
         if (m_targetRadius <= 0)

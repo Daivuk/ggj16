@@ -15,11 +15,11 @@ Monster::Monster(MonsterType monsterType, seed::View* pView, const Vector2& posi
     m_pView = pView;
     SetPosition(position);
 
-    auto pSprite = pView->CreateSprite("crawler.png");
-    pSprite->SetScale(Vector2(SPRITE_SCALE));
-    pSprite->SetPosition(Vector2(3.f, -2.f) * SPRITE_SCALE);
-    pSprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    Attach(pSprite);
+    m_sprite = pView->CreateSpriteWithSpriteAnim("crawler.spriteanim", "idle_down");
+    m_sprite->SetScale(Vector2(SPRITE_SCALE));
+    m_sprite->SetPosition(Vector2(3.f, -2.f) * SPRITE_SCALE);
+    m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    Attach(m_sprite);
 
     m_pPhysicBody = m_pView->CreateCirclePhysicsForNode(this, .25f, false);
 }
@@ -66,6 +66,8 @@ void Monster::UpdateEntity()
             m_pPhysicBody->SetTransform(GetPosition(), 0);
             m_pPhysicBody->SetLinearVel(dir * m_speed);
         }
+
+        UpdateSpriteAnim(dir);
     }
 
     Entity::UpdateEntity();
@@ -114,4 +116,40 @@ void Monster::PathTo(const Vector2& position)
         }
     }
     m_state = MonsterState::GO_TO;
+}
+
+void Monster::UpdateSpriteAnim(const Vector2& dir)
+{
+    string newAnim;
+    bool flipped = false;
+    if (dir.y < -0.70710678118654752440084436210485f)
+    {
+        // move up!
+        newAnim = "run_up";
+    }
+
+    if (dir.y > 0.70710678118654752440084436210485f)
+    {
+        // move down!
+        newAnim = "run_down";
+    }
+
+    if (dir.x < -0.70710678118654752440084436210485f)
+    {
+        // moving left
+        newAnim = "run_side";
+        flipped = false;
+    }
+
+    if (dir.x > 0.70710678118654752440084436210485f)
+    {
+        newAnim = "run_side";
+        flipped = true;
+    }
+
+    if (newAnim.length())
+    {
+        m_sprite->SetSpriteAnim(newAnim);
+        m_sprite->SetFlipped(flipped, false);
+    }
 }

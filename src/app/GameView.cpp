@@ -9,6 +9,7 @@
 #include "MusicEmitter.h"
 #include "DancePedestral.h"
 #include "Monster.h"
+#include "BloodLayer.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -34,6 +35,10 @@ GameView::GameView()
 
 GameView::~GameView()
 {
+    if (m_pBloodLayer)
+    {
+        delete m_pBloodLayer;
+    }
     if (m_pTiles)
     {
         delete[] m_pTiles;
@@ -420,7 +425,7 @@ void GameView::UpdateDanceSequence()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    m_pGameLayer->Attach(pTileMapNode, 0);
+    m_pGameLayer->Attach(pTileMapNode, -10);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");
@@ -429,6 +434,8 @@ void GameView::CreateTileMap()
     pTileMapNode->SetScale(Vector2(1.f / m_pTilemap->getTileWidth()));
 
     m_pTiles = new Tile[m_pTilemap->getWidth() * m_pTilemap->getHeight()];
+
+    m_pGameLayer->Attach(m_pBloodLayer = new BloodLayer(m_pTilemap->getWidth(), m_pTilemap->getHeight()), -11);
 }
 
 void GameView::CenterCamera()

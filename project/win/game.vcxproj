@@ -129,6 +129,7 @@
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Rope\b2Rope.cpp" />
+    <ClCompile Include="..\..\src\app\BloodLayer.cpp" />
     <ClCompile Include="..\..\src\app\DanceMove.cpp" />
     <ClCompile Include="..\..\src\app\DancePedestral.cpp" />
     <ClCompile Include="..\..\src\app\DanceSequence.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.h" />
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.h" />
     <ClInclude Include="..\..\Box2D\Rope\b2Rope.h" />
+    <ClInclude Include="..\..\src\app\BloodLayer.h" />
     <ClInclude Include="..\..\src\app\DanceMove.h" />
     <ClInclude Include="..\..\src\app\DancePedestral.h" />
     <ClInclude Include="..\..\src\app\DanceSequence.h" />
