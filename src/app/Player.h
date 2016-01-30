@@ -3,6 +3,7 @@
 #include "View.h"
 #include "Globals.h"
 #include "Entity.h"
+#include "SoundEmitter.h"
 
 #include <string>
 
@@ -50,6 +51,8 @@ private:
     void    UpdatePedestralSnap();
 
     DancePedestral * m_currentDancePedestral = nullptr;
+
+    seed::SoundEmitter* m_drumSoundEmmiter = nullptr;
 
 
 };

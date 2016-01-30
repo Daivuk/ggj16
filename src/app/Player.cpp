@@ -6,6 +6,7 @@
 #include "GameView.h"
 #include "Tile.h"
 
+
 Player::Player()
 {
     m_collide = true;
@@ -194,7 +195,15 @@ void Player::OnDanceSequenceSuccess()
         m_danceMoveNailed = m_container->CreateSprite("danceOk.png");
         m_danceMoveNailed->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
         m_sprite->Attach(m_danceMoveNailed);
+
+        string cueName = "RitualCues_Player" + to_string(m_controllerIndex + 1) + "_Drums.cue";
+        m_drumSoundEmmiter = m_container->CreateSoundEmitter(cueName);
+        m_drumSoundEmmiter->SetPositionBasedVolume(false);
+        m_drumSoundEmmiter->SetPositionBasedBalance(false);
+        m_sprite->Attach(m_drumSoundEmmiter);
     }
+
+    m_drumSoundEmmiter->Play();
 
     m_danceMoveNailed->GetPositionAnim().start(Vector2(0, 0), Vector2(0, -20.f), .2f, OEaseBoth);
     m_danceMoveNailed->GetScaleAnim().startKeyframed(
@@ -211,6 +220,8 @@ void Player::OnDanceSequenceSuccess()
             OAnimWait(Color(1.f, 1.f, 1.f, 1.f), .3f),
             { Color(1.f, 1.f, 1.f, 0.f), .2f, OLinear },
         });
+
+
 }
 
 void Player::ResetInputSequence()
