@@ -32,6 +32,7 @@ namespace seed
         Node*           CreateNode();
         Effect*         CreateEffect();
         TiledMapNode*   CreateTiledMapNode(const string& in_file);
+        LightLayer*     CreateLightLayer();
         
         void            AddNode(Node* in_node, Node* in_parent = nullptr, int in_zIndex = INT_MAX);
         void            DeleteNode(Node* in_node);

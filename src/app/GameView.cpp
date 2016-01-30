@@ -3,6 +3,7 @@
 #include "TiledMapNode.h"
 #include "Fireplace.h"
 #include "DanceSequence.h"
+#include "LightLayer.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -28,6 +29,11 @@ GameView::~GameView()
 
 void GameView::OnShow()
 {
+    // Create the main game node. Map + objects go in there and are affected by light
+    pGameLayer = CreateLightLayer();
+    pGameLayer->SetAmbient(Color(0, 0, 0, 1));
+    AddNode(pGameLayer);
+
     // spawn players from the lobby data, for now assume one
     CreateTileMap();
     GenerateMap();
@@ -64,7 +70,7 @@ void GameView::SpawnPlayers()
 {
     Player* player1 = new Player();
     // todo pass in what "skin" used
-    player1->Init(Vector2(16,16), this, 1);
+    player1->Init(Vector2(16, 16), this, pGameLayer, 1);
     m_players.push_back(player1);
 
     // todo spawn other players
@@ -95,7 +101,7 @@ void GameView::UpdatePlayers()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    AddNode(pTileMapNode);
+    pGameLayer->Attach(pTileMapNode);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");

@@ -13,6 +13,7 @@ namespace seed
     class View;
     class Node;
     class PhysicsBody;
+    class LightLayer;
 
     typedef unordered_map<string, Sprite*>      SpriteMap;
     typedef vector<Sprite*>                     SpriteVect;

@@ -14,6 +14,7 @@ namespace seed
 
         virtual void                    Update();
         virtual void                    Render(Matrix* in_parentMatrix = nullptr, float in_parentAlpha = 1.f);
+        virtual void                    RenderLight(Matrix* in_parentMatrix = nullptr, float in_parentAlpha = 1.f);
         virtual Node*                   Duplicate(onut::Pool<true>& in_pool, NodeVect& in_pooledNodes) const;
         virtual Node*                   Duplicate() const;
         virtual tinyxml2::XMLElement*   Serialize(tinyxml2::XMLDocument* in_xmlDoc) const;
@@ -67,6 +68,10 @@ namespace seed
 
         virtual void            Copy(Node* in_copy) const;
 
+        bool                    lightEnabled = false;
+        OAnimf                  lightRadius;
+        OAnimc                  lightColor;
+
     protected:
 
         int                     m_zIndex;
@@ -83,6 +88,7 @@ namespace seed
         void        DuplicateChildren(Node* parent, onut::Pool<true>& in_pool, NodeVect& in_pooledNodes) const;
         void        DuplicateChildren(Node* parent) const;
         void        RenderChildren(NodeVect& in_children, Matrix* in_parentMatrix = nullptr, float in_parentAlpha = 1.f);
+        void        RenderChildrenLight(NodeVect& in_children, Matrix* in_parentMatrix = nullptr, float in_parentAlpha = 1.f);
         void        UpdateChildren(NodeVect& in_children);
 
     private:

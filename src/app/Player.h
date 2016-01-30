@@ -11,7 +11,7 @@ public:
     Player();
     virtual ~Player();
 
-    void Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex);
+    void Init(const Vector2& in_position, seed::View* in_container, seed::Node* in_parent, int in_controllerIndex);
     void Update();
 	void OnRender();
 
