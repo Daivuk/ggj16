@@ -194,12 +194,6 @@
     <ClCompile Include="..\..\src\app\Game.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\Player.cpp">
-      <Filter>app</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\app\Fireplace.cpp">
-      <Filter>app</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\app\DanceMove.cpp">
       <Filter>app\Dancing</Filter>
     </ClCompile>
@@ -209,17 +203,23 @@
     <ClCompile Include="..\..\src\seed\LightLayer.cpp">
       <Filter>seed</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\Entity.cpp">
-      <Filter>app</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\app\Tile.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\Tree.cpp">
-      <Filter>app</Filter>
+    <ClCompile Include="..\..\src\app\Entity.cpp">
+      <Filter>app\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Fireplace.cpp">
+      <Filter>app\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Player.cpp">
+      <Filter>app\Entities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\app\Rock.cpp">
-      <Filter>app</Filter>
+      <Filter>app\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\Tree.cpp">
+      <Filter>app\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -237,6 +237,9 @@
     </Filter>
     <Filter Include="app\Dancing">
       <UniqueIdentifier>{7377f3d7-d046-4b86-9db4-1906f5a8803c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app\Entities">
+      <UniqueIdentifier>{fbbc4e16-adb0-4152-836e-7296d492fd56}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -438,13 +441,7 @@
     <ClInclude Include="..\..\src\app\Game.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\Player.h">
-      <Filter>app</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\app\Globals.h">
-      <Filter>app</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\app\Fireplace.h">
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\DanceMove.h">
@@ -456,17 +453,23 @@
     <ClInclude Include="..\..\src\seed\LightLayer.h">
       <Filter>seed</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\Entity.h">
-      <Filter>app</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\app\Tile.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\Tree.h">
-      <Filter>app</Filter>
+    <ClInclude Include="..\..\src\app\Entity.h">
+      <Filter>app\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Fireplace.h">
+      <Filter>app\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Player.h">
+      <Filter>app\Entities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\Rock.h">
-      <Filter>app</Filter>
+      <Filter>app\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Tree.h">
+      <Filter>app\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
