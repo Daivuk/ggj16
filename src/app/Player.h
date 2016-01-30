@@ -9,6 +9,14 @@
 
 class DancePedestral;
 
+enum class ePlayerDirection
+{
+    LEFT,
+    RIGHT,
+    UP,
+    DOWN
+};
+
 class Player : public Entity
 {
 public:
@@ -35,6 +43,7 @@ private:
 
     seed::View*     m_container = nullptr;
     seed::Sprite*   m_sprite = nullptr;
+    seed::Sprite*   m_slash = nullptr;
     seed::Sprite*   m_danceMoveNailed = nullptr;
     int             m_controllerIndex = -1;
     std::string     m_idleAnim;
@@ -50,9 +59,14 @@ private:
     void    UpdateSpriteAnim();
     void    UpdatePedestralSnap();
 
+    void    Attack();
+
     DancePedestral * m_currentDancePedestral = nullptr;
 
     seed::SoundEmitter* m_drumSoundEmmiter = nullptr;
+    seed::SoundEmitter* m_slashSoundEmmiter = nullptr;
+
+    ePlayerDirection m_currentDirection = ePlayerDirection::DOWN;
 
 
 };
