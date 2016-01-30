@@ -21,7 +21,7 @@ void Game::OnStart()
     AddView("GameView", new GameView());
 
 	// show the default view
-	PushView("SplashView");
+	PushView("GameView");
 }
 
 void Game::OnUpdate()

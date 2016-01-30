@@ -3,7 +3,7 @@
 #include "Globals.h"
 #include "onut.h"
 
-enum eTile
+enum eTile : uint32_t
 {
     TILE_NONE = 0,
     TILE_GRASS,
@@ -39,5 +39,5 @@ private:
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
-    float m_zoom = 32.f;
+    float m_zoom = 64.f;
 };
