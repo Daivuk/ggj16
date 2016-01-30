@@ -15,6 +15,7 @@ enum eTile : uint32_t
 
 class DanceSequence;
 class Fireplace;
+class Tile;
 
 class GameView : public seed::View
 {
@@ -31,13 +32,15 @@ private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
     void SpawnPlayers();
-    void UpdatePlayers();
     void CreateTileMap();
     void CenterCamera();
     void GenerateMap();
     void CreateEntities();
 
-    eTile GetTileAt(const Vector2& position) const;
+    void AddEntity(Entity* pEntity);
+
+    eTile GetTileIdAt(const Vector2& position) const;
+    Tile *GetTileAt(const Vector2& position) const;
     Vector2 GetMapCenter() const;
 
     seed::LightLayer* pGameLayer = nullptr;
@@ -47,13 +50,12 @@ private:
     Vector2 m_camera;
     float m_zoom = 64.f;
     Fireplace* m_pFireplace = nullptr;
-
+    Tile *m_pTiles = nullptr;
 
     DanceSequence*  m_activeDanceSequence = nullptr;
     int             m_difficulty = 1;
     void StartDanceSequence();
     void UpdateDanceSequence();
     
-    EntityVect    m_entities;
-
+    EntityVect      m_entities;
 };

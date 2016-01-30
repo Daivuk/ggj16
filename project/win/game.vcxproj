@@ -138,6 +138,7 @@
     <ClCompile Include="..\..\src\app\Player.cpp" />
     <ClCompile Include="..\..\src\app\SplashView.cpp" />
     <ClCompile Include="..\..\src\app\StartView.cpp" />
+    <ClCompile Include="..\..\src\app\Tile.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
     <ClCompile Include="..\..\src\seed\App.cpp" />
     <ClCompile Include="..\..\src\seed\Button.cpp" />
@@ -218,6 +219,7 @@
     <ClInclude Include="..\..\src\app\Player.h" />
     <ClInclude Include="..\..\src\app\SplashView.h" />
     <ClInclude Include="..\..\src\app\StartView.h" />
+    <ClInclude Include="..\..\src\app\Tile.h" />
     <ClInclude Include="..\..\src\seed\App.h" />
     <ClInclude Include="..\..\src\seed\Button.h" />
     <ClInclude Include="..\..\src\seed\Effect.h" />

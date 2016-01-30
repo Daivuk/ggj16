@@ -1,19 +1,20 @@
 #pragma once
 #include "Sprite.h"
 #include "View.h"
+#include "Entity.h"
 
 #include <string>
 
-class Player
+class Player : public Entity
 {
 public:
 
     Player();
     virtual ~Player();
 
-    void Init(const Vector2& in_position, seed::View* in_container, seed::Node* in_parent, int in_controllerIndex);
-    void Update();
+    void Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex);
 	void OnRender();
+    void Update() override;
 
 private:
 

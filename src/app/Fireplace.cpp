@@ -10,9 +10,9 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     pFireAnim->SetScale(Vector2(SPRITE_SCALE));
     pFireAnim->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
 
-    auto radius = 14.f * SPRITE_SCALE;
+    auto radius = 18.f * SPRITE_SCALE;
     pFireAnim->lightRadius = radius;
-    pFireAnim->lightColor = Color(1.f, .8f, .25f, 1.f);
+    pFireAnim->lightColor = Color(1.f, .8f, .25f, 1.f) * 1.5f;
     pFireAnim->lightEnabled = true;
     pFireAnim->lightRadius.startKeyframed(
         radius, {

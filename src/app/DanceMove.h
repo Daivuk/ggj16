@@ -4,10 +4,9 @@
 #include "Globals.h"
 #include "Entity.h"
 
-class DanceMove : public Entity
+class DanceMove : public seed::Node
 {
 public:
-
     DanceMove(const DanceMoveButtonVect& in_buttons);
     virtual ~DanceMove() {};
 
@@ -15,7 +14,6 @@ public:
     void Hide();
 
 private:
-
     DanceMoveButtonVect     m_buttons;  // button that needs to be pressed to nail this move!
     seed::SpriteVect        m_displayedButtons;
     seed::View*             m_container = nullptr;
