@@ -1,5 +1,7 @@
 #include "DanceSequence.h"
 #include "Globals.h"
+#include "Entity.h"
+#include "Fireplace.h"
 
 DanceMoveVect DanceSequence::s_possibleDanceMoves =
 {
@@ -55,8 +57,9 @@ DanceMoveVect DanceSequence::s_possibleDanceMoves =
 };
 
 
-void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace )
+void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace, seed::View* in_container)
 {
+    m_container = in_container;
     m_timeActive = 0;
     m_maxTime = 5.f - ((float)(in_difficultyLevel-1) * .2f);
     m_fireplace = in_fireplace;
@@ -65,16 +68,33 @@ void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace )
     {
         m_moves.push_back(GetDanceMoveForDifficulty(in_difficultyLevel));
     }
+    ShowNextMove();
 }
 
 void DanceSequence::Update()
 {
-
+    m_timeActive += ODT;
+    if (m_timeActive >= m_maxTime)
+    {
+        // time to switch to the next move
+        ShowNextMove();
+    }
 }
 
 void DanceSequence::ShowNextMove()
 {
-
+    if (m_currentDanceMove)
+    {
+        m_currentDanceMove->Hide();
+    }
+    m_timeActive = 0;
+    if (m_currentDanceMoveIndex >= (int)m_moves.size())
+    {
+        m_currentDanceMoveIndex = 0;
+    }
+    m_currentDanceMove = &(m_moves[m_currentDanceMoveIndex]);
+    m_currentDanceMove->Show(m_fireplace, m_container);
+    m_currentDanceMoveIndex++;
 }
 
 DanceMove DanceSequence::GetDanceMoveForDifficulty(int in_difficulty)

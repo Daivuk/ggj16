@@ -79,7 +79,7 @@ void GameView::SpawnPlayers()
 void GameView::StartDanceSequence()
 {
     m_activeDanceSequence = new DanceSequence();
-    m_activeDanceSequence->Init(m_difficulty, m_pFireplace);
+    m_activeDanceSequence->Init(m_difficulty, m_pFireplace, this);
 }
 
 void GameView::UpdateDanceSequence()
