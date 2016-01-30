@@ -224,6 +224,10 @@
     <ClCompile Include="..\..\src\app\DancePedestral.cpp">
       <Filter>app\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\seed\PhysicsListener.cpp" />
+    <ClCompile Include="..\..\src\app\Monster.cpp">
+      <Filter>app\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -475,6 +479,10 @@
       <Filter>app\Entities</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\DancePedestral.h">
+      <Filter>app\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\seed\PhysicsListener.h" />
+    <ClInclude Include="..\..\src\app\Monster.h">
       <Filter>app\Entities</Filter>
     </ClInclude>
   </ItemGroup>

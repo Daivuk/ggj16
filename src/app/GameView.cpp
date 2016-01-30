@@ -8,6 +8,7 @@
 #include "Rock.h"
 #include "MusicEmitter.h"
 #include "DancePedestral.h"
+#include "Monster.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -70,8 +71,22 @@ void GameView::OnUpdate()
 {
     UpdateTime();
     UpdateDanceSequence();
+    UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
+}
+
+void GameView::UpdateMonsterSpawning()
+{
+    if (GetTimeOfDay() != TimeOfDay::Night) return;
+
+    float spawnRate = GetMonsterSpawnRate();
+    m_monsterSpawnTime -= ODT;
+    if (m_monsterSpawnTime <= 0.f)
+    {
+        m_monsterSpawnTime = spawnRate;
+        SpawnMonster();
+    }
 }
 
 void GameView::UpdateEntities()
@@ -95,11 +110,10 @@ void GameView::UpdateTime()
     if (m_dayTime >= DAY_TOTAL_DURATION)
     {
         m_dayTime -= DAY_TOTAL_DURATION;
-        m_day++;
     }
 
     static const Color dayAmbient(1, 1, 1, 1);
-    static const Color nightAmbient(.10f, .15f, .2f, 1);
+    static const Color nightAmbient = Color::White;// (.10f, .15f, .2f, 1);
     static const Color dawnAmbient(1, .75f, 0, 1);
     static const Color duskAmbient(.75f, .35f, .55f, 1);
 
@@ -161,6 +175,7 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
     {
         case TimeOfDay::Night:
             StartDanceSequence();
+            m_monsterSpawnTime = 0.f;
             break;
         case TimeOfDay::Day:
             break;
@@ -170,6 +185,7 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
         case TimeOfDay::Dawn:   // matin commence
             m_pMusic->Stop(3.f);
             StopDanceSequence();
+            m_day++;
             break;
     }
 }
@@ -177,6 +193,26 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
 float GameView::GetDayTimeHour() const
 {
     return (m_dayTime / DAY_TOTAL_DURATION) * 24.f;
+}
+
+static float lerpf(float from, float to, float t)
+{
+    return from + (to - from) * t;
+}
+
+float GameView::GetMonsterSpawnRate() const
+{
+    float nightPercent = (m_dayTime - DUSK_END) / NIGHT_DURATION;
+    float ratePercent = 1.f;
+    if (nightPercent < .5f)
+    {
+        ratePercent = lerpf(.25f, 1.f, nightPercent * 2.f);
+    }
+    else
+    {
+        ratePercent = lerpf(1.f, .25f, (nightPercent * 2.f) - 1.f);
+    }
+    return 1.f / (ratePercent * (float)m_day * .5f);
 }
 
 TimeOfDay GameView::GetTimeOfDay() const
@@ -336,6 +372,42 @@ void GameView::GenerateMap()
             pTile->isOccupied = true;
             auto pRock = new Rock(this, pos);
             AddEntity(pRock);
+        }
+    }
+}
+
+void GameView::SpawnMonster()
+{
+    return;
+    if (Monster::count >= MAX_MONSTER_COUNT) return;
+    for (int tries = 0; tries < 10; ++tries)
+    {
+        int side = onut::randi() % 4;
+        Vector2 spawnPos;
+        switch (side)
+        {
+            case 0:
+                spawnPos = onut::rand2f(Vector2::Zero, Vector2((float)m_pTilemap->getWidth(), 2.5f));
+                break;
+            case 1:
+                spawnPos = onut::rand2f(Vector2::Zero, Vector2(2.5f, (float)m_pTilemap->getHeight()));
+                break;
+            case 2:
+                spawnPos = onut::rand2f(Vector2((float)m_pTilemap->getWidth() - 2.5f, 0.f), Vector2(Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight())));
+                break;
+            case 3:
+                spawnPos = onut::rand2f(Vector2(0.f, (float)m_pTilemap->getHeight() - 2.5f), Vector2(Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight())));
+                break;
+        }
+        spawnPos.x = std::round(spawnPos.x) + .5f;
+        spawnPos.y = std::round(spawnPos.y) + .5f;
+        auto pTile = GetTileAt(spawnPos);
+        if (!pTile) continue;
+        if (!pTile->isOccupied)
+        {
+            auto pMonster = new Monster(MonsterType::CRAWLER, this, spawnPos);
+            AddEntity(pMonster);
+            break;
         }
     }
 }

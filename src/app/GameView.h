@@ -41,6 +41,7 @@ public:
     float       GetDayTime() const { return m_dayTime; }
     float       GetDayTimeHour() const;
     int         GetDay() const { return m_day; }
+    float       GetMonsterSpawnRate() const;
 
     eTile       GetTileIdAt(const Vector2& position) const;
     Tile*       GetTileAt(const Vector2& position) const;
@@ -60,11 +61,13 @@ private:
     void CenterCamera();
     void GenerateMap();
     void CreateEntities();
+    void SpawnMonster();
 
     void UpdateTime();
     void UpdateEntities();
     void UpdateCamera();
     void UpdateDanceSequence();
+    void UpdateMonsterSpawning();
 
     void AddEntity(Entity* pEntity);
     void StartDanceSequence();
@@ -76,7 +79,7 @@ private:
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
-    float m_zoom = 64.f;
+    float m_zoom = 24.f;
     Fireplace* m_pFireplace = nullptr;
     Tile *m_pTiles = nullptr;
     seed::MusicEmitter* m_pMusic = nullptr;
@@ -87,11 +90,10 @@ private:
     EntityVect      m_entities;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = NOON;
+    float           m_dayTime = DUSK_START;
     int             m_day = 1;
-
-
     vector<DancePedestral*> m_pedestrals;
+    float           m_monsterSpawnTime = 0.f;
 };
 
 extern GameView* g_gameView;

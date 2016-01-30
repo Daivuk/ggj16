@@ -13,7 +13,7 @@
 #include "PhysicsBody.h"
 #include "LightLayer.h"
 
-#define VIEW_DEFAULT_NODE_COUNT 1024
+#define VIEW_DEFAULT_NODE_COUNT 2048
 
 namespace seed
 {

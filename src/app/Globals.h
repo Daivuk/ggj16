@@ -51,3 +51,5 @@ static T CubicBezier(const std::vector<T>& in_controlPoints, float in_t)
 
 #define MIDNIGHT 0.f
 #define NOON (NIGHT_DURATION * .5f + DAWN_DURATION + DAY_DURATION * .5f)
+
+#define MAX_MONSTER_COUNT 50
