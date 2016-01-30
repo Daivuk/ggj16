@@ -31,7 +31,7 @@ void GameView::OnShow()
 {
     // Create the main game node. Map + objects go in there and are affected by light
     pGameLayer = CreateLightLayer();
-    //pGameLayer->SetAmbient(Color(0, 0, 0, 1)); // Set that so something cool jason will decide on
+    pGameLayer->SetAmbient(Color(1, 1, 1, 1)); // Set that so something cool jason will decide on
     AddNode(pGameLayer);
 
     // spawn players from the lobby data, for now assume one
