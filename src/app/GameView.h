@@ -12,6 +12,8 @@ enum eTile : uint32_t
     TILE_FIREPLACE
 };
 
+class Fireplace;
+
 class GameView : public seed::View
 {
 public:
@@ -24,8 +26,6 @@ public:
     virtual void OnRender();
 
 private:
-
-
     PlayerVect  m_players;      // index 0 = player 1, etc
 
     void SpawnPlayers();
@@ -33,11 +33,15 @@ private:
     void CreateTileMap();
     void CenterCamera();
     void GenerateMap();
-    eTile GetTileAt(const Vector2& position);
+    void CreateEntities();
+
+    eTile GetTileAt(const Vector2& position) const;
+    Vector2 GetMapCenter() const;
 
     onut::TiledMap* m_pTilemap = nullptr;
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
     float m_zoom = 64.f;
+    Fireplace* m_pFireplace = nullptr;
 };

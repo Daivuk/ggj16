@@ -1,6 +1,7 @@
 #include "GameView.h"
 #include "Player.h"
 #include "TiledMapNode.h"
+#include "Fireplace.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -18,6 +19,10 @@ GameView::GameView()
 
 GameView::~GameView()
 {
+    if (m_pFireplace)
+    {
+        delete m_pFireplace;
+    }
 }
 
 void GameView::OnShow()
@@ -25,6 +30,7 @@ void GameView::OnShow()
     // spawn players from the lobby data, for now assume one
     CreateTileMap();
     GenerateMap();
+    CreateEntities();
     CenterCamera();
     SpawnPlayers();
 }
@@ -35,10 +41,8 @@ void GameView::OnHide()
 
 void GameView::OnUpdate()
 {
-    if (OJustPressed(OINPUT_SPACE))
-    {
-        GenerateMap();
-    }
+    // To test map generation, never do that
+    //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
 
     UpdatePlayers();
 
@@ -136,7 +140,17 @@ void GameView::GenerateMap()
     m_pTilemap->setTileAt(m_pTileLayer, mapCenter.x, mapCenter.y, 4);
 }
 
-eTile GameView::GetTileAt(const Vector2& position)
+eTile GameView::GetTileAt(const Vector2& position) const
 {
     return (eTile)m_pTilemap->getTileAt(m_pTileLayer, (int)position.x, (int)position.y);
+}
+
+Vector2 GameView::GetMapCenter() const
+{
+    return Vector2((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+}
+
+void GameView::CreateEntities()
+{
+    m_pFireplace = new Fireplace(this, GetMapCenter());
 }
