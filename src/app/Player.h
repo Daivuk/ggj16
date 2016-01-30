@@ -23,6 +23,9 @@ public:
     void                    OnDanceSequenceSuccess();
     void                    ResetInputSequence();
 
+    virtual float   GetWidth() const { return .5f; }
+    virtual float   GetHeight() const { return .5f; }
+
 private:
 
     seed::View*     m_container = nullptr;

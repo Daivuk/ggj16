@@ -25,6 +25,7 @@ namespace seed
         void    ApplyForce(const Vector2& in_force);
         void    ApplyLinearImpulse(const Vector2& in_impulse);
 
+        bool    IsStatic() const { return m_isStatic; }
 
         Vector2     GetPosition();
         float       GetAngle();
@@ -37,6 +38,6 @@ namespace seed
         b2Body*     m_body;
         b2Fixture*  m_fixture;
         float       m_pixelToMeterRatio;
-
+        bool        m_isStatic = false;
     };
 }

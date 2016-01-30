@@ -42,6 +42,7 @@ namespace seed
         BodyMap::const_iterator itEnd = m_bodies.end();
         for (; it != itEnd; ++it)
         {
+            if (it->second->IsStatic()) continue;
             seed::Node* node = it->first;
             node->SetPosition(it->second->GetPosition() * m_pixelToMetersRatio);
             node->SetAngle(it->second->GetAngle() * m_pixelToMetersRatio);

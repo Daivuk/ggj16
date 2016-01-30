@@ -40,7 +40,7 @@ GameView::~GameView()
 
 void GameView::OnShow()
 {
-    //InitPhys
+    InitPhysics(Vector2::Zero, 1.f);
 
     // Create the main game node. Map + objects go in there and are affected by light
     m_pGameLayer = CreateLightLayer();
@@ -280,28 +280,6 @@ void GameView::GenerateMap()
 {
     Vector2 mapCenter((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
 
-    // Spawn a bunch of rockz
-    for (int i = 0; i < ROCK_DENSITY; ++i)
-    {
-        auto center = onut::rand2f(Vector2::Zero, Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight()));
-        int count = onut::randi(2, 6);
-        for (int j = 0; j < count; ++j)
-        {
-            auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
-            pos.x = std::round(pos.x) + .5f;
-            pos.y = std::round(pos.y) + .5f;
-            if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
-                pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
-            auto pTile = GetTileAt(pos);
-            if (!pTile) continue;
-            if (pTile->isOccupied) continue;
-            pTile->isOccupied = true;
-            auto pRock = new Rock(this);
-            pRock->SetPosition(pos);
-            AddEntity(pRock);
-        }
-    }
-
     // Spawn a bunch of trees
     for (int i = 0; i < TREE_DENSITY; ++i)
     {
@@ -318,9 +296,29 @@ void GameView::GenerateMap()
             if (!pTile) continue;
             if (pTile->isOccupied) continue;
             pTile->isOccupied = true;
-            auto pTree = new Tree(this);
-            pTree->SetPosition(pos);
+            auto pTree = new Tree(this, pos);
             AddEntity(pTree);
+        }
+    }
+
+    // Spawn a bunch of rockz
+    for (int i = 0; i < ROCK_DENSITY; ++i)
+    {
+        auto center = onut::rand2f(Vector2::Zero, Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight()));
+        int count = onut::randi(2, 6);
+        for (int j = 0; j < count; ++j)
+        {
+            auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
+            pos.x = std::round(pos.x) + .5f;
+            pos.y = std::round(pos.y) + .5f;
+            if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
+                pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
+            auto pTile = GetTileAt(pos);
+            if (!pTile) continue;
+            if (pTile->isOccupied) continue;
+            pTile->isOccupied = true;
+            auto pRock = new Rock(this, pos);
+            AddEntity(pRock);
         }
     }
 }
