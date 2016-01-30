@@ -4,6 +4,7 @@
 
 Player::Player()
 {
+    m_collide = true;
 }
 
 Player::~Player()
@@ -154,4 +155,3 @@ void Player::ResetInputSequence()
 {
     m_inputSequence.clear();
 }
-

@@ -18,12 +18,12 @@
 namespace seed
 {
     static const uintptr_t VIEW_DEFAULT_NODE_MAX_SIZE = onut::max(
-        sizeof(Node), 
-        sizeof(Sprite), 
-        sizeof(SpriteString), 
-        sizeof(Emitter), 
-        sizeof(SoundEmitter), 
-        sizeof(MusicEmitter), 
+        sizeof(Node),
+        sizeof(Sprite),
+        sizeof(SpriteString),
+        sizeof(Emitter),
+        sizeof(SoundEmitter),
+        sizeof(MusicEmitter),
         sizeof(Video),
         sizeof(TiledMapNode),
         sizeof(Effect));
@@ -61,6 +61,7 @@ namespace seed
         m_currentButton = nullptr;
         memset(m_focusedButtons, 0, 4);
         memset(m_defaultFocusedButton, 0, 4);
+        DeletePhysics();
     }
 
     void View::Update()
@@ -82,6 +83,13 @@ namespace seed
         OnRender();
     }
 
+    LightLayer* View::CreateLightLayer()
+    {
+        LightLayer* newLightLayer = m_nodePool.alloc<LightLayer>();
+        m_pooledNodes.push_back(newLightLayer);
+        return newLightLayer;
+    }
+
     void View::FocusButton(Button* in_button, int in_playerIndex)
     {
         if (in_button == m_focusedButtons[in_playerIndex - 1])
@@ -93,7 +101,6 @@ namespace seed
         {
             return;
         }
-
 
         if (m_focusedButtons[in_playerIndex - 1])
         {
@@ -147,7 +154,7 @@ namespace seed
                     m_focusedButtons[playerIndex - 1] = newFocusedButton;
                 }
             }
-            
+
             Button* focusedButton = m_focusedButtons[playerIndex - 1];
             if (focusedButton)
             {
@@ -316,7 +323,7 @@ namespace seed
     SpriteString* View::CreateSpriteString(const string& in_fontName)
     {
         OFont* font = OGetBMFont(in_fontName.c_str());
-        if (!font)  
+        if (!font)
         {
             OLogE("Invalid font name specified to View::AddSpriteString : " + in_fontName);
             //return nullptr; // We want to be able to put bad names without crashing all the things in the editor. Text should just not appear
@@ -384,13 +391,6 @@ namespace seed
 
         m_pooledNodes.push_back(newTiledMap);
         return newTiledMap;
-    }
-
-    LightLayer* View::CreateLightLayer()
-    {
-        LightLayer* newLightLayer = m_nodePool.alloc<LightLayer>();
-        m_pooledNodes.push_back(newLightLayer);
-        return newLightLayer;
     }
 
     Button* View::AddButton(Sprite* in_sprite, const string& in_cmd)
@@ -679,10 +679,16 @@ namespace seed
         return false;
     }
 
-    PhysicsMgr& View::GetPhysics()
+    void View::InitPhysics(const Vector2& in_gravity, float in_pixelToMeterRatio)
     {
-        return m_physics;
+        m_physics.Init(this, in_gravity, in_pixelToMeterRatio);
     }
+
+    void View::DeletePhysics()
+    {
+        m_physics.Reset();
+    }
+
 
     PhysicsBody* View::CreateBoxPhysicsForNode(Node* in_node, bool in_static)
     {
@@ -703,5 +709,4 @@ namespace seed
     {
         m_physics.Update();
     }
-
 }
