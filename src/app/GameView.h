@@ -79,7 +79,7 @@ private:
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
-    float m_zoom = 24.f;
+    float m_zoom = 64.f;
     Fireplace* m_pFireplace = nullptr;
     Tile *m_pTiles = nullptr;
     seed::MusicEmitter* m_pMusic = nullptr;

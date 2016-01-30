@@ -113,7 +113,7 @@ void GameView::UpdateTime()
     }
 
     static const Color dayAmbient(1, 1, 1, 1);
-    static const Color nightAmbient = Color::White;// (.10f, .15f, .2f, 1);
+    static const Color nightAmbient = Color(.10f, .15f, .2f, 1);
     static const Color dawnAmbient(1, .75f, 0, 1);
     static const Color duskAmbient(.75f, .35f, .55f, 1);
 
