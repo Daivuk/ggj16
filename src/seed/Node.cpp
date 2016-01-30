@@ -312,7 +312,7 @@ namespace seed
         static OTexture *pLightTexture = OGetTexture("light.png");
         if (lightEnabled)
         {
-            OSB->drawSprite(pLightTexture, Matrix::CreateScale(lightRadius) * transform, lightColor);
+            OSB->drawSprite(pLightTexture, Matrix::CreateScale(lightRadius / 64.f) * transform, lightColor);
         }
 
         // render bg children

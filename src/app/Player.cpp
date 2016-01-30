@@ -192,6 +192,7 @@ void Player::OnDanceSequenceSuccess()
     if (!m_danceMoveNailed)
     {
         m_danceMoveNailed = m_container->CreateSprite("danceOk.png");
+        m_danceMoveNailed->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
         m_sprite->Attach(m_danceMoveNailed);
     }
 
