@@ -20,6 +20,11 @@ const Vector2 g_playerSpawn[] = {
     {17.f, 15.f},
 };
 
+static float lerpf(float from, float to, float t)
+{
+    return from + (to - from) * t;
+}
+
 GameView* g_gameView = nullptr;
 
 GameView::GameView()
@@ -90,8 +95,6 @@ void GameView::OnUpdate()
     UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
-
-
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -117,9 +120,42 @@ void GameView::UpdateEntities()
 
 void GameView::UpdateCamera()
 {
+    // Fit players in view
+    Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
+    Vector2 maxPlayer(0.f);
+
+    for (auto pPlayer : m_players)
+    {
+        minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
+        minPlayer.y = onut::min(pPlayer->GetPosition().y, minPlayer.y);
+        maxPlayer.x = onut::max(pPlayer->GetPosition().x, maxPlayer.x);
+        maxPlayer.y = onut::max(pPlayer->GetPosition().y, maxPlayer.y);
+    }
+
+    minPlayer.x -= 3;
+    minPlayer.y -= 3;
+    maxPlayer.x += 3;
+    maxPlayer.y += 3;
+
+    m_camera = (minPlayer + maxPlayer) * .5f;
+
+    float playerViewHeight = maxPlayer.y - minPlayer.y;
+    float zoomH = OScreenHf / playerViewHeight;
+    if (zoomH > 64.f) zoomH = 64.f;
+
+    float playerViewWidth = maxPlayer.x - minPlayer.x;
+    float zoomW = OScreenWf / playerViewWidth;
+    if (zoomW > 64.f) zoomW = 64.f;
+
+    m_zoom = onut::min(zoomW, zoomH);
+
+    // Animate to target position
+    m_cameraReal = Vector2::Lerp(m_cameraReal, m_camera, ODT * 1.5f);
+    m_zoomReal = lerpf(m_zoomReal, m_zoom, ODT * 4.f);
+
     // Update camera based on the players position
-    GetRootNode()->SetScale(Vector2(m_zoom));
-    GetRootNode()->SetPosition(-m_camera * m_zoom + OScreenf * .5f);
+    GetRootNode()->SetScale(Vector2(m_zoomReal));
+    GetRootNode()->SetPosition(-m_cameraReal * m_zoomReal + OScreenf * .5f);
 }
 
 void GameView::UpdateTime()
@@ -228,11 +264,6 @@ void GameView::KillAllMonsters()
 float GameView::GetDayTimeHour() const
 {
     return (m_dayTime / DAY_TOTAL_DURATION) * 24.f;
-}
-
-static float lerpf(float from, float to, float t)
-{
-    return from + (to - from) * t;
 }
 
 float GameView::GetNightPercent() const
@@ -402,7 +433,7 @@ void GameView::CreateTileMap()
 
 void GameView::CenterCamera()
 {
-    m_camera = Vector2((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+    m_cameraReal = m_camera = Vector2((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
 }
 
 void GameView::GenerateMap()

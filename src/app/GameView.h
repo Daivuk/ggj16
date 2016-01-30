@@ -96,7 +96,9 @@ private:
     onut::TiledMap::sTileLayer* m_pBackgroundLayer = nullptr;
     onut::TiledMap::sTileLayer* m_pTileLayer = nullptr;
     Vector2 m_camera;
+    Vector2 m_cameraReal;
     float m_zoom = 64.f;
+    float m_zoomReal = 64.f;
     Fireplace* m_pFireplace = nullptr;
     Tile *m_pTiles = nullptr;
     seed::MusicEmitter* m_pMusic = nullptr;
@@ -107,7 +109,7 @@ private:
     EntityVect      m_entities;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = DUSK_START;
+    float           m_dayTime = NOON;
     int             m_day = 1;
     vector<DancePedestral*> m_pedestrals;
     float           m_monsterSpawnTime = 0.f;
