@@ -137,6 +137,7 @@
     <ClCompile Include="..\..\src\app\GameOverView.cpp" />
     <ClCompile Include="..\..\src\app\GameView.cpp" />
     <ClCompile Include="..\..\src\app\Game.cpp" />
+    <ClCompile Include="..\..\src\app\GameView_Paths.cpp" />
     <ClCompile Include="..\..\src\app\Monster.cpp" />
     <ClCompile Include="..\..\src\app\Player.cpp" />
     <ClCompile Include="..\..\src\app\Rock.cpp" />

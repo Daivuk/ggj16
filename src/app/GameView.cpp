@@ -37,6 +37,10 @@ GameView::~GameView()
     {
         delete m_pFireplace;
     }
+    if (m_pPather)
+    {
+        delete m_pPather;
+    }
 }
 
 void GameView::OnShow()
@@ -56,12 +60,18 @@ void GameView::OnShow()
     CreateEntities();
     CenterCamera();
     SpawnPlayers();
+    CreatePathFinder();
 }
 
 void GameView::OnHide()
 {
     // todo make a better cleaning
     m_entities.clear();
+}
+
+void GameView::CreatePathFinder()
+{
+    m_pPather = new micropather::MicroPather(this);
 }
 
 void GameView::CreateMusic()
@@ -191,10 +201,27 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
             m_pMusic->Play("RitualMusicAmbient.mp3", 1.f);
             break;
         case TimeOfDay::Dawn:   // matin commence
+            KillAllMonsters();
             m_pMusic->Stop(3.f);
             StopDanceSequence();
             m_day++;
             break;
+    }
+}
+
+void GameView::KillAllMonsters()
+{
+    for (auto it = m_entities.begin(); it != m_entities.end();)
+    {
+        auto pMonster = dynamic_cast<Monster*>(*it);
+        if (pMonster)
+        {
+            pMonster->Kill();
+            it = m_entities.erase(it);
+            DeleteNode(pMonster);
+            continue;
+        }
+        ++it;
     }
 }
 
@@ -208,9 +235,21 @@ static float lerpf(float from, float to, float t)
     return from + (to - from) * t;
 }
 
+float GameView::GetNightPercent() const
+{
+    if (m_dayTime < DAWN_START)
+    {
+        return ((DAY_TOTAL_DURATION - DUSK_END) + m_dayTime) / NIGHT_DURATION;
+    }
+    else
+    {
+        return (m_dayTime - DUSK_END) / NIGHT_DURATION;
+    }
+}
+
 float GameView::GetMonsterSpawnRate() const
 {
-    float nightPercent = (m_dayTime - DUSK_END) / NIGHT_DURATION;
+    float nightPercent = GetNightPercent();
     float ratePercent = 1.f;
     if (nightPercent < .5f)
     {
@@ -220,7 +259,7 @@ float GameView::GetMonsterSpawnRate() const
     {
         ratePercent = lerpf(1.f, .25f, (nightPercent * 2.f) - 1.f);
     }
-    return 1.f / (ratePercent * (float)m_day * .5f);
+    return 1.f / ((ratePercent) * (float)m_day * .5f);
 }
 
 TimeOfDay GameView::GetTimeOfDay() const
@@ -236,6 +275,7 @@ void GameView::OnRender()
     if (m_gameover)
         return;
 
+#if defined(_DEBUG)
     auto pFont = OGetBMFont("font.fnt");
     pFont->draw("Time: " + std::to_string(GetDayTimeHour()), Vector2::Zero);
     switch (GetTimeOfDay())
@@ -253,6 +293,28 @@ void GameView::OnRender()
             pFont->draw("Dusk", Vector2(0, 20));
             break;
     }
+    pFont->draw("Monster spawn Rate: " + std::to_string(GetMonsterSpawnRate()), Vector2(0, 40));
+    pFont->draw("Monster count: " + std::to_string(Monster::count), Vector2(0, 60));
+    pFont->draw("Day: " + std::to_string(m_day), Vector2(0, 80));
+
+#if 1 // Show path
+    OSB->end();
+    for (auto pEntity : m_entities)
+    {
+        auto pMonster = dynamic_cast<Monster*>(pEntity);
+        if (pMonster)
+        {
+            OPB->begin(onut::ePrimitiveType::LINE_STRIP, nullptr, GetRootNode()->GetTransform());
+            for (auto& p : pMonster->m_path)
+            {
+                OPB->draw(p);
+            }
+            OPB->end();
+        }
+    }
+    OSB->begin();
+#endif
+#endif
 }
 
 void GameView::SpawnPlayers()
@@ -392,7 +454,6 @@ void GameView::GenerateMap()
 
 void GameView::SpawnMonster()
 {
-    return;
     if (Monster::count >= MAX_MONSTER_COUNT) return;
     for (int tries = 0; tries < 10; ++tries)
     {
@@ -504,4 +565,20 @@ void GameView::OnGameOver()
 
     m_gameover = true;
     SendCommand(seed::eAppCommand::PUSH_VIEW, "GameOverView");
+}
+
+Player* GameView::GetClosestPlayer(const Vector2& position) const
+{
+    float closestDist = 100000.f;
+    Player* pRet = nullptr;
+    for (auto pPlayer : m_players)
+    {
+        float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
+        if (dist < closestDist)
+        {
+            closestDist = dist;
+            pRet = pPlayer;
+        }
+    }
+    return pRet;
 }

@@ -231,6 +231,9 @@
     <ClCompile Include="..\..\src\app\GameOverView.cpp">
       <Filter>app\Views</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\GameView_Paths.cpp">
+      <Filter>app\Views</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
