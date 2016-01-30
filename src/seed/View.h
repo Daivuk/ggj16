@@ -33,7 +33,7 @@ namespace seed
         Effect*         CreateEffect();
         TiledMapNode*   CreateTiledMapNode(const string& in_file);
         LightLayer*     CreateLightLayer();
-        
+
         void            AddNode(Node* in_node, Node* in_parent = nullptr, int in_zIndex = INT_MAX);
         void            DeleteNode(Node* in_node);
         Node*           DuplicateNode(Node* in_node);
@@ -63,6 +63,8 @@ namespace seed
         virtual void OnButtonFocused(Button* in_button, int in_playerIndex) {};
         virtual void OnButtonFocusLost(Button* in_button, int in_playerIndex) {};
         virtual bool OnCommand(const string& in_cmd) { return false; }
+        virtual void OnCollisionStart(Node* in_nodeA, Node* in_nodeB) {};
+        virtual void OnCollisionEnd(Node* in_nodeA, Node* in_nodeB) {};
         /////
 
         // used exclusively by the SeedApp
@@ -80,11 +82,11 @@ namespace seed
         void VisitNodesBackward(const VisitCallback& callback);
 
         // Physics stuff for this particular view
-        PhysicsMgr&     GetPhysics();
+        void            InitPhysics(const Vector2& in_gravity, float in_pixelToMeterRatio = 64.f);
         PhysicsBody*    CreateBoxPhysicsForNode(Node* in_node, bool in_static);
         PhysicsBody*    CreateCirclePhysicsForNode(Node* in_node, float in_radius, bool in_static);
         PhysicsBody*    GetPhysicsForNode(Node* in_node);
-        
+
     private:
 
         // root node, updating/rendering all nodes attached to it
@@ -120,8 +122,9 @@ namespace seed
         Button*         GetNextFocusedButton(const Vector2& in_dir, int in_playerIndex);
         ButtonVect      GetPotentialCandidates(const Vector2& in_dir, int in_playerIndex);
         bool            AlreadyInVector(Button* in_button, ButtonVect& in_vector);
-        
+
         PhysicsMgr      m_physics;
         void            UpdatePhysics();
+        void            DeletePhysics();
     };
 }

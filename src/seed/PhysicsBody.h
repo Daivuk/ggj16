@@ -1,6 +1,6 @@
 #pragma once
 #ifdef WITH_BOX_2D
-    #include <Box2D/Box2D.h>
+#include <Box2D/Box2D.h>
 #endif
 
 namespace seed
@@ -25,16 +25,19 @@ namespace seed
         void    ApplyForce(const Vector2& in_force);
         void    ApplyLinearImpulse(const Vector2& in_impulse);
 
+        bool    IsStatic() const { return m_isStatic; }
 
         Vector2     GetPosition();
         float       GetAngle();
         Vector2     GetLinearVel();
+
+        b2Body*     GetB2Body();
 
     private:
 
         b2Body*     m_body;
         b2Fixture*  m_fixture;
         float       m_pixelToMeterRatio;
-        
+        bool        m_isStatic = false;
     };
 }

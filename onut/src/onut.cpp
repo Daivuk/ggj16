@@ -217,6 +217,7 @@ namespace onut
         for (int i = 0; i < 4; ++i)
         {
             g_gamePads[i] = new GamePad(i);
+            g_gamePads[i]->update();
         }
 
         // Audio

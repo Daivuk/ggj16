@@ -18,11 +18,13 @@ namespace seed
 
     void PhysicsBody::InitAsBox(const Vector2& in_position, const Vector2& in_dimensions, b2World* in_world, bool in_static)
     {
+        m_isStatic = in_static;
+
         b2BodyDef bodyDef;
         bodyDef.type = in_static ? b2_staticBody : b2_dynamicBody;
         bodyDef.position.Set(in_position.x, in_position.y);
-        bodyDef.gravityScale = 200.f;
-        
+        //bodyDef.gravityScale = 200.f;
+
         m_body = in_world->CreateBody(&bodyDef);
 
         b2PolygonShape box;
@@ -47,11 +49,13 @@ namespace seed
             // Add the shape to the body.
             m_fixture = m_body->CreateFixture(&fixtureDef);
         }
-        
+
     }
 
     void PhysicsBody::InitAsCircle(const Vector2& in_position, float in_radius, b2World* in_world, bool in_static)
     {
+        m_isStatic = in_static;
+
         b2BodyDef bodyDef;
         bodyDef.type = in_static ? b2_staticBody : b2_dynamicBody;
         bodyDef.position.Set(in_position.x, in_position.y);
@@ -119,7 +123,8 @@ namespace seed
         m_fixture->SetFriction(in_friction);
     }
 
+    b2Body* PhysicsBody::GetB2Body()
+    {
+        return m_body;
+    }
 }
-
-
-
