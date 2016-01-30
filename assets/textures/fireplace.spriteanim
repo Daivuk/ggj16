@@ -1,0 +1,8 @@
+<sheet texture="firesprites.png" spriteWidth="16" spriteHeight="16" originX="8" originY="12">
+  <anim name="fire1" fps="6" loop="true">
+    <frame id="1"/>
+    <frame id="2"/>
+    <frame id="3"/>
+    <frame id="4"/>
+  </anim>
+</sheet>

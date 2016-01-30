@@ -11,6 +11,7 @@
 #include "tinyxml2.h"
 #include "TiledMapNode.h"
 #include "PhysicsBody.h"
+#include "LightLayer.h"
 
 #define VIEW_DEFAULT_NODE_COUNT 1024
 
@@ -383,6 +384,13 @@ namespace seed
 
         m_pooledNodes.push_back(newTiledMap);
         return newTiledMap;
+    }
+
+    LightLayer* View::CreateLightLayer()
+    {
+        LightLayer* newLightLayer = m_nodePool.alloc<LightLayer>();
+        m_pooledNodes.push_back(newLightLayer);
+        return newLightLayer;
     }
 
     Button* View::AddButton(Sprite* in_sprite, const string& in_cmd)
