@@ -52,6 +52,9 @@ public:
 
     vector<DancePedestral*>& GetPedestrals() { return m_pedestrals; }
 
+
+    void        OnGameOver();
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -94,6 +97,10 @@ private:
     int             m_day = 1;
     vector<DancePedestral*> m_pedestrals;
     float           m_monsterSpawnTime = 0.f;
+    
+    void        GrowFire();
+    bool        m_gameover = false;
+    
 };
 
 extern GameView* g_gameView;

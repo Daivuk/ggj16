@@ -41,6 +41,7 @@ GameView::~GameView()
 
 void GameView::OnShow()
 {
+    m_gameover = false;
     InitPhysics(Vector2::Zero, 1.f);
 
     // Create the main game node. Map + objects go in there and are affected by light
@@ -59,6 +60,8 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
+    // todo make a better cleaning
+    m_entities.clear();
 }
 
 void GameView::CreateMusic()
@@ -69,11 +72,16 @@ void GameView::CreateMusic()
 
 void GameView::OnUpdate()
 {
+    if (m_gameover)
+        return;
+
     UpdateTime();
     UpdateDanceSequence();
     UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
+
+
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -225,6 +233,9 @@ TimeOfDay GameView::GetTimeOfDay() const
 
 void GameView::OnRender()
 {
+    if (m_gameover)
+        return;
+
     auto pFont = OGetBMFont("font.fnt");
     pFont->draw("Time: " + std::to_string(GetDayTimeHour()), Vector2::Zero);
     switch (GetTimeOfDay())
@@ -292,6 +303,9 @@ void GameView::UpdateDanceSequence()
                 {
                     // yay
                     p->OnDanceSequenceSuccess();
+
+                    // grow the fire
+                    GrowFire();
                 }
             }
             //else
@@ -475,4 +489,19 @@ void GameView::OnEntityMoved(Entity* pEntity)
     {
         pTile->RegisterEntity(pEntity);
     }
+}
+
+void GameView::GrowFire()
+{
+    m_pFireplace->Grow();
+}
+
+void GameView::OnGameOver()
+{
+    StopDanceSequence();
+
+    // todo cleanup
+
+    m_gameover = true;
+    SendCommand(seed::eAppCommand::PUSH_VIEW, "GameOverView");
 }

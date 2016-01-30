@@ -4,6 +4,7 @@
 #include "SplashView.h"
 #include "StartView.h"
 #include "GameView.h"
+#include "GameOverView.h"
 
 Game::Game()
 {
@@ -19,7 +20,7 @@ void Game::OnStart()
     AddView("SplashView", new SplashView());
     AddView("StartView", new StartView());
     AddView("GameView", new GameView());
-
+    AddView("GameOverView", new GameOverView());
 	// show the default view
 	PushView("GameView");
 }

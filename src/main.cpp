@@ -17,7 +17,7 @@ int CALLBACK WinMain(HINSTANCE appInstance, HINSTANCE prevInstance, LPSTR cmdLin
 {
     // Set default settings
     OSettings->setGameName("Global Game Jam 2016");
-    OSettings->setIsFixedStep(true);
+    OSettings->setIsFixedStep(false);
     OSettings->setResolution({1280, (LONG)(1280 * (1050.f / 1680.f))});
 #if defined(NDEBUG)
     OSettings->setBorderlessFullscreen(true);
