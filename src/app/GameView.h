@@ -24,6 +24,7 @@ enum class TimeOfDay
 class DanceSequence;
 class Fireplace;
 class Tile;
+class DancePedestral;
 
 class GameView : public seed::View
 {
@@ -85,6 +86,9 @@ private:
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
     float           m_dayTime = NOON;
     int             m_day = 1;
+
+
+    vector<DancePedestral*> m_pedestrals;
 };
 
 extern GameView* g_gameView;

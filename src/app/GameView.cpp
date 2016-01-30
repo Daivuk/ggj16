@@ -7,6 +7,7 @@
 #include "Tree.h"
 #include "Rock.h"
 #include "MusicEmitter.h"
+#include "DancePedestral.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -351,6 +352,20 @@ void GameView::CreateEntities()
 {
     m_pFireplace = new Fireplace(this, GetMapCenter());
     AddEntity(m_pFireplace);
+
+    // 4 dance pedestral
+    for (int i = 0; i < 4; ++i)
+    {
+        Vector2 pedOffset;
+        if (i == 0) pedOffset = Vector2(0, -1);
+        if (i == 1) pedOffset = Vector2(1, 0);
+        if (i == 2) pedOffset = Vector2(0, 1);
+        if (i == 3) pedOffset = Vector2(-1, 0);
+        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset);
+        m_pedestrals.push_back(pedes);
+        AddEntity(pedes);
+    }
+    
 }
 
 void GameView::AddEntity(Entity* pEntity)
