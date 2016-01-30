@@ -561,7 +561,7 @@ void GameView::CreateEntities()
         if (i == 1) pedOffset = Vector2(2, -2);
         if (i == 2) pedOffset = Vector2(2, 2);
         if (i == 3) pedOffset = Vector2(-2, 2);
-        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset);
+        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset, i);
         m_pedestrals.push_back(pedes);
         AddEntity(pedes);
     }
