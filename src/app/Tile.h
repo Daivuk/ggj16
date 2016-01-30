@@ -13,4 +13,5 @@ public:
     void RegisterEntity(Entity* pEntity);
 
     TList<Entity> *pEntities = nullptr;
+    bool isOccupied = false;
 };

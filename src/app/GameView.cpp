@@ -18,8 +18,11 @@ const Vector2 g_playerSpawn[] = {
     {17.f, 15.f},
 };
 
+GameView* g_gameView = nullptr;
+
 GameView::GameView()
 {
+    g_gameView = this;
 }
 
 GameView::~GameView()
@@ -66,12 +69,21 @@ void GameView::CreateMusic()
 void GameView::OnUpdate()
 {
     UpdateTime();
-
-    // To test map generation, never do that
-    //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
-
     UpdateDanceSequence();
+    UpdateEntities();
+    UpdateCamera();
+}
 
+void GameView::UpdateEntities()
+{
+    for (auto pEntity : m_entities)
+    {
+        pEntity->UpdateEntity();
+    }
+}
+
+void GameView::UpdateCamera()
+{
     // Update camera based on the players position
     GetRootNode()->SetScale(Vector2(m_zoom));
     GetRootNode()->SetPosition(-m_camera * m_zoom + OScreenf * .5f);
@@ -222,7 +234,7 @@ void GameView::UpdateDanceSequence()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    m_pGameLayer->Attach(pTileMapNode);
+    m_pGameLayer->Attach(pTileMapNode, 0);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");
@@ -256,7 +268,8 @@ void GameView::GenerateMap()
                 pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
             auto pTile = GetTileAt(pos);
             if (!pTile) continue;
-            if (!pTile->pEntities->Empty()) continue;
+            if (pTile->isOccupied) continue;
+            pTile->isOccupied = true;
             auto pRock = new Rock(this);
             pRock->SetPosition(pos);
             AddEntity(pRock);
@@ -277,25 +290,13 @@ void GameView::GenerateMap()
                 pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
             auto pTile = GetTileAt(pos);
             if (!pTile) continue;
-            if (!pTile->pEntities->Empty()) continue;
+            if (pTile->isOccupied) continue;
+            pTile->isOccupied = true;
             auto pTree = new Tree(this);
             pTree->SetPosition(pos);
             AddEntity(pTree);
         }
     }
-
-    //// Clear a zone in the middle
-    //POINT mapCenter = {m_pTilemap->getWidth() / 2, m_pTilemap->getHeight() / 2};
-    //for (int y = mapCenter.y - 3; y <= mapCenter.y + 3; ++y)
-    //{
-    //    for (int x = mapCenter.x - 3; x <= mapCenter.x + 3; ++x)
-    //    {
-    //        m_pTilemap->setTileAt(m_pTileLayer, x, y, 1);
-    //    }
-    //}
-
-    // Fireplace dead in the middle
-    //m_pTilemap->setTileAt(m_pTileLayer, mapCenter.x, mapCenter.y, 4);
 }
 
 eTile GameView::GetTileIdAt(const Vector2& position) const
@@ -325,11 +326,17 @@ void GameView::CreateEntities()
 
 void GameView::AddEntity(Entity* pEntity)
 {
-    m_pGameLayer->Attach(pEntity);
-    m_entities.push_back(m_pFireplace);
+    m_pGameLayer->Attach(pEntity, (int)(pEntity->GetPosition().y * 16.f));
+    m_entities.push_back(pEntity);
     auto pTile = GetTileAt(pEntity->GetPosition());
     if (pTile)
     {
         pTile->RegisterEntity(pEntity);
     }
+}
+
+void GameView::OnEntityMoved(Entity* pEntity)
+{
+    m_pGameLayer->Detach(pEntity);
+    m_pGameLayer->Attach(pEntity, (int)(pEntity->GetPosition().y * 16.f));
 }

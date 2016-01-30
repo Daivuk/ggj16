@@ -22,11 +22,11 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_idleAnim = "idle_down";
 }
 
-void Player::Update()
+void Player::UpdateEntity()
 {
     UpdateInputs();
     UpdateVel();
-    Node::Update();
+    Entity::UpdateEntity();
 }
 
 void Player::OnRender()
@@ -48,9 +48,9 @@ void Player::UpdateVel()
         m_vel = m_thumb * maxSpeed;
     }
     UpdateSpriteAnim();
-    Vector2 newPos = m_sprite->GetPosition();
+    Vector2 newPos = GetPosition();
     newPos += m_vel * ODT;
-    m_sprite->SetPosition(newPos);
+    SetPosition(newPos);
 }
 
 void Player::UpdateSpriteAnim()

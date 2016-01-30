@@ -41,6 +41,8 @@ public:
     float       GetDayTimeHour() const;
     int         GetDay() const { return m_day; }
 
+    void        OnEntityMoved(Entity* pEntity);
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -51,14 +53,18 @@ private:
     void GenerateMap();
     void CreateEntities();
 
+    void UpdateTime();
+    void UpdateEntities();
+    void UpdateCamera();
+    void UpdateDanceSequence();
+
     void AddEntity(Entity* pEntity);
+    void StartDanceSequence();
+    void OnTimeOfDayChanged(TimeOfDay timeOfDay);
 
     eTile GetTileIdAt(const Vector2& position) const;
     Tile *GetTileAt(const Vector2& position) const;
     Vector2 GetMapCenter() const;
-
-    void UpdateTime();
-    void OnTimeOfDayChanged(TimeOfDay timeOfDay);
 
     seed::LightLayer* m_pGameLayer = nullptr;
     onut::TiledMap* m_pTilemap = nullptr;
@@ -72,12 +78,12 @@ private:
 
     DanceSequence*  m_activeDanceSequence = nullptr;
     int             m_difficulty = 1;
-    void StartDanceSequence();
-    void UpdateDanceSequence();
     
     EntityVect      m_entities;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = DUSK_START;
+    float           m_dayTime = NOON;
     int             m_day = 1;
 };
+
+extern GameView* g_gameView;

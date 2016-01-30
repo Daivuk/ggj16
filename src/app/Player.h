@@ -14,7 +14,7 @@ public:
 
     void Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex);
 	void OnRender();
-    void Update() override;
+    void UpdateEntity() override;
 
 private:
 
