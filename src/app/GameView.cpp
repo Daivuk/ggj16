@@ -39,6 +39,8 @@ GameView::~GameView()
 
 void GameView::OnShow()
 {
+    //InitPhys
+
     // Create the main game node. Map + objects go in there and are affected by light
     m_pGameLayer = CreateLightLayer();
     m_pGameLayer->SetAmbient(Color(.10f, .15f, .2f, 1)); // Set that so something cool jason will decide on
@@ -331,8 +333,12 @@ Tile *GameView::GetTileAt(const Vector2& position) const
 {
     auto x = (int)position.x;
     auto y = (int)position.y;
-    if (x < 0 || y < 0 || x >= m_pTilemap->getWidth() || y >= m_pTilemap->getHeight()) return nullptr;
+    return GetTileAt(x, y);
+}
 
+Tile* GameView::GetTileAt(int x, int y) const
+{
+    if (x < 0 || y < 0 || x >= m_pTilemap->getWidth() || y >= m_pTilemap->getHeight()) return nullptr;
     return m_pTiles + (y * m_pTilemap->getWidth() + x);
 }
 
@@ -362,4 +368,9 @@ void GameView::OnEntityMoved(Entity* pEntity)
 {
     m_pGameLayer->Detach(pEntity);
     m_pGameLayer->Attach(pEntity, (int)(pEntity->GetPosition().y * 16.f));
+    auto pTile = GetTileAt(pEntity->GetPosition());
+    if (pTile)
+    {
+        pTile->RegisterEntity(pEntity);
+    }
 }

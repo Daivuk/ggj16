@@ -1,6 +1,6 @@
 #pragma once
 #ifdef WITH_BOX_2D
-    #include <Box2D/Box2D.h>
+#include <Box2D/Box2D.h>
 #endif
 
 namespace seed
@@ -30,11 +30,13 @@ namespace seed
         float       GetAngle();
         Vector2     GetLinearVel();
 
+        b2Body*     GetB2Body();
+
     private:
 
         b2Body*     m_body;
         b2Fixture*  m_fixture;
         float       m_pixelToMeterRatio;
-        
+
     };
 }

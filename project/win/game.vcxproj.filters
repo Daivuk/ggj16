@@ -221,6 +221,9 @@
     <ClCompile Include="..\..\src\app\Tree.cpp">
       <Filter>app\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\seed\PhysicsListener.cpp">
+      <Filter>seed</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -470,6 +473,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\app\Tree.h">
       <Filter>app\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\seed\PhysicsListener.h">
+      <Filter>seed</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
