@@ -27,6 +27,8 @@ class Fireplace;
 class Tile;
 class DancePedestral;
 class Monster;
+class BloodLayer;
+class Stockpile;
 
 class GameView : public seed::View, public micropather::Graph
 {
@@ -109,18 +111,19 @@ private:
     seed::MusicEmitter* m_pMusic = nullptr;
 
     DanceSequence*  m_activeDanceSequence = nullptr;
-    int             m_difficulty = 1;
     
     EntityVect      m_entities;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = NOON;
+    float           m_dayTime = DUSK_START;
     int             m_day = 1;
     vector<DancePedestral*> m_pedestrals;
     float           m_monsterSpawnTime = 0.f;
     
     void        GrowFire();
     bool        m_gameover = false;
+    BloodLayer* m_pBloodLayer = nullptr;
+    Stockpile*  m_pStockpile = nullptr;
     
     micropather::MicroPather *m_pPather = nullptr;
 

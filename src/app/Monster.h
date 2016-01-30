@@ -35,11 +35,14 @@ public:
     void AfterDamagePush(const Vector2& in_direction);
 
 private:
+    void UpdateSpriteAnim(const Vector2& dir);
+
     seed::View* m_pView = nullptr;
     Vector2 m_targetPos;
     float m_speed = 2.f;
     seed::PhysicsBody* m_pPhysicBody = nullptr;
     bool m_nextUnghost = false;
+    seed::Sprite* m_sprite = nullptr;
 
     MonsterState m_state = MonsterState::IDLE;
     MonsterState m_previousState = MonsterState::IDLE;

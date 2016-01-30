@@ -9,15 +9,17 @@
 #include "MusicEmitter.h"
 #include "DancePedestral.h"
 #include "Monster.h"
+#include "BloodLayer.h"
+#include "Stockpile.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
 
 const Vector2 g_playerSpawn[] = {
-    {15.f, 15.f},
-    {17.f, 17.f},
-    {15.f, 17.f},
-    {17.f, 15.f},
+    {14.5f, 14.5f},
+    {18.5f, 18.5f},
+    {14.5f, 18.5f},
+    {18.5f, 14.5f},
 };
 
 static float lerpf(float from, float to, float t)
@@ -34,6 +36,10 @@ GameView::GameView()
 
 GameView::~GameView()
 {
+    if (m_pBloodLayer)
+    {
+        delete m_pBloodLayer;
+    }
     if (m_pTiles)
     {
         delete[] m_pTiles;
@@ -465,7 +471,7 @@ void GameView::SpawnPlayers()
 void GameView::StartDanceSequence()
 {
     m_activeDanceSequence = new DanceSequence();
-    m_activeDanceSequence->Init(m_difficulty, m_pFireplace, this);
+    m_activeDanceSequence->Init(m_day, m_pFireplace, this);
 }
 
 void GameView::StopDanceSequence()
@@ -519,7 +525,7 @@ void GameView::UpdateDanceSequence()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    m_pGameLayer->Attach(pTileMapNode, 0);
+    m_pGameLayer->Attach(pTileMapNode, -10);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");
@@ -528,6 +534,8 @@ void GameView::CreateTileMap()
     pTileMapNode->SetScale(Vector2(1.f / m_pTilemap->getTileWidth()));
 
     m_pTiles = new Tile[m_pTilemap->getWidth() * m_pTilemap->getHeight()];
+
+    m_pGameLayer->Attach(m_pBloodLayer = new BloodLayer(m_pTilemap->getWidth(), m_pTilemap->getHeight()), -11);
 }
 
 void GameView::CenterCamera()
@@ -538,6 +546,9 @@ void GameView::CenterCamera()
 void GameView::GenerateMap()
 {
     Vector2 mapCenter((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+
+    m_pStockpile = new Stockpile(this, m_pTilemap->getWidth() / 2 + 1, m_pTilemap->getHeight() / 2 - 4);
+    AddEntity(m_pStockpile);
 
     // Spawn a bunch of trees
     for (int i = 0; i < TREE_DENSITY; ++i)
@@ -653,11 +664,10 @@ void GameView::CreateEntities()
         if (i == 1) pedOffset = Vector2(2, -2);
         if (i == 2) pedOffset = Vector2(2, 2);
         if (i == 3) pedOffset = Vector2(-2, 2);
-        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset);
+        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset, i);
         m_pedestrals.push_back(pedes);
         AddEntity(pedes);
     }
-    
 }
 
 void GameView::AddEntity(Entity* pEntity)
