@@ -105,7 +105,6 @@ private:
     seed::MusicEmitter* m_pMusic = nullptr;
 
     DanceSequence*  m_activeDanceSequence = nullptr;
-    int             m_difficulty = 1;
     
     EntityVect      m_entities;
 

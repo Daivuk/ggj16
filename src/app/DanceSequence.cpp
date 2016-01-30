@@ -2,6 +2,7 @@
 #include "Globals.h"
 #include "Entity.h"
 #include "Fireplace.h"
+#include "GameView.h"
 
 DanceMoveButtonVect DanceSequence::s_possibleButtons =
 {
@@ -96,18 +97,5 @@ DanceMove DanceSequence::GetDanceMove(int in_nbButtons)
 
 int DanceSequence::GetNbButtonsPerDanceMoveForDifficulty(int in_difficulty)
 {
-    return 2;
-    //if (in_difficulty < 5)
-    //{
-    //    return 1;
-    //}
-    //if (in_difficulty < 10)
-    //{
-    //    return 2;
-    //}
-    //if (in_difficulty < 15)
-    //{
-    //    return 3;
-    //}
     return in_difficulty;
 }
