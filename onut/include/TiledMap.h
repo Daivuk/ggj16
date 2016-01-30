@@ -53,6 +53,8 @@ namespace onut
 
         int getWidth() const { return m_width; }
         int getHeight() const { return m_height; }
+        int getTileWidth() const;
+        int getTileHeight() const;
 
         void render();
         void renderLayer(int index);
@@ -68,6 +70,9 @@ namespace onut
         sLayer *getLayer(const std::string &name) const;
 
         onut::Texture *getMinimap();
+
+        void setTileAt(sTileLayer *pLayer, int x, int y, int tileId);
+        uint32_t getTileAt(sTileLayer *pLayer, int x, int y);
 
     private:
         struct sTileSet

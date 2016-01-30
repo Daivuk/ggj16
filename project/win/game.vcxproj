@@ -131,6 +131,7 @@
     <ClCompile Include="..\..\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="..\..\src\app\GameView.cpp" />
     <ClCompile Include="..\..\src\app\Game.cpp" />
+    <ClCompile Include="..\..\src\app\Player.cpp" />
     <ClCompile Include="..\..\src\app\SplashView.cpp" />
     <ClCompile Include="..\..\src\app\StartView.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -204,6 +205,8 @@
     <ClInclude Include="..\..\Box2D\Rope\b2Rope.h" />
     <ClInclude Include="..\..\src\app\GameView.h" />
     <ClInclude Include="..\..\src\app\Game.h" />
+    <ClInclude Include="..\..\src\app\Globals.h" />
+    <ClInclude Include="..\..\src\app\Player.h" />
     <ClInclude Include="..\..\src\app\SplashView.h" />
     <ClInclude Include="..\..\src\app\StartView.h" />
     <ClInclude Include="..\..\src\seed\App.h" />
