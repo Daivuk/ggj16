@@ -11,5 +11,9 @@ public:
     DancePedestral(seed::View* pView, const Vector2& position);
     virtual ~DancePedestral();
 
+    bool m_isOccupied = false;
+
 private:
+
+
 };

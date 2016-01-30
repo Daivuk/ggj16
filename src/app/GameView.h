@@ -49,6 +49,8 @@ public:
 
     void        OnEntityMoved(Entity* pEntity);
 
+    vector<DancePedestral*>& GetPedestrals() { return m_pedestrals; }
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -66,6 +68,7 @@ private:
 
     void AddEntity(Entity* pEntity);
     void StartDanceSequence();
+    void StopDanceSequence();
     void OnTimeOfDayChanged(TimeOfDay timeOfDay);
 
     seed::LightLayer* m_pGameLayer = nullptr;

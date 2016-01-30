@@ -6,6 +6,8 @@
 
 #include <string>
 
+class DancePedestral;
+
 class Player : public Entity
 {
 public:
@@ -22,6 +24,8 @@ public:
     
     void                    OnDanceSequenceSuccess();
     void                    ResetInputSequence();
+    void                    OnPedestralLockedIn(DancePedestral* in_pedestral);
+    void                    OnPedestralLockCancel();
 
     virtual float   GetWidth() const { return .5f; }
     virtual float   GetHeight() const { return .5f; }
@@ -35,12 +39,17 @@ private:
     std::string     m_idleAnim;
     Vector2         m_thumb;
     Vector2         m_vel;
+    bool            m_isOnPedestral = false;
+    
 
     DanceMoveButtonVect m_inputSequence; // accumulated button sequence
 
     void    UpdateInputs();
     void    UpdateVel();
     void    UpdateSpriteAnim();
+    void    UpdatePedestralSnap();
+
+    DancePedestral * m_currentDancePedestral = nullptr;
 
 
 };

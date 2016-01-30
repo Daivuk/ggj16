@@ -54,9 +54,6 @@ void GameView::OnShow()
     CreateEntities();
     CenterCamera();
     SpawnPlayers();
-
-    // temp
-    StartDanceSequence();
 }
 
 void GameView::OnHide()
@@ -162,11 +159,17 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
 {
     switch (timeOfDay)
     {
-        case TimeOfDay::Dusk:
+        case TimeOfDay::Night:
+            StartDanceSequence();
+            break;
+        case TimeOfDay::Day:
+            break;
+        case TimeOfDay::Dusk:   // soir commence
             m_pMusic->Play("RitualMusicAmbient.mp3", 1.f);
             break;
-        case TimeOfDay::Dawn:
+        case TimeOfDay::Dawn:   // matin commence
             m_pMusic->Stop(3.f);
+            StopDanceSequence();
             break;
     }
 }
@@ -224,6 +227,20 @@ void GameView::StartDanceSequence()
 {
     m_activeDanceSequence = new DanceSequence();
     m_activeDanceSequence->Init(m_difficulty, m_pFireplace, this);
+}
+
+void GameView::StopDanceSequence()
+{
+    if (m_activeDanceSequence)
+    {
+        delete m_activeDanceSequence;
+        m_activeDanceSequence = nullptr;
+    }
+
+    for (Player* p : m_players)
+    {
+        p->OnPedestralLockCancel();
+    }
 }
 
 void GameView::UpdateDanceSequence()
@@ -355,10 +372,10 @@ void GameView::CreateEntities()
     for (int i = 0; i < 4; ++i)
     {
         Vector2 pedOffset;
-        if (i == 0) pedOffset = Vector2(0, -1);
-        if (i == 1) pedOffset = Vector2(1, 0);
-        if (i == 2) pedOffset = Vector2(0, 1);
-        if (i == 3) pedOffset = Vector2(-1, 0);
+        if (i == 0) pedOffset = Vector2(-2, -2);
+        if (i == 1) pedOffset = Vector2(2, -2);
+        if (i == 2) pedOffset = Vector2(2, 2);
+        if (i == 3) pedOffset = Vector2(-2, 2);
         DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset);
         m_pedestrals.push_back(pedes);
         AddEntity(pedes);
