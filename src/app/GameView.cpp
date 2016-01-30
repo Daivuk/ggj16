@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "TiledMapNode.h"
 #include "Fireplace.h"
+#include "DanceSequence.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -33,6 +34,9 @@ void GameView::OnShow()
     CreateEntities();
     CenterCamera();
     SpawnPlayers();
+
+    // temp
+    StartDanceSequence();
 }
 
 void GameView::OnHide()
@@ -45,6 +49,7 @@ void GameView::OnUpdate()
     //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
 
     UpdatePlayers();
+    UpdateDanceSequence();
 
     // Update camera based on the players position
     GetRootNode()->SetScale(Vector2(m_zoom));
@@ -63,6 +68,20 @@ void GameView::SpawnPlayers()
     m_players.push_back(player1);
 
     // todo spawn other players
+}
+
+void GameView::StartDanceSequence()
+{
+    m_activeDanceSequence = new DanceSequence();
+    m_activeDanceSequence->Init(m_difficulty, m_pFireplace);
+}
+
+void GameView::UpdateDanceSequence()
+{
+    if (m_activeDanceSequence)
+    {
+        m_activeDanceSequence->Update();
+    }
 }
 
 void GameView::UpdatePlayers()
@@ -153,4 +172,6 @@ Vector2 GameView::GetMapCenter() const
 void GameView::CreateEntities()
 {
     m_pFireplace = new Fireplace(this, GetMapCenter());
+    AddNode(m_pFireplace);
+    m_entities.push_back(m_pFireplace);
 }

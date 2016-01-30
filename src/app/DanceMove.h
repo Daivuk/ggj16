@@ -1,8 +1,9 @@
 #pragma once
 #include "onut.h"
 #include "Globals.h"
+#include "Entity.h"
 
-class DanceMove
+class DanceMove : public Entity
 {
 public:
 
