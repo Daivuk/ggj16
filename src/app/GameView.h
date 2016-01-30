@@ -78,6 +78,6 @@ private:
     EntityVect      m_entities;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = NOON;
+    float           m_dayTime = DUSK_START;
     int             m_day = 1;
 };

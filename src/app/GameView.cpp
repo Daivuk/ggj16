@@ -60,6 +60,7 @@ void GameView::OnHide()
 void GameView::CreateMusic()
 {
     m_pMusic = CreateMusicEmitter();
+    AddNode(m_pMusic);
 }
 
 void GameView::OnUpdate()
@@ -149,6 +150,9 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
         case TimeOfDay::Dusk:
             m_pMusic->Play("RitualMusicAmbient.mp3", 1.f);
             break;
+        case TimeOfDay::Dawn:
+            m_pMusic->Stop(3.f);
+            break;
     }
 }
 
@@ -236,7 +240,7 @@ void GameView::CenterCamera()
 
 void GameView::GenerateMap()
 {
-    Vector2 center((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+    Vector2 mapCenter((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
 
     // Spawn a bunch of rockz
     for (int i = 0; i < ROCK_DENSITY; ++i)
@@ -248,8 +252,11 @@ void GameView::GenerateMap()
             auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
             pos.x = std::round(pos.x) + .5f;
             pos.y = std::round(pos.y) + .5f;
-            if (pos.x >= center.x - 3 && pos.y >= center.y - 3 &&
-                pos.x <= center.x + 3 && pos.y <= center.y + 3) continue;
+            if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
+                pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
+            auto pTile = GetTileAt(pos);
+            if (!pTile) continue;
+            if (!pTile->pEntities->Empty()) continue;
             auto pRock = new Rock(this);
             pRock->SetPosition(pos);
             AddEntity(pRock);
@@ -266,8 +273,11 @@ void GameView::GenerateMap()
             auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
             pos.x = std::round(pos.x) + .5f;
             pos.y = std::round(pos.y) + .5f;
-            if (pos.x >= center.x - 3 && pos.y >= center.y - 3 &&
-                pos.x <= center.x + 3 && pos.y <= center.y + 3) continue;
+            if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
+                pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
+            auto pTile = GetTileAt(pos);
+            if (!pTile) continue;
+            if (!pTile->pEntities->Empty()) continue;
             auto pTree = new Tree(this);
             pTree->SetPosition(pos);
             AddEntity(pTree);
