@@ -297,7 +297,7 @@ void GameView::OnRender()
     pFont->draw("Monster count: " + std::to_string(Monster::count), Vector2(0, 60));
     pFont->draw("Day: " + std::to_string(m_day), Vector2(0, 80));
 
-#if 1 // Show path
+#if 0 // Show path
     OSB->end();
     for (auto pEntity : m_entities)
     {

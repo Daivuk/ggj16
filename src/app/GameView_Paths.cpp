@@ -24,82 +24,82 @@ void GameView::AdjacentCost(void* node, MP_VECTOR< micropather::StateCost > *nei
     if (passable(x + 1, y))
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y), 1.0f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y), 1.0f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x - 1, y))
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y), 1.0f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y), 1.0f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x, y + 1))
     {
         micropather::StateCost nodeCost = {xyToNode(x, y + 1), 1.0f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x, y + 1), 1.0f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x, y - 1))
     {
         micropather::StateCost nodeCost = {xyToNode(x, y - 1), 1.0f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x, y - 1), 1.0f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x + 1, y + 1) && (passable(x + 1, y) || passable(x, y + 1)))
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y + 1), 1.41f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y + 1), 1.41f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x + 1, y - 1) && (passable(x + 1, y) || passable(x, y - 1)))
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y - 1), 1.41f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x + 1, y - 1), 1.41f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     if (passable(x - 1, y + 1) && (passable(x - 1, y) || passable(x, y + 1)))
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y + 1), 1.41f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y + 1), 1.41f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
-    if (passable(x - 1, y - 1) && (passable(x + 1, y) || passable(x, y - 1)))
+    if (passable(x - 1, y - 1) && (passable(x - 1, y) || passable(x, y - 1)))
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y - 1), 1.41f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
     else
     {
         micropather::StateCost nodeCost = {xyToNode(x - 1, y - 1), 1.41f * 10.f};
-        neighbors->push_back(nodeCost);
+        if (nodeCost.state) neighbors->push_back(nodeCost);
     }
 }
 
@@ -134,6 +134,7 @@ void GameView::nodeToXY(void* node, int* x, int* y)
 
 void* GameView::xyToNode(int x, int y)
 {
+    if (x < 0 || y < 0 || x >= m_pTilemap->getWidth() || y >= m_pTilemap->getHeight()) return nullptr;
     int mapWidth = m_pTilemap->getWidth();
     return (void*)(y * mapWidth + x);
 }
