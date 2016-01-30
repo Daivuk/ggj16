@@ -53,6 +53,8 @@ namespace onut
 
         int getWidth() const { return m_width; }
         int getHeight() const { return m_height; }
+        int getTileWidth() const;
+        int getTileHeight() const;
 
         void render();
         void renderLayer(int index);

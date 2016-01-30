@@ -16,11 +16,14 @@ static Game* s_runningApp = nullptr;
 int CALLBACK WinMain(HINSTANCE appInstance, HINSTANCE prevInstance, LPSTR cmdLine, int cmdCount)
 {
     // Set default settings
-    OSettings->setBorderlessFullscreen(false);
     OSettings->setGameName("Global Game Jam 2016");
-    OSettings->setIsFixedStep(false);
-    OSettings->setIsResizableWindow(false);
-    OSettings->setResolution({1280, 720});
+    OSettings->setIsFixedStep(true);
+    OSettings->setResolution({1280, (LONG)(1280 * (1050.f / 1680.f))});
+#if defined(NDEBUG)
+    OSettings->setBorderlessFullscreen(true);
+#else
+    OSettings->setBorderlessFullscreen(false);
+#endif
 
     // Run
     ORun(init, update, render);
