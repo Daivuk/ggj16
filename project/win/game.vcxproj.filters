@@ -197,10 +197,13 @@
     <ClCompile Include="..\..\src\app\Player.cpp">
       <Filter>app</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\app\DanceSequence.cpp">
-      <Filter>app\Dancing</Filter>
+    <ClCompile Include="..\..\src\app\Fireplace.cpp">
+      <Filter>app</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\app\DanceMove.cpp">
+      <Filter>app\Dancing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\app\DanceSequence.cpp">
       <Filter>app\Dancing</Filter>
     </ClCompile>
   </ItemGroup>
@@ -218,7 +221,7 @@
       <UniqueIdentifier>{e2209bdf-4715-495f-aff5-619d921efd31}</UniqueIdentifier>
     </Filter>
     <Filter Include="app\Dancing">
-      <UniqueIdentifier>{ba599e3d-0dc1-45bc-9fc7-5bb2ef64572f}</UniqueIdentifier>
+      <UniqueIdentifier>{7377f3d7-d046-4b86-9db4-1906f5a8803c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -426,10 +429,13 @@
     <ClInclude Include="..\..\src\app\Globals.h">
       <Filter>app</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\app\DanceSequence.h">
-      <Filter>app\Dancing</Filter>
+    <ClInclude Include="..\..\src\app\Fireplace.h">
+      <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\app\DanceMove.h">
+      <Filter>app\Dancing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\DanceSequence.h">
       <Filter>app\Dancing</Filter>
     </ClInclude>
   </ItemGroup>

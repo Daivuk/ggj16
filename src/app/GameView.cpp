@@ -1,6 +1,10 @@
 #include "GameView.h"
 #include "Player.h"
 #include "TiledMapNode.h"
+#include "Fireplace.h"
+
+#define TREE_DENSITY 50
+#define ROCK_DENSITY 30
 
 const Vector2 g_playerSpawn[] = {
     {14.f, 14.f},
@@ -15,6 +19,10 @@ GameView::GameView()
 
 GameView::~GameView()
 {
+    if (m_pFireplace)
+    {
+        delete m_pFireplace;
+    }
 }
 
 void GameView::OnShow()
@@ -22,6 +30,7 @@ void GameView::OnShow()
     // spawn players from the lobby data, for now assume one
     CreateTileMap();
     GenerateMap();
+    CreateEntities();
     CenterCamera();
     SpawnPlayers();
 }
@@ -32,6 +41,9 @@ void GameView::OnHide()
 
 void GameView::OnUpdate()
 {
+    // To test map generation, never do that
+    //if (OJustPressed(OINPUT_SPACE)) GenerateMap();
+
     UpdatePlayers();
 
     // Update camera based on the players position
@@ -82,18 +94,63 @@ void GameView::GenerateMap()
 {
     Vector2 center((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
 
-    for (int i = 0; i < 50; ++i)
+    for (int y = 0; y < m_pTilemap->getHeight(); ++y)
     {
-        auto dist = onut::randf(6.f, (float)m_pTilemap->getWidth() * .5f * 1.42f);
-        auto angle = onut::randf(0.f, DirectX::XM_2PI);
-
-        Vector2 dir(std::cos(angle) * dist, std::sin(angle) * dist);
-
-        m_pTilemap->setTileAt(m_pTileLayer, (int)dir.x, (int)dir.y, 2);
+        for (int x = 0; x < m_pTilemap->getWidth(); ++x)
+        {
+            m_pTilemap->setTileAt(m_pTileLayer, x, y, 1);
+        }
     }
+
+    // Spawn a bunch of rockz
+    for (int i = 0; i < ROCK_DENSITY; ++i)
+    {
+        auto center = onut::rand2f(Vector2::Zero, Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight()));
+        int count = onut::randi(2, 6);
+        for (int j = 0; j < count; ++j)
+        {
+            auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
+            m_pTilemap->setTileAt(m_pTileLayer, (int)pos.x, (int)pos.y, 3);
+        }
+    }
+
+    // Spawn a bunch of trees
+    for (int i = 0; i < TREE_DENSITY; ++i)
+    {
+        auto center = onut::rand2f(Vector2::Zero, Vector2((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight()));
+        int count = onut::randi(2, 12);
+        for (int j = 0; j < count; ++j)
+        {
+            auto pos = center += onut::rand2f(Vector2(-3), Vector2(3));
+            m_pTilemap->setTileAt(m_pTileLayer, (int)pos.x, (int)pos.y, 2);
+        }
+    }
+
+    // Clear a zone in the middle
+    POINT mapCenter = {m_pTilemap->getWidth() / 2, m_pTilemap->getHeight() / 2};
+    for (int y = mapCenter.y - 3; y <= mapCenter.y + 3; ++y)
+    {
+        for (int x = mapCenter.x - 3; x <= mapCenter.x + 3; ++x)
+        {
+            m_pTilemap->setTileAt(m_pTileLayer, x, y, 1);
+        }
+    }
+
+    // Fireplace dead in the middle
+    m_pTilemap->setTileAt(m_pTileLayer, mapCenter.x, mapCenter.y, 4);
 }
 
-eTile GameView::GetTileAt(const Vector2& position)
+eTile GameView::GetTileAt(const Vector2& position) const
 {
     return (eTile)m_pTilemap->getTileAt(m_pTileLayer, (int)position.x, (int)position.y);
+}
+
+Vector2 GameView::GetMapCenter() const
+{
+    return Vector2((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+}
+
+void GameView::CreateEntities()
+{
+    m_pFireplace = new Fireplace(this, GetMapCenter());
 }
