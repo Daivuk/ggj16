@@ -911,6 +911,19 @@ bool GameView::AllPlayersAreDead()
     return true;
 }
 
+int GameView::GetAlivePlayerCount()
+{
+    int nb = 0;
+    for (auto pPlayer : m_players)
+    {
+        if (pPlayer->IsAlive())
+        {
+            nb++;
+        }
+    }
+    return nb;
+}
+
 Player* GameView::GetClosestPlayer(const Vector2& position) const
 {
     float closestDist = 100000.f;

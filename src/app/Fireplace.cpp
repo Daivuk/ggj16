@@ -82,7 +82,8 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    m_targetRadius += GROWING_FACTOR;
+    float playerCount = (float)g_gameView->GetAlivePlayerCount();
+    m_targetRadius += GROWING_FACTOR / playerCount;
     if (m_targetRadius > MAX_RADIUS)
     {
         m_targetRadius = MAX_RADIUS;
