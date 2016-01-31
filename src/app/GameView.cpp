@@ -80,8 +80,17 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
-    // todo make a better cleaning
+    KillAllEntities();
     m_entities.clear();
+    m_players.clear();
+    m_pedestrals.clear();
+
+    m_previousTimeOfDay = TimeOfDay::INVALID;
+    m_dayTime = NOON;
+    m_day = 1;
+    m_monsterSpawnTime = 0;
+    m_activeDanceSequence = nullptr;
+    m_pMusic = nullptr;
 }
 
 void GameView::CreatePathFinder()
@@ -398,11 +407,18 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
     }
 }
 
+void GameView::KillAllEntities()
+{
+    m_entitiesToKill = m_entities;
+    ClearEntities();
+}
+
 void GameView::KillEntity( Entity* in_toKill )
 {
     for (auto pEntity : m_entitiesToKill) if (pEntity == in_toKill) return;
     m_entitiesToKill.push_back(in_toKill);
 }
+
 void GameView::ClearEntities()
 {
     for (size_t i = 0; i < m_entitiesToKill.size(); ++i)

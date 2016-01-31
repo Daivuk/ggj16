@@ -569,6 +569,7 @@ void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
     m_sprite->SetSpriteAnim("idle_down");
     in_pedestral->m_isOccupied = true;
     m_currentDancePedestral = in_pedestral;
+    m_slash->SetVisible(false);
 }
 
 void Player::DropCarryOn()
