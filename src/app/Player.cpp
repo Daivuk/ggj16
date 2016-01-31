@@ -239,6 +239,7 @@ void Player::UpdateVel()
         m_physicsBody->SetTransform(GetPosition(), 0);
         m_physicsBody->SetLinearVel(Vector2(0,0));
         m_physicsBody->GetB2Body()->SetActive(false);
+        m_sprite->GetPositionAnim().stop(true);
         return;
     }
 
@@ -250,11 +251,21 @@ void Player::UpdateVel()
     {
         // not pressing anything or on a dance pedestral, slowly decellerate
         m_vel = Vector2(0,0);
+        m_sprite->GetPositionAnim().stop(true);
     }
     else
     {
         // apply thumb pressure to velocity
         m_vel = m_thumb * maxSpeed;
+        if (!m_sprite->GetPositionAnim().isPlaying())
+        {
+            m_sprite->GetPositionAnim().startKeyframed(
+                Vector2::Zero,
+                {
+                    {Vector2(0, -2) * SPRITE_SCALE, .1f, OEaseOut},
+                    {Vector2::Zero, .1f, OEaseIn},
+                }, OLoop);
+        }
     }
     if (!m_isDancing) UpdateSpriteAnim();
     //Vector2 newPos = GetPosition();
@@ -641,6 +652,7 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    OPlaySoundCue("RitualCues_TakePosition.cue");
     in_pedestral->StartActivatedFX();
     m_stateTimer.stop();
     DropCarryOn();
