@@ -17,6 +17,7 @@
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
 #define FRONT_Z_INDEX 30
+#define HEALTH_Z_INDEX 40
 
 Player::Player()
 {
@@ -85,10 +86,48 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_idleAnim = "idle_down";
 
     m_physicsBody = in_container->CreateCirclePhysicsForNode(this, .25f, false);
+
+    // health bar
+    m_healthGauge = in_container->CreateSprite("healthGauge.png");
+    m_healthGauge->SetPosition(Vector2(0,.5f));
+    m_healthGauge->SetScale(Vector2(SPRITE_SCALE,SPRITE_SCALE * .5f) * .6f);
+    m_healthGauge->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    Attach(m_healthGauge, HEALTH_Z_INDEX);
+    m_healthFill = in_container->CreateSprite("healthGaugeFill.png");
+    m_healthFill->SetAlign(Vector2(0, .5f));
+    m_healthFill->SetPosition(Vector2(m_healthFill->GetWidth() / -2.f, 0));
+    m_healthFill->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_healthFill->SetColor(Color(0,1,0));
+    m_healthGauge->Attach(m_healthFill);
+
+    m_healthGauge->SetVisible(false);
+}
+
+void Player::UpdateHealthBar()
+{
+    if (m_health == 100.f)
+    {
+        m_healthGauge->SetVisible(false);
+        m_healthFill->SetScale(Vector2(1, 1));
+        return;
+    }
+
+    m_healthGauge->SetVisible(true);
+    if (m_lastHealthValue != m_health)
+    {
+        // gotta anim it
+        m_healthAnim.start(m_lastHealthValue, m_health, .2f, OEaseOut);
+        m_lastHealthValue = m_health;
+    }
+
+    float percent = m_healthAnim.get() / 100.f;
+    m_healthFill->SetScale(Vector2(percent, 1));
+    m_healthFill->SetColor(Color(1 - percent, percent, 0));
 }
 
 void Player::UpdateEntity()
 {
+    UpdateHealthBar();
     UpdateInputs();
     UpdateVel();
     UpdatePedestralSnap();
@@ -696,7 +735,10 @@ void Player::OnDanceSequenceSuccess()
             { Color(1.f, 1.f, 1.f, 0.f), .2f, OLinear },
         });
 
-
+    // increase health
+    const float healthIncreaseForSuccessfulDanceMove = 5;
+    m_health += healthIncreaseForSuccessfulDanceMove;
+    if (m_health > 100.f) m_health = 100.f;
 }
 
 void Player::ResetInputSequence()
