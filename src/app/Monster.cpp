@@ -79,6 +79,17 @@ void Monster::AfterDamagePush(const Vector2& in_direction)
 
 void Monster::UpdateEntity()
 {
+    m_attackTimer -= ODT;
+    if (m_attackTimer <= 0)
+    {
+        m_attackTimer = 0;
+        if (m_state == MonsterState::ATTACK)
+        {
+            m_state = m_previousState;
+        }
+    }
+
+
     if (m_state == MonsterState::IDLE)
     {
         auto pTile = g_gameView->GetTileAt(GetPosition());
@@ -113,6 +124,22 @@ void Monster::UpdateEntity()
         UpdateSpriteAnim(dir);
     }
 
+    if (m_state == MonsterState::IDLE || m_state == MonsterState::GO_TO && !m_attackTimer)
+    {
+        vector<Entity*> attackablePlayers;
+        CheckIfMonsterCanAttack(attackablePlayers);
+        if (attackablePlayers.size() > 0)
+        {
+            if (m_state != MonsterState::ATTACK)
+            {
+                m_previousState = m_state;
+            }
+            m_state = MonsterState::ATTACK;
+
+            OnMonsterAttack(attackablePlayers);
+        }
+    }
+
     if (m_state == MonsterState::AFTER_DAMAGE_PUSH)
     {
         m_pPhysicBody->SetLinearVel(m_velPushAnim);
@@ -143,6 +170,37 @@ void Monster::UpdateEntity()
 
 
     Entity::UpdateEntity();
+}
+
+void Monster::CheckIfMonsterCanAttack(vector<Entity*>& inOut_attackablePlayers)
+{
+    const float monsterAttackRadius = 1.f;
+    const PlayerVect& players = g_gameView->GetPlayers();
+    for (Player* p : players)
+    {
+        if ((p->GetPosition() - m_position).LengthSquared() < monsterAttackRadius * monsterAttackRadius)
+        {
+            inOut_attackablePlayers.push_back(p);
+        }
+    }
+}
+
+void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
+{
+    // start a monster anim
+
+    // inflict damage to players
+    for (Entity* e : in_attackablePlayers)
+    {
+        e->InflictDamage(50.f);
+        Player* p = (Player*)e;
+
+        Vector2 dir = p->GetPosition() - m_position;
+        dir.Normalize();
+        p->AfterDamagePush(dir);
+    }
+    const float delayBetweenAttacks = 2.f;
+    m_attackTimer = delayBetweenAttacks;
 }
 
 void Monster::Seek()

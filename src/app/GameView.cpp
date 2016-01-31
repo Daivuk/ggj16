@@ -720,6 +720,9 @@ Player* GameView::GetClosestPlayer(const Vector2& position) const
     Player* pRet = nullptr;
     for (auto pPlayer : m_players)
     {
+        if (!pPlayer->IsAlive())
+            continue;
+
         float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
         if (dist < closestDist)
         {

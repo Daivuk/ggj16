@@ -55,4 +55,9 @@ private:
     OAnim<Vector2> m_velPushAnim;
     
     void OnDeath();
+
+    void CheckIfMonsterCanAttack(vector<Entity*>& inOut_attackablePlayers);
+    void OnMonsterAttack(vector<Entity*>& in_attackablePlayers);
+
+    float m_attackTimer = 0.f;
 };

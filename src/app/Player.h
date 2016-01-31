@@ -25,6 +25,8 @@ enum class PlayerState
     ATTACKING,
     CARYING_WOOD,
     CARYING_ROCKS,
+    RECEIVING_DAMAGE,
+    DEAD
 };
 
 class Player : public Entity
@@ -52,6 +54,10 @@ public:
     virtual float   GetWidth() const { return .5f; }
     virtual float   GetHeight() const { return .5f; }
 
+    void AfterDamagePush(const Vector2& in_direction);
+
+    bool    IsAlive() { return m_playerState != PlayerState::DEAD; }
+
 private:
 
     seed::View*     m_container = nullptr;
@@ -73,13 +79,22 @@ private:
     void    UpdatePedestralSnap();
 
     void    Attack();
+    void    OnDeath();
 
     DancePedestral * m_currentDancePedestral = nullptr;
 
     seed::SoundEmitter* m_drumSoundEmmiter = nullptr;
     seed::SoundEmitter* m_slashSoundEmmiter = nullptr;
+    seed::Sprite*           m_damageBlood = nullptr;
+    seed::SoundEmitter*     m_damageSound = nullptr;
+    seed::SoundEmitter*     m_deathSound = nullptr;
 
     ePlayerDirection m_currentDirection = ePlayerDirection::DOWN;
     PlayerState m_playerState = PlayerState::IDLE;
+    PlayerState m_lastState = PlayerState::IDLE;
     OTimer m_stateTimer;
+
+    OAnim<Vector2> m_velPushAnim;
+
+    seed::PhysicsBody* m_physicsBody = nullptr;
 };

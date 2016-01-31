@@ -46,11 +46,23 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_sprite->SetScale(Vector2(SPRITE_SCALE));
     Attach(m_sprite, PLAYER_Z_INDEX);
 
-    
+    m_damageBlood = m_container->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
+    m_damageBlood->SetVisible(false);
+    Attach(m_damageBlood);
+
+    m_damageSound = m_container->CreateSoundEmitter("RitualCues_Player_Hit.cue");
+    m_damageSound->SetPositionBasedBalance(false);
+    m_damageSound->SetPositionBasedVolume(false);
+    Attach(m_damageSound);
+
+    m_deathSound = m_container->CreateSoundEmitter("RitualCues_Player_Die.cue");
+    m_deathSound->SetPositionBasedBalance(false);
+    m_deathSound->SetPositionBasedVolume(false);
+    Attach(m_deathSound);
 
     m_idleAnim = "idle_down";
 
-    in_container->CreateCirclePhysicsForNode(this, .25f, false);
+    m_physicsBody = in_container->CreateCirclePhysicsForNode(this, .25f, false);
 }
 
 void Player::UpdateEntity()
@@ -68,6 +80,17 @@ void Player::OnRender()
 
 void Player::UpdateVel()
 {
+    if (!IsAlive())
+    {
+        m_physicsBody->SetTransform(GetPosition(), 0);
+        m_physicsBody->SetLinearVel(Vector2(0,0));
+        m_physicsBody->GetB2Body()->SetActive(false);
+        return;
+    }
+
+    if (m_playerState == PlayerState::RECEIVING_DAMAGE)
+        return;
+
     const float maxSpeed = 5.f;
     if (m_thumb.LengthSquared() == 0 || m_playerState == PlayerState::PEDESTRAL)
     {
@@ -83,9 +106,8 @@ void Player::UpdateVel()
     //Vector2 newPos = GetPosition();
     //newPos += m_vel * ODT;
     
-    auto pPhysx = m_container->GetPhysicsForNode(this);
-    pPhysx->SetTransform(GetPosition(), 0);
-    pPhysx->SetLinearVel(m_vel);
+    m_physicsBody->SetTransform(GetPosition(), 0);
+    m_physicsBody->SetLinearVel(m_vel);
 }
 
 void Player::UpdateSpriteAnim()
@@ -273,8 +295,41 @@ float Clamp(float n, float lower, float upper)
     return std::max(lower, std::min(n, upper));
 }
 
+void Player::OnDeath()
+{
+    m_deathSound->Play();
+    m_sprite->GetColorAnim().start(Color(1, 1, 1, 1), Color(0, 0, 0, 1), .5f);
+}
+
 void Player::UpdateInputs()
 {
+    if (!IsAlive())
+        return;
+
+    if (m_playerState == PlayerState::RECEIVING_DAMAGE)
+    {
+        m_physicsBody->SetLinearVel(m_velPushAnim);
+        if (!m_velPushAnim.isPlaying())
+        {
+            // we're done
+            if (m_health <= 0)
+            {
+                m_playerState = PlayerState::DEAD;
+                OnDeath();
+            }
+            else
+            {
+                m_playerState = m_lastState;
+            }
+        }
+        else
+        {
+            m_vel = Vector2(0, 0);
+        }
+        return;
+    }
+
+
     m_thumb = OLThumb(m_controllerIndex);
     m_thumb.x = Clamp(m_thumb.x, -1.f, 1.f);
     m_thumb.y = Clamp(m_thumb.y, -1.f, 1.f);
@@ -423,4 +478,24 @@ void Player::OnDanceSequenceSuccess()
 void Player::ResetInputSequence()
 {
     m_inputSequence.clear();
+}
+
+void Player::AfterDamagePush(const Vector2& in_direction)
+{
+    m_damageSound->Play();
+
+    m_damageBlood->SetVisible(true);
+    m_damageBlood->SetSpriteAnim("");
+    m_damageBlood->SetSpriteAnim("blood");
+    m_damageBlood->SetScale(Vector2(.1f, .1f));
+    m_damageBlood->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+
+    if (m_playerState != PlayerState::RECEIVING_DAMAGE)
+    {
+        m_lastState = m_playerState;
+    }
+    m_playerState = PlayerState::RECEIVING_DAMAGE;
+
+    const float pushForce = 20.f;
+    m_velPushAnim.start(in_direction * pushForce, Vector2(0, 0), .2f);
 }
