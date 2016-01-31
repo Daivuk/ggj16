@@ -3,6 +3,7 @@
 #include "SpriteString.h"
 #include "Video.h"
 #include "Emitter.h"
+#include "Globals.h"
 
 void GameOverView::OnShow()
 {
@@ -15,6 +16,14 @@ void GameOverView::OnShow()
 
     ((seed::Emitter*)FindNode("fire1"))->Start();
     ((seed::Emitter*)FindNode("fire2"))->Start();
+    if (g_daysSurvived == 1)
+    {
+        ((seed::SpriteString*)FindNode("days"))->SetCaption("You survived for ^991" + std::to_string(g_daysSurvived) + "^999 day...");
+    }
+    else
+    {
+        ((seed::SpriteString*)FindNode("days"))->SetCaption("You survived for ^991" + std::to_string(g_daysSurvived) + "^999 days...");
+    }
 }
 
 void GameOverView::OnUpdate()

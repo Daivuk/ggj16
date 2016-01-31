@@ -62,3 +62,4 @@ enum class DropType
 };
 
 extern bool g_activePlayer[4];
+extern int g_daysSurvived;

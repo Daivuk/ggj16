@@ -17,6 +17,8 @@
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
 
+int g_daysSurvived = 0;
+
 const Vector2 g_playerSpawn[] = {
     {14.5f, 14.5f},
     {18.5f, 18.5f},
@@ -848,6 +850,8 @@ void GameView::GrowFire()
 
 void GameView::OnGameOver()
 {
+    g_daysSurvived = m_day;
+
     StopDanceSequence();
     m_gameover = true;
 
