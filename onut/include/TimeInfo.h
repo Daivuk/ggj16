@@ -4,8 +4,8 @@
 
 namespace onut
 {
-    template<uint32_t TframePerSecond = 60,
-        uint32_t TmaxUpdatePerFrame = 4,
+    template<uint32_t TframePerSecond = 90,
+        uint32_t TmaxUpdatePerFrame = 1,
         typename Tprecision = double>
     class TimeInfo
     {
