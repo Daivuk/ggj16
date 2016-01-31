@@ -9,6 +9,7 @@
 #include "Rock.h"
 #include "Tree.h"
 #include "Drop.h"
+#include "Stockpile.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -213,7 +214,7 @@ void Player::Attack()
         m_slash->SetFlippedH(true);
         m_slash->GetAngleAnim().start(-90, 90, .1f);
         Attach(m_slash, BEHIND_Z_INDEX);
-        attackOffset = Vector2(0, 1);
+        attackOffset = Vector2(0, -1);
     }
 
     m_stateTimer.start(.2f, [this]{m_playerState = PlayerState::IDLE; });
@@ -270,14 +271,14 @@ void Player::Attack()
                 if (rock)
                 {
                     m_stateTimer.stop();
-                    m_playerState = PlayerState::CARYING_ROCKS;
+                    m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Rock);
                     Attach(m_pCarryOn);
                 }
                 else if (tree)
                 {
                     m_stateTimer.stop();
-                    m_playerState = PlayerState::CARYING_WOOD;
+                    m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Wood);
                     Attach(m_pCarryOn);
                 }
@@ -372,6 +373,33 @@ void Player::UpdateInputs()
             }
         }
     }
+    if (m_playerState == PlayerState::IDLE && g_gameView->GetStockpile()->IsAround(this))
+    {
+        Entity* pBoughtEntity = nullptr;
+        if (OGamePadJustPressed(OABtn, m_controllerIndex))
+        {
+            pBoughtEntity = g_gameView->Buy(StoreItemType::Scarecrow);
+        }
+        else if (OGamePadJustPressed(OXBtn, m_controllerIndex))
+        {
+            pBoughtEntity = g_gameView->Buy(StoreItemType::Stone);
+        }
+        if (pBoughtEntity)
+        {
+            m_pCarryOn = pBoughtEntity;
+            m_playerState == PlayerState::CARYING_STUFF;
+            Attach(m_pCarryOn);
+        }
+    }
+}
+
+DropType Player::GetDropType() const
+{
+    if (!m_pCarryOn) return DropType::INVALID;
+    if (m_playerState != PlayerState::CARYING_STUFF) return DropType::INVALID;
+    auto pDrop = dynamic_cast<Drop*>(m_pCarryOn);
+    if (!pDrop) return DropType::INVALID;
+    return pDrop->type;
 }
 
 void Player::UpdatePedestralSnap()

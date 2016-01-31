@@ -30,6 +30,20 @@ class Monster;
 class BloodLayer;
 class Stockpile;
 
+enum class StoreItemType
+{
+    Scarecrow,
+    Stone
+};
+
+struct StoreItem
+{
+    StoreItemType type;
+    std::unordered_map<DropType, int> cost;
+    std::string ui;
+    onut::GamePad::eGamePad buyButton;
+};
+
 class GameView : public seed::View, public micropather::Graph
 {
 public:
@@ -78,6 +92,9 @@ public:
 
     void ShowStore();
     void HideStore();
+
+    Stockpile* GetStockpile() const { return m_pStockpile; }
+    Entity* Buy(StoreItemType item);
 
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc

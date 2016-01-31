@@ -8,26 +8,6 @@
 #include <sstream>
 #include <iomanip>
 
-enum class StoreItemType
-{
-    Scarecrow,
-    Stone
-};
-
-struct StoreItem
-{
-    StoreItemType type;
-    int wood;
-    int rock;
-    std::string ui;
-    onut::GamePad::eGamePad buyButton;
-};
-
-static const std::vector<StoreItem> store = {
-    {StoreItemType::Scarecrow, 3, 0, "scarecrow", OABtn},
-    {StoreItemType::Scarecrow, 0, 2, "stone", OXBtn}
-};
-
 Stockpile::Stockpile(seed::View* pView, int x, int y)
     : m_pView(pView)
 {
@@ -83,23 +63,29 @@ Stockpile::~Stockpile()
 {
 }
 
+bool Stockpile::IsAround(Player* pPlayer) const
+{
+    if (!pPlayer) return false;
+    auto& playerPos = pPlayer->GetPosition();
+    auto& myPos = GetPosition();
+    return  playerPos.x >= myPos.x - 1.5f &&
+            playerPos.y >= myPos.y - 1.f &&
+            playerPos.x <= myPos.x + 1.5f &&
+            playerPos.y <= myPos.y + 1.f;
+}
+
 void Stockpile::UpdateEntity()
 {
     bool bShowStore = false;
     auto& players = g_gameView->GetPlayers();
     for (auto pPlayer : players)
     {
-        if (pPlayer)
+        if (IsAround(pPlayer))
         {
-            auto& playerPos = pPlayer->GetPosition();
-            auto& myPos = GetPosition();
-            if (playerPos.x >= myPos.x - 1.5f &&
-                playerPos.y >= myPos.y - 1.f &&
-                playerPos.x <= myPos.x + 1.5f &&
-                playerPos.y <= myPos.y + 1.f)
+            bShowStore = true;
+            if (pPlayer->HasCarryOn())
             {
-                bShowStore = true;
-                if (pPlayer->HasCarryOn())
+                if (pPlayer->GetDropType() != DropType::INVALID)
                 {
                     auto dropType = pPlayer->GiveCarryOn();
                     resources[dropType]++;
@@ -107,7 +93,7 @@ void Stockpile::UpdateEntity()
                     {
                         OPlaySound("RitualSFX_Stone_Collect.wav");
                         m_pRockSprite->GetPositionAnim().startKeyframed(Vector2(8, 4),
-                            {OAnimAppleStyleBounce(Vector2(8, 4), Vector2(8, -2))});
+                        {OAnimAppleStyleBounce(Vector2(8, 4), Vector2(8, -2))});
                         std::stringstream ss;
                         ss << std::setw(2) << std::setfill('0') << resources[dropType];
                         m_pRockText->SetCaption(ss.str());
@@ -116,7 +102,7 @@ void Stockpile::UpdateEntity()
                     {
                         OPlaySound("RitualSFX_Wood_Collect.wav");
                         m_pWoodSprite->GetPositionAnim().startKeyframed(Vector2(22, 4),
-                            {OAnimAppleStyleBounce(Vector2(22, 4), Vector2(22, -2))});
+                        {OAnimAppleStyleBounce(Vector2(22, 4), Vector2(22, -2))});
                         std::stringstream ss;
                         ss << std::setw(2) << std::setfill('0') << resources[dropType];
                         m_pWoodText->SetCaption(ss.str());

@@ -8,6 +8,8 @@ namespace seed
     class SpriteString;
 };
 
+class Player;
+
 class Stockpile : public Entity
 {
 public:
@@ -20,6 +22,8 @@ public:
     virtual void UpdateEntity() override;
 
     std::unordered_map<DropType, int> resources;
+
+    bool IsAround(Player* pPlayer) const;
 
 private:
     seed::View* m_pView = nullptr;
