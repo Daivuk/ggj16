@@ -255,8 +255,8 @@ void Player::Attack()
                 Tree* tree = dynamic_cast<Tree*>(e);
                 if (tree)
                 {
+                    distClosest = dist;
                     pClosest = tree;
-                    pClosest = rock;
                     continue;
                 }
             }

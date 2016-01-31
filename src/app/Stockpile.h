@@ -1,5 +1,12 @@
 #pragma once
 #include "Entity.h"
+#include <unordered_map>
+#include "Globals.h"
+
+namespace seed
+{
+    class SpriteString;
+};
 
 class Stockpile : public Entity
 {
@@ -12,6 +19,14 @@ public:
 
     virtual void UpdateEntity() override;
 
+    std::unordered_map<DropType, int> resources;
+
 private:
     seed::View* m_pView = nullptr;
+    seed::Sprite* m_pRockSprite = nullptr;
+    seed::Sprite* m_pWoodSprite = nullptr;
+    seed::SpriteString* m_pRockText = nullptr;
+    seed::SpriteString* m_pWoodText = nullptr;
+
+    bool m_bSomeoneAround = false;
 };
