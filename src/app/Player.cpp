@@ -249,9 +249,24 @@ void Player::UpdateVel()
     const float fireplaceRadius = .5f;
     if ((fire->GetPosition() - GetPosition()).LengthSquared() < fireplaceRadius * fireplaceRadius)
     {
+        // loose health
+        m_health -= 1;
+        if (m_health < 0) m_health = 0;
+
+        
         // this player dies
-        m_physicsBody->SetTransform(fire->GetPosition(), 0);
-        OnSacrifice();
+        if (m_health <= 0)
+        {
+            m_physicsBody->SetTransform(fire->GetPosition(), 0);
+            OnSacrifice();
+        }
+        else
+        {
+            if (!m_healthAnim.isPlaying())
+            {
+                m_damageSound->Play();
+            }
+        }
     }
 }
 
