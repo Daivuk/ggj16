@@ -182,6 +182,74 @@
     <frame id="176"/>
   </anim>
   <anim name="idle_up3" fps="6" loop="true">
-    <frame id="182"/>
+    <frame id="184"/>
+  </anim>
+
+  <anim name="dance00" fps="6" loop="true">
+    <frame id="192"/>
+    <frame id="193"/>
+  </anim>
+  <anim name="dance10" fps="6" loop="true">
+    <frame id="194"/>
+    <frame id="195"/>
+  </anim>
+  <anim name="dance20" fps="6" loop="true">
+    <frame id="196"/>
+    <frame id="197"/>
+  </anim>
+  <anim name="dance30" fps="6" loop="true">
+    <frame id="198"/>
+    <frame id="199"/>
+  </anim>
+
+  <anim name="dance01" fps="6" loop="true">
+    <frame id="200"/>
+    <frame id="201"/>
+  </anim>
+  <anim name="dance11" fps="6" loop="true">
+    <frame id="202"/>
+    <frame id="203"/>
+  </anim>
+  <anim name="dance21" fps="6" loop="true">
+    <frame id="204"/>
+    <frame id="205"/>
+  </anim>
+  <anim name="dance31" fps="6" loop="true">
+    <frame id="206"/>
+    <frame id="207"/>
+  </anim>
+
+  <anim name="dance02" fps="6" loop="true">
+    <frame id="208"/>
+    <frame id="209"/>
+  </anim>
+  <anim name="dance12" fps="6" loop="true">
+    <frame id="210"/>
+    <frame id="211"/>
+  </anim>
+  <anim name="dance22" fps="6" loop="true">
+    <frame id="212"/>
+    <frame id="213"/>
+  </anim>
+  <anim name="dance32" fps="6" loop="true">
+    <frame id="214"/>
+    <frame id="215"/>
+  </anim>
+
+  <anim name="dance03" fps="6" loop="true">
+    <frame id="216"/>
+    <frame id="217"/>
+  </anim>
+  <anim name="dance13" fps="6" loop="true">
+    <frame id="218"/>
+    <frame id="219"/>
+  </anim>
+  <anim name="dance23" fps="6" loop="true">
+    <frame id="220"/>
+    <frame id="221"/>
+  </anim>
+  <anim name="dance33" fps="6" loop="true">
+    <frame id="222"/>
+    <frame id="223"/>
   </anim>
 </sheet>

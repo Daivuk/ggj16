@@ -9,7 +9,7 @@
 #define FIREPLACE_SPRITESCALE_FX (Vector2(SPRITE_SCALE,SPRITE_SCALE) * .2f)
 
 // balancing stuff
-#define DIMINISHING_FACTOR 0.2f
+#define DIMINISHING_FACTOR 0.4f
 #define GROWING_FACTOR 2.f
 
 

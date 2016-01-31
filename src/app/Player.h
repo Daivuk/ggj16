@@ -107,5 +107,6 @@ private:
 
     float   m_lastHealthValue = 100.f;
     OAnim<float>    m_healthAnim;
+    bool m_isDancing = false;
 
 };
