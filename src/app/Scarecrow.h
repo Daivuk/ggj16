@@ -1,6 +1,11 @@
 #pragma once
 #include "Entity.h"
 
+namespace seed
+{
+    class Emitter;
+};
+
 class Scarecrow : public Entity
 {
 public:
@@ -13,4 +18,5 @@ public:
 private:
     seed::View* m_pView = nullptr;
     seed::Sprite* m_pSprite = nullptr;
+    seed::Emitter* m_pEmitters[1];
 };
