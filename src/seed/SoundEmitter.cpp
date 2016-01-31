@@ -144,7 +144,10 @@ namespace seed
     {
         if (m_isCue)
         {
-            OPlaySoundCue(m_source.c_str(), m_volume * m_volumeFactor, m_balance);
+            if (m_source.length() > 0)
+            {
+                OPlaySoundCue(m_source.c_str(), m_volume * m_volumeFactor, m_balance);
+            }
             return;
         }
         else if (m_randomFiles.size())

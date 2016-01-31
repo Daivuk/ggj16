@@ -427,6 +427,10 @@ namespace seed
         {
             m_nodePool.dealloc(in_node);
         }
+        else
+        {
+            delete in_node;
+        }
     }
 
     void View::DeleteChildNodes(NodeVect& in_childVect)

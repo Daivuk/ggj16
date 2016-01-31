@@ -5,6 +5,7 @@
 
 Rock::Rock(seed::View *pView, const Vector2& in_position)
 {
+    m_health = 5;
     SetPosition(in_position);
 
     auto pSprite = pView->CreateSprite("rock.png");

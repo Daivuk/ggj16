@@ -46,11 +46,11 @@ void DanceMove::Show(float in_time, Entity* in_entity, seed::View* in_container)
 
 void DanceMove::Hide()
 {
-    for (seed::Sprite* s : m_displayedButtons)
+    for (size_t i = 0; i < m_displayedButtons.size(); ++i )
     {
         //s->GetColorAnim().startFromCurrentKeyframed(
         //{ Color(1.f, 1.f, 1.f, 0.f), .3f, OLinear, HideAnimEnded }, ODontLoop);
-        m_container->DeleteNode(s);
+        m_container->DeleteNode(m_displayedButtons[i]);
     }
     m_displayedButtons.clear();
 }

@@ -14,7 +14,8 @@ enum class MonsterState
     IDLE,
     GO_TO,
     ATTACK,
-    AFTER_DAMAGE_PUSH
+    AFTER_DAMAGE_PUSH,
+    DEAD
 };
 
 class Monster : public Entity
@@ -48,7 +49,10 @@ private:
     MonsterState m_previousState = MonsterState::IDLE;
 
 
-    seed::Sprite*           m_damageBlood;
-    seed::SoundEmitter*     m_damageSound;
+    seed::Sprite*           m_damageBlood = nullptr;
+    seed::SoundEmitter*     m_damageSound = nullptr;
+    seed::SoundEmitter*     m_deathSound = nullptr;
     OAnim<Vector2> m_velPushAnim;
+    
+    void OnDeath();
 };

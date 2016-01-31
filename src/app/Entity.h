@@ -20,11 +20,10 @@ public:
 protected:
     bool m_collide = false;
     float m_collisionRadius = .25f;
+    float   m_health = 100;
 
 private:
     bool PerformWallCollisions(const Vector2& from, Vector2& toOut);
 
     Vector2 m_lastPosition;
-
-    float   m_health = 100;
 };

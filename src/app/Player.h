@@ -17,6 +17,15 @@ enum class ePlayerDirection
     DOWN
 };
 
+enum class PlayerState
+{
+    IDLE,
+    PEDESTRAL,
+    ATTACKING,
+    CARYING_WOOD,
+    CARYING_ROCKS,
+};
+
 class Player : public Entity
 {
 public:
@@ -35,6 +44,7 @@ public:
     void                    ResetInputSequence();
     void                    OnPedestralLockedIn(DancePedestral* in_pedestral);
     void                    OnPedestralLockCancel();
+    void                    DropCarryOn();
 
     virtual float   GetWidth() const { return .5f; }
     virtual float   GetHeight() const { return .5f; }
@@ -49,7 +59,7 @@ private:
     std::string     m_idleAnim;
     Vector2         m_thumb;
     Vector2         m_vel;
-    bool            m_isOnPedestral = false;
+    Entity*         m_pCarryOn = nullptr;
     
 
     DanceMoveButtonVect m_inputSequence; // accumulated button sequence
@@ -67,6 +77,6 @@ private:
     seed::SoundEmitter* m_slashSoundEmmiter = nullptr;
 
     ePlayerDirection m_currentDirection = ePlayerDirection::DOWN;
-
-
+    PlayerState m_playerState = PlayerState::IDLE;
+    OTimer m_stateTimer;
 };

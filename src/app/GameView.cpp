@@ -332,14 +332,14 @@ void GameView::KillEntity( Entity* in_toKill )
 }
 void GameView::ClearEntities()
 {
-    for (Entity* e : m_entitiesToKill)
+    for (size_t i = 0; i < m_entitiesToKill.size(); ++i)
     {
         for (auto it = m_entities.begin(); it != m_entities.end();)
         {
-            if ((*it) == e)
+            if ((*it) == m_entitiesToKill[i])
             {
                 it = m_entities.erase(it);
-                DeleteNode(e);
+                DeleteNode(m_entitiesToKill[i]);
                 break;
             }
             else
@@ -348,6 +348,7 @@ void GameView::ClearEntities()
             }
         }
     }
+    m_entitiesToKill.clear();
 }
 
 void GameView::KillAllMonsters()
