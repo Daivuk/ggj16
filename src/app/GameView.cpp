@@ -294,6 +294,8 @@ void GameView::UpdateCamera()
     Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
     Vector2 maxPlayer(0.f);
 
+    if (m_players.empty()) return;
+
     for (auto pPlayer : m_players)
     {
         minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
@@ -404,7 +406,7 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
         case TimeOfDay::Day:
             break;
         case TimeOfDay::Dusk:   // soir commence
-            m_pMusic->Play("RitualMusicAmbient.mp3", 0.5f);
+            m_pMusic->Play("RitualMusicAmbient.mp3");
             break;
         case TimeOfDay::Dawn:   // matin commence
             KillAllMonsters();
@@ -579,7 +581,7 @@ void GameView::SpawnPlayers()
 {
     for (int i = 0; i < 4; ++i)
     {
-        if (OGamePad(i)->isConnected())
+        if (g_activePlayer[i])
         {
             Player* player = new Player();
             // todo pass in what "skin" used
