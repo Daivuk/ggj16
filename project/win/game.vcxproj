@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\src\app\DanceMove.cpp" />
     <ClCompile Include="..\..\src\app\DancePedestral.cpp" />
     <ClCompile Include="..\..\src\app\DanceSequence.cpp" />
+    <ClCompile Include="..\..\src\app\Drop.cpp" />
     <ClCompile Include="..\..\src\app\Entity.cpp" />
     <ClCompile Include="..\..\src\app\Fireplace.cpp" />
     <ClCompile Include="..\..\src\app\GameOverView.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="..\..\src\app\DanceMove.h" />
     <ClInclude Include="..\..\src\app\DancePedestral.h" />
     <ClInclude Include="..\..\src\app\DanceSequence.h" />
+    <ClInclude Include="..\..\src\app\Drop.h" />
     <ClInclude Include="..\..\src\app\Entity.h" />
     <ClInclude Include="..\..\src\app\Fireplace.h" />
     <ClInclude Include="..\..\src\app\GameOverView.h" />

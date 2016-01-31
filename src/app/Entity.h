@@ -26,6 +26,4 @@ private:
     bool PerformWallCollisions(const Vector2& from, Vector2& toOut);
 
     Vector2 m_lastPosition;
-
-    
 };

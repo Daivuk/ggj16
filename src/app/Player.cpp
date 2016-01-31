@@ -6,6 +6,9 @@
 #include "GameView.h"
 #include "Tile.h"
 #include "Monster.h"
+#include "Rock.h"
+#include "Tree.h"
+#include "Drop.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -66,7 +69,7 @@ void Player::OnRender()
 void Player::UpdateVel()
 {
     const float maxSpeed = 5.f;
-    if (m_thumb.LengthSquared() == 0 || m_isOnPedestral)
+    if (m_thumb.LengthSquared() == 0 || m_playerState == PlayerState::PEDESTRAL)
     {
         // not pressing anything or on a dance pedestral, slowly decellerate
         m_vel = Vector2(0,0);
@@ -150,6 +153,8 @@ void Player::UpdateSpriteAnim()
 
 void Player::Attack()
 {
+    m_playerState = PlayerState::ATTACKING;
+
     // attack
     m_slashSoundEmmiter->Play();
     m_slash->SetVisible(true);
@@ -189,19 +194,73 @@ void Player::Attack()
         attackOffset = Vector2(0, 1);
     }
 
+    m_stateTimer.start(.2f, [this]{m_playerState = PlayerState::IDLE; });
 
     // check if we hit enemies
-    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position, 2.f);
+    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position + attackOffset * .5f, 1.0f);
     int nbMonster = 0;
+    bool bEnemyHit = false;
     for (Entity* e : enemies)
     {
         Monster* monster = dynamic_cast<Monster*>(e);
         if (monster)
         {
+            bEnemyHit = true;
             monster->InflictDamage(100);
             Vector2 dir = monster->GetPosition() - m_position;
             dir.Normalize();
             monster->AfterDamagePush(dir);
+        }
+    }
+
+    if (!bEnemyHit)
+    {
+        // Get the closest
+        Entity* pClosest = nullptr;
+        float distClosest = 10000.f;
+        for (Entity* e : enemies)
+        {
+            float dist = Vector2::DistanceSquared(e->GetPosition(), GetPosition());
+            if (dist < distClosest)
+            {
+                Rock* rock = dynamic_cast<Rock*>(e);
+                if (rock)
+                {
+                    distClosest = dist;
+                    pClosest = rock;
+                    continue;
+                }
+                Tree* tree = dynamic_cast<Tree*>(e);
+                if (tree)
+                {
+                    pClosest = tree;
+                    pClosest = rock;
+                    continue;
+                }
+            }
+        }
+        if (pClosest)
+        {
+            if (pClosest->InflictDamage(1))
+            {
+                Rock* rock = dynamic_cast<Rock*>(pClosest);
+                Tree* tree = dynamic_cast<Tree*>(pClosest);
+                if (rock)
+                {
+                    m_stateTimer.stop();
+                    m_playerState = PlayerState::CARYING_ROCKS;
+                    m_pCarryOn = new Drop(m_container, DropType::Rock);
+                    Attach(m_pCarryOn);
+                }
+                else if (tree)
+                {
+                    m_stateTimer.stop();
+                    m_playerState = PlayerState::CARYING_WOOD;
+                    m_pCarryOn = new Drop(m_container, DropType::Wood);
+                    Attach(m_pCarryOn);
+                }
+                g_gameView->KillEntity(pClosest);
+            }
         }
     }
 }
@@ -223,7 +282,7 @@ void Player::UpdateInputs()
         m_thumb.Normalize();
     }
 
-    if (m_isOnPedestral)
+    if (m_playerState == PlayerState::PEDESTRAL)
     {
         DanceMoveButtonVect& buttons = DanceSequence::GetPossibleButtons();
         for (size_t i = 0, size = buttons.size(); i < size; ++i)
@@ -241,16 +300,29 @@ void Player::UpdateInputs()
             m_slash->SetVisible(false);
         }
 
-        if (OGamePadJustPressed(OABtn, m_controllerIndex))
+        if (m_playerState == PlayerState::IDLE)
         {
-            Attack();
+            if (OGamePadJustPressed(OABtn, m_controllerIndex))
+            {
+                Attack();
+            }
+        }
+        else if (m_pCarryOn)
+        {
+            if (OGamePadJustPressed(OABtn, m_controllerIndex) ||
+                OGamePadJustPressed(OBBtn, m_controllerIndex) ||
+                OGamePadJustPressed(OXBtn, m_controllerIndex) ||
+                OGamePadJustPressed(OYBtn, m_controllerIndex))
+            {
+                DropCarryOn();
+            }
         }
     }
 }
 
 void Player::UpdatePedestralSnap()
 {
-    if (!m_isOnPedestral && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() == 0.f)
+    if (m_playerState != PlayerState::PEDESTRAL && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() == 0.f)
     {
         // check if we should snap to a apedestral
         Tile* tile = g_gameView->GetTileAt(m_position);
@@ -267,7 +339,7 @@ void Player::UpdatePedestralSnap()
             }
         }
     }
-    else if (m_isOnPedestral && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() >= .9f)
+    else if (m_playerState == PlayerState::PEDESTRAL && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() >= .9f)
     {
         // player want to leave the dance
         OnPedestralLockCancel();
@@ -276,18 +348,27 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    m_stateTimer.stop();
+    DropCarryOn();
+    m_playerState = PlayerState::PEDESTRAL;
     m_container->GetPhysicsForNode(this)->SetTransform(in_pedestral->GetPosition(), 0);
     m_sprite->SetSpriteAnim("idle_down");
-    m_isOnPedestral = true;
     in_pedestral->m_isOccupied = true;
     m_currentDancePedestral = in_pedestral;
+}
+
+void Player::DropCarryOn()
+{
+    if (!m_pCarryOn) return;
+    m_pCarryOn->SetPosition(GetPosition());
+    g_gameView->AddEntity(m_pCarryOn);
 }
 
 void Player::OnPedestralLockCancel()
 {
     if (m_currentDancePedestral)
     {
-        m_isOnPedestral = false;
+        m_playerState = PlayerState::IDLE;
         m_currentDancePedestral->m_isOccupied = false;
         m_currentDancePedestral = nullptr;
     }
