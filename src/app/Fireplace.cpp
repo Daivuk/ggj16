@@ -17,6 +17,12 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     //m_sprite->SetScale(FIREPLACE_SPRITESCALE);
     //m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
 
+    auto pBase = pView->CreateSprite("light.png");
+    pBase->SetBlend(onut::SpriteBatch::eBlendMode::Add);
+    pBase->SetScale(Vector2(2.11f, .86f) * FIREPLACE_SPRITESCALE / 6.f);
+    pBase->SetColor(Color(118.f / 255.f, 240.f / 255.f, 21.f / 255.f, 1));
+    Attach(pBase);
+
     auto pFireplaceSprite = pView->CreateSprite("fireplace.png");
     pFireplaceSprite->SetScale(FIREPLACE_SPRITESCALE);
     pFireplaceSprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
@@ -33,12 +39,14 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 
     m_fireFX1 = pView->CreateEmitter("FirePitFX1.pex");
     m_fireFX1->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fireFX1->SetBlend(onut::SpriteBatch::eBlendMode::Add);
     m_fireFX1->SetEmitWorld(false);
     m_fireFX1->SetScale(FIREPLACE_SPRITESCALE_FX);
     Attach(m_fireFX1);
 
     m_fireFX2 = pView->CreateEmitter("FirePitFX2.pex");
     m_fireFX2->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fireFX1->SetBlend(onut::SpriteBatch::eBlendMode::Add);
     m_fireFX2->SetEmitWorld(false);
     m_fireFX2->SetScale(FIREPLACE_SPRITESCALE_FX);
     Attach(m_fireFX2);
