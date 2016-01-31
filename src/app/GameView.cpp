@@ -108,7 +108,14 @@ void GameView::CreateMusic()
 void GameView::OnUpdate()
 {
     if (m_gameover)
+    {
+        if (!m_fadeQuad->GetColorAnim().isPlaying())
+        {
+            // we are done
+            SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+        }
         return;
+    }
 
     UpdateTime();
     UpdateDanceSequence();
@@ -826,11 +833,14 @@ void GameView::GrowFire()
 void GameView::OnGameOver()
 {
     StopDanceSequence();
-
-    // todo cleanup
-
     m_gameover = true;
-    SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+
+    // start fading the quad anim
+    m_fadeQuad = CreateSprite("healthGaugeFill.png");
+    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 1.f), 5.f);
+    m_fadeQuad->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fadeQuad->SetScale(Vector2(100, 100));
+    AddNode(m_fadeQuad);
 }
 
 bool GameView::AllPlayersAreDead()
