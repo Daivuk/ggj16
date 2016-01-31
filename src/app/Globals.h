@@ -60,3 +60,5 @@ enum class DropType
     Wood,
     Rock,
 };
+
+extern bool g_activePlayer[4];

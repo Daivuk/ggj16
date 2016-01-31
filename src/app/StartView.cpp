@@ -1,6 +1,9 @@
 #include "StartView.h"
 #include "Emitter.h"
 #include "Sprite.h"
+#include "Globals.h"
+
+bool g_activePlayer[4];
 
 StartView::StartView()
 {
@@ -37,7 +40,7 @@ void StartView::CreateDude(seed::Node* pParent, int id)
     m_dudes[id]->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_dudes[id]->SetColor(Color::Black);
 
-    m_activePlayer[id] = false;
+    g_activePlayer[id] = false;
 }
 
 void StartView::OnUpdate()
@@ -47,12 +50,12 @@ void StartView::OnUpdate()
         auto pGamePad = OGamePad(i);
         if (!pGamePad->isConnected())
         {
-            m_activePlayer[i] = false;
+            g_activePlayer[i] = false;
         }
         else if (OGamePadJustPressed(OABtn, i))
         {
-            m_activePlayer[i] = !m_activePlayer[i];
-            if (m_activePlayer[i])
+            g_activePlayer[i] = !g_activePlayer[i];
+            if (g_activePlayer[i])
             {
                 m_dudes[i]->GetPositionAnim().startKeyframed(
                     Vector2(0, -3),
@@ -61,7 +64,7 @@ void StartView::OnUpdate()
                     });
             }
         }
-        if (m_activePlayer[i])
+        if (g_activePlayer[i])
         {
             m_dudes[i]->SetColor(Color::White);
         }
@@ -71,7 +74,7 @@ void StartView::OnUpdate()
         }
     }
 
-    if (m_activePlayer[0] && OGamePadJustPressed(OStartBtn, 0))
+    if (g_activePlayer[0] && OGamePadJustPressed(OStartBtn, 0))
     {
         SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameView");
     }

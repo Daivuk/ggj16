@@ -7,7 +7,12 @@
 void GameOverView::OnShow()
 {
     Load("../../assets/views/gameover.xml");
-    ((seed::Video*)FindNode("video"))->Play();
+
+    auto pVideo = ((seed::Video*)FindNode("video"));
+
+    pVideo->SetVolume(0.f);
+    pVideo->Play();
+
     ((seed::Emitter*)FindNode("fire1"))->Start();
     ((seed::Emitter*)FindNode("fire2"))->Start();
 }
