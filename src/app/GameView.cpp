@@ -160,6 +160,7 @@ Entity* GameView::Buy(StoreItemType item)
     {
         m_pStockpile->resources[kv.first] -= kv.second;
     }
+    m_pStockpile->UpdateTexts();
 
     // Create a new entity, give it to player
     switch (item)
@@ -171,6 +172,8 @@ Entity* GameView::Buy(StoreItemType item)
             return new Stone(this);
             break;
     }
+
+    return nullptr;
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -708,6 +711,11 @@ void GameView::SpawnMonster()
 eTile GameView::GetTileIdAt(const Vector2& position) const
 {
     return (eTile)m_pTilemap->getTileAt(m_pTileLayer, (int)position.x, (int)position.y);
+}
+
+void GameView::SetTileIdAt(const Vector2& position, eTile tileId)
+{
+    m_pTilemap->setTileAt(m_pTileLayer, (int)position.x, (int)position.y, (int)tileId);
 }
 
 Tile *GameView::GetTileAt(const Vector2& position) const

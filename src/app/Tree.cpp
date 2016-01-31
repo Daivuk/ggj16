@@ -8,7 +8,7 @@ Tree::Tree(seed::View *pView, const Vector2& in_position)
     m_health = 5;
     SetPosition(in_position);
 
-    m_pSprite = pView->CreateSprite("tree.png");
+    m_pSprite = pView->CreateSprite("tree" + std::to_string(onut::randi()% 3) + ".png");
     m_pSprite->SetAlign(Vector2(.5f, 0.875f));
     m_pSprite->SetScale(Vector2(SPRITE_SCALE));
     m_pSprite->SetPosition(Vector2(0, .25f) * SPRITE_SCALE);
