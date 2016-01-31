@@ -22,22 +22,25 @@ void DanceMove::Show(float in_time, Entity* in_entity, seed::View* in_container)
     {
         seed::Sprite* sprite = CreateSpriteForButton(button);
         m_displayedButtons.push_back(sprite);
+        sprite->GetPositionAnim().start(Vector2(0, 0), Vector2(nextX, -1.5f), .4f, OEaseOut);
 
-        sprite->GetPositionAnim().startKeyframed(
-        Vector2(0, 0),
-        {
-            { Vector2(nextX, -1.5f), .4f, OEaseOut },
-            OAnimWait(Vector2(nextX, -1.5f), timeToDisplayMove - .4f),
-            { Vector2(nextX, -2.5f), .4f, OLinear },
-        });
-        sprite->GetScaleAnim().start(Vector2(0, 0), Vector2(SPRITE_SCALE, SPRITE_SCALE) * .4f, .4f, OEaseOut);
-        sprite->GetColorAnim().startKeyframed(
-        Color(1.f, 1.f, 1.f, 0.f),
-        {
-            { Color(1.f, 1.f, 1.f, 1.f), .4f, OEaseOut },
-            OAnimWait(Color(1.f, 1.f, 1.f, 1.f), timeToDisplayMove - .4f),
-            { Color(1.f, 1.f, 1.f, 0.f), .4f, OLinear },
-        });
+
+        //sprite->GetPositionAnim().startKeyframed(
+        //Vector2(0, 0),
+        //{
+        //    { Vector2(nextX, -1.5f), .4f, OEaseOut },
+        //    OAnimWait(Vector2(nextX, -1.5f), timeToDisplayMove - .4f),
+        //    { Vector2(nextX, -2.5f), .4f, OLinear },
+        //});
+        sprite->GetScaleAnim().start(Vector2(0, 0), Vector2(SPRITE_SCALE, SPRITE_SCALE) * .8f, .4f, OEaseOut);
+        sprite->GetColorAnim().start(Color(1.f, 1.f, 1.f, 0.f), Color(1.f, 1.f, 1.f, 1.f), .4f);
+        //sprite->GetColorAnim().startKeyframed(
+        //Color(1.f, 1.f, 1.f, 0.f),
+        //{
+        //    { Color(1.f, 1.f, 1.f, 1.f), .4f, OEaseOut },
+        //    OAnimWait(Color(1.f, 1.f, 1.f, 1.f), timeToDisplayMove - .4f),
+        //    { Color(1.f, 1.f, 1.f, 0.f), .4f, OLinear },
+        //});
         in_entity->Attach(sprite);
 
         nextX += buttonWidth;
@@ -48,11 +51,31 @@ void DanceMove::Hide()
 {
     for (size_t i = 0; i < m_displayedButtons.size(); ++i )
     {
-        //s->GetColorAnim().startFromCurrentKeyframed(
-        //{ Color(1.f, 1.f, 1.f, 0.f), .3f, OLinear, HideAnimEnded }, ODontLoop);
+        seed::Sprite* s = m_displayedButtons[i];
+
+        s->GetColorAnim().startFromCurrent(Color(1, 1, 1, 0), .5f);
+        s->GetScaleAnim().startFromCurrent(s->GetScale() * 1.5f, .5f);
+        s->GetPositionAnim().startFromCurrent(s->GetPosition() - Vector2(0,1), .5f);
+    }
+}
+
+bool DanceMove::IsDoneHiding()
+{
+    for (size_t i = 0; i < m_displayedButtons.size(); ++i)
+    {
+        if (m_displayedButtons[i]->GetColorAnim().isPlaying())
+        {
+            return false;
+        }
+    }
+
+    // if we're here it means we are done
+    for (size_t i = 0; i < m_displayedButtons.size(); ++i)
+    {
         m_container->DeleteNode(m_displayedButtons[i]);
     }
     m_displayedButtons.clear();
+    return true;
 }
 
 bool DanceMove::IsNailed(DanceMoveButtonVect& in_playerInputs, int in_playerControllerIndex)
@@ -116,42 +139,22 @@ seed::Sprite* DanceMove::CreateSpriteForButton(onut::GamePad::eGamePad in_button
     {
         case OABtn:
         {
-            result = m_container->CreateSprite("button_a.png");
+            result = m_container->CreateSprite("fire_button_a.png");
             break;
         }
         case OBBtn:
         {
-            result = m_container->CreateSprite("button_b.png");
+            result = m_container->CreateSprite("fire_button_b.png");
             break;
         }
         case OXBtn:
         {
-            result = m_container->CreateSprite("button_x.png");
+            result = m_container->CreateSprite("fire_button_x.png");
             break;
         }
         case OYBtn:
         {
-            result = m_container->CreateSprite("button_y.png");
-            break;
-        }
-        case OLBBtn:
-        {
-            result = m_container->CreateSprite("button_lb.png");
-            break;
-        }
-        case ORBBtn:
-        {
-            result = m_container->CreateSprite("button_rb.png");
-            break;
-        }
-        case ORTBtn:
-        {
-            result = m_container->CreateSprite("button_rt.png");
-            break;
-        }
-        case OLTBtn:
-        {
-            result = m_container->CreateSprite("button_lt.png");
+            result = m_container->CreateSprite("fire_button_y.png");
             break;
         }
     }

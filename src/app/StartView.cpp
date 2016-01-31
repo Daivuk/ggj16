@@ -1,7 +1,9 @@
 #include "StartView.h"
+#include "Emitter.h"
 #include "Sprite.h"
-#include "SpriteString.h"
-#include "Button.h"
+#include "Globals.h"
+
+bool g_activePlayer[4];
 
 StartView::StartView()
 {
@@ -15,75 +17,65 @@ StartView::~StartView()
 
 void StartView::OnShow()
 {
-    seed::Sprite* spriteButton = CreateSprite("button.png");
-    spriteButton->SetPosition(Vector2(OScreenCenterXf, OScreenCenterYf - 70.f));
-    AddNode(spriteButton);
-    seed::SpriteString* label = CreateSpriteString("cartoon.fnt");
-    AddNode(label, spriteButton);
-    label->SetCaption("START GAME");
-    label->SetColor(Color(1.f,.5f,0.f));
-    label->SetScale( Vector2(.5f, .5f) );
-    seed::Button* startButton = AddButton(spriteButton, "start");
+    Load("../../assets/views/playerselectview.xml");
+    ((seed::Emitter*)FindNode("fire1"))->Start();
+    ((seed::Emitter*)FindNode("fire2"))->Start();
 
-    spriteButton = CreateSprite("button.png");
-    spriteButton->SetPosition(Vector2(OScreenCenterXf, OScreenCenterYf + 70.f));
-    AddNode(spriteButton);
-    label = CreateSpriteString("cartoon.fnt");
-    label->SetCaption("QUIT");
-    label->SetColor(Color(1.f, .5f, 0.f));
-    label->SetScale(Vector2(.5f, .5f));
-    AddNode(label, spriteButton);
-    AddButton(spriteButton, "quit");
-
-    FocusButton(startButton);
-    SetDefaultFocusedButton(startButton);
+    CreateDude(FindNode("ped0"), 0);
+    CreateDude(FindNode("ped1"), 1);
+    CreateDude(FindNode("ped2"), 2);
+    CreateDude(FindNode("ped3"), 3);
 }
 
 void StartView::OnHide()
 {
 }
 
-void StartView::OnButtonDown(seed::Button* in_button)
+void StartView::CreateDude(seed::Node* pParent, int id)
 {
-    seed::Sprite* buttonSprite = in_button->GetSprite();
-    buttonSprite->GetScaleAnim().startKeyframed(
-        Vector2(1, 1),
+    m_dudes[id] = CreateSpriteWithSpriteAnim("guruAnims.spriteanim", "idle_down" + std::to_string(id));
+    pParent->Attach(m_dudes[id]);
+    m_dudes[id]->SetScale(Vector2(.75f));
+    m_dudes[id]->SetPosition(Vector2(0, -3));
+    m_dudes[id]->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_dudes[id]->SetColor(Color::Black);
+
+    g_activePlayer[id] = false;
+}
+
+void StartView::OnUpdate()
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        auto pGamePad = OGamePad(i);
+        if (!pGamePad->isConnected())
         {
-            { Vector2(1.2f, 1.2f), .2f, OSpringOut },
-        });
+            g_activePlayer[i] = false;
+        }
+        else if (OGamePadJustPressed(OABtn, i))
+        {
+            g_activePlayer[i] = !g_activePlayer[i];
+            if (g_activePlayer[i])
+            {
+                m_dudes[i]->GetPositionAnim().startKeyframed(
+                    Vector2(0, -3),
+                    {
+                        {Vector2(0, -3), 0.f, OTeleport}, {Vector2(0, -5), .15f, OEaseOut}, {Vector2(0, -3), .3f, OBounceOut}
+                    });
+            }
+        }
+        if (g_activePlayer[i])
+        {
+            m_dudes[i]->SetColor(Color::White);
+        }
+        else
+        {
+            m_dudes[i]->SetColor(Color::Black);
+        }
+    }
 
-}
-
-void StartView::OnButtonUp(seed::Button* in_button)
-{
-    seed::Sprite* buttonSprite = in_button->GetSprite();
-    buttonSprite->GetScaleAnim().startFromCurrent(Vector2(1, 1), .2f, OEaseOut);
-}
-
-void StartView::OnButtonFocused(seed::Button* in_button, int in_playerIndex)
-{
-    seed::Sprite* buttonSprite = in_button->GetSprite();
-    buttonSprite->GetColorAnim().startFromCurrent(Color(1.0f, 0, 0), .2f);
-}
-
-void StartView::OnButtonFocusLost(seed::Button* in_button, int in_playerIndex)
-{
-    seed::Sprite* buttonSprite = in_button->GetSprite();
-    buttonSprite->GetColorAnim().startFromCurrent(Color(1.0f, 1.0f, 1.0f), .2f);
-}
-
-
-bool StartView::OnCommand(const string& in_cmd)
-{
-    if (in_cmd == "start")
+    if (g_activePlayer[0] && OGamePadJustPressed(OStartBtn, 0))
     {
         SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameView");
-        return true;
     }
-    else if (in_cmd == "quit")
-    {
-        exit(0);
-        return true;
-    }
-    return false;
 }

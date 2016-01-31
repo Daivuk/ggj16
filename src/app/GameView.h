@@ -71,6 +71,7 @@ public:
     void        OnEntityMoved(Entity* pEntity);
 
     Player*     GetClosestPlayer(const Vector2& position) const;
+    Entity*     GetClosestPlayerAsSeenByMonster(const Vector2& position) const;
 
     vector<DancePedestral*>& GetPedestrals() { return m_pedestrals; }
     vector<Entity*>          GetEntitiesInRadius(const Vector2& in_pos, float in_radius);
@@ -90,6 +91,7 @@ public:
     void AddEntity(Entity* pEntity);
 
     const PlayerVect& GetPlayers() const { return m_players; }
+    const EntityVect& GetScarecrows() const { return m_scarecrows; }
 
     void ShowStore();
     void HideStore();
@@ -98,6 +100,8 @@ public:
     void OnPlayerSacrifice(Player* in_player);
     Stockpile* GetStockpile() const { return m_pStockpile; }
     Entity* Buy(StoreItemType item);
+
+    void SplatGore(const Vector2& pos);
 
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
@@ -119,6 +123,8 @@ private:
     void UpdateUIs();
 
     void ClearEntities();
+    void KillAllEntities();
+
     void StartDanceSequence();
     void StopDanceSequence();
     void OnTimeOfDayChanged(TimeOfDay timeOfDay);
@@ -139,7 +145,8 @@ private:
     DanceSequence*  m_activeDanceSequence = nullptr;
     
     EntityVect      m_entities;
-
+    EntityVect      m_scarecrows;
+    
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
     float           m_dayTime = NOON;
     int             m_day = 1;
@@ -160,6 +167,8 @@ private:
     OAnimf          m_storeAnim;
 
     bool AllPlayersAreDead();
+
+    seed::Sprite*       m_fadeQuad = nullptr;
 
 };
 

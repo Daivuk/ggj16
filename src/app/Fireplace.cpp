@@ -5,16 +5,28 @@
 
 #define MAX_RADIUS 10.f
 #define DEFAULT_RADIUS 6.f
-#define FIREPLACE_SPRITESCALE Vector2(SPRITE_SCALE)
+#define FIREPLACE_SPRITESCALE Vector2(SPRITE_SCALE,SPRITE_SCALE)
+#define FIREPLACE_SPRITESCALE_FX (Vector2(SPRITE_SCALE,SPRITE_SCALE) * .2f)
+
+// balancing stuff
+#define DIMINISHING_FACTOR 0.2f
+#define GROWING_FACTOR 2.f
+
 
 Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 {
     m_position = position;
 
-    m_sprite = pView->CreateSpriteWithSpriteAnim("fireplace.spriteanim", "fire1");
-    Attach(m_sprite);
-    m_sprite->SetScale(FIREPLACE_SPRITESCALE);
-    m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    //m_sprite = pView->CreateSpriteWithSpriteAnim("fireplace.spriteanim", "fire1");
+    //Attach(m_sprite);
+    //m_sprite->SetScale(FIREPLACE_SPRITESCALE);
+    //m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+
+    auto pBase = pView->CreateSprite("light.png");
+    pBase->SetBlend(onut::SpriteBatch::eBlendMode::Add);
+    pBase->SetScale(Vector2(2.11f, .86f) * FIREPLACE_SPRITESCALE / 6.f);
+    pBase->SetColor(Color(118.f / 255.f, 240.f / 255.f, 21.f / 255.f, 1));
+    Attach(pBase);
 
     auto pFireplaceSprite = pView->CreateSprite("fireplace.png");
     pFireplaceSprite->SetScale(FIREPLACE_SPRITESCALE);
@@ -29,6 +41,23 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 
     m_whispers = pView->CreateSoundEmitter("RitualSFX_WhispersInTheDarkness.wav");
     Attach(m_whispers);
+
+    m_fireFX1 = pView->CreateEmitter("FirePitFX1.pex");
+    m_fireFX1->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fireFX1->SetBlend(onut::SpriteBatch::eBlendMode::Add);
+    m_fireFX1->SetEmitWorld(false);
+    m_fireFX1->SetScale(FIREPLACE_SPRITESCALE_FX);
+    Attach(m_fireFX1);
+
+    m_fireFX2 = pView->CreateEmitter("FirePitFX2.pex");
+    m_fireFX2->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fireFX1->SetBlend(onut::SpriteBatch::eBlendMode::Add);
+    m_fireFX2->SetEmitWorld(false);
+    m_fireFX2->SetScale(FIREPLACE_SPRITESCALE_FX);
+    Attach(m_fireFX2);
+
+    m_fireFX1->Start();
+    m_fireFX2->Start();
 }
 
 Fireplace::~Fireplace()
@@ -37,8 +66,7 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    const float growingFactor = 2.f;
-    m_targetRadius += growingFactor;
+    m_targetRadius += GROWING_FACTOR;
     if (m_targetRadius > MAX_RADIUS)
     {
         m_targetRadius = MAX_RADIUS;
@@ -101,10 +129,8 @@ void Fireplace::UpdateEntity()
     
     if (!lightRadius.isPlaying() && g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
-        const float diminishingFactor = 0.2f;
-        
         // slowly diminish the fire
-        m_targetRadius -= diminishingFactor * ODT;
+        m_targetRadius -= DIMINISHING_FACTOR * ODT;
         lightRadius = m_targetRadius;
 
         if (m_targetRadius <= 0)
@@ -117,6 +143,7 @@ void Fireplace::UpdateEntity()
     }
 
     // if we are during the night, slowly reduce the fire's radius
-    Vector2 scale = lightRadius.get() / DEFAULT_RADIUS * FIREPLACE_SPRITESCALE;
-    m_sprite->SetScale(scale);
+    Vector2 scale = lightRadius.get() / DEFAULT_RADIUS * FIREPLACE_SPRITESCALE_FX;
+    m_fireFX1->SetScale(scale);
+    m_fireFX2->SetScale(scale);
 }

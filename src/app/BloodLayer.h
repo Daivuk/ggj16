@@ -8,6 +8,7 @@ public:
     virtual ~BloodLayer();
 
     virtual void Render(Matrix* in_parentMatrix = nullptr, float in_parentAlpha = 1.f) override;
+    void SplatGore(const Vector2& pos);
 
 private:
     OTexture* m_pGoreTexture = nullptr;

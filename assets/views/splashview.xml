@@ -1,0 +1,10 @@
+<View width="1280" height="748">
+    <Effect name="" zIndex="2147483647" x="640" y="374" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1">
+        <Sprite name="logo" zIndex="2147483647" x="0" y="0" scaleX="1.2677751" scaleY="1.2677751" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="GlobalGameJam2013_Welcome.png" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Filter type="blur" enabled="0" amount="16"/>
+        <Filter type="sepia" enabled="1" toneR="1.4" toneG="1.1" toneB="0.89999998" saturation="0.34" amount="0.76999998"/>
+        <Filter type="crt" enabled="1"/>
+        <Filter type="cartoon" enabled="0" toneR="2" toneG="5" toneB="1"/>
+        <Filter type="vignette" enabled="1" amount="1"/>
+    </Effect>
+</View>

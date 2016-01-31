@@ -36,6 +36,7 @@ GameView::GameView()
     g_gameView = this;
     OUI->add(OLoadUI("../../assets/uis/game.json"));
     m_storeAnim = OFindUI("store")->rect.size.x;
+    OFindUI("store")->rect.position.x = 140;
 }
 
 GameView::~GameView()
@@ -80,8 +81,17 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
-    // todo make a better cleaning
+    KillAllEntities();
     m_entities.clear();
+    m_players.clear();
+    m_pedestrals.clear();
+
+    m_previousTimeOfDay = TimeOfDay::INVALID;
+    m_dayTime = NOON;
+    m_day = 1;
+    m_monsterSpawnTime = 0;
+    m_activeDanceSequence = nullptr;
+    m_pMusic = nullptr;
 }
 
 void GameView::CreatePathFinder()
@@ -98,7 +108,17 @@ void GameView::CreateMusic()
 void GameView::OnUpdate()
 {
     if (m_gameover)
+    {
+        if (!m_fadeQuad->GetColorAnim().isPlaying())
+        {
+            // we are done
+            SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+            return;
+        }
+        UpdateCamera();
+        UpdateUIs();
         return;
+    }
 
     UpdateTime();
     UpdateDanceSequence();
@@ -117,7 +137,7 @@ void GameView::OnUpdate()
 }
 
 static std::unordered_map<StoreItemType, StoreItem> store = {
-    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 3}}, "scarecrow", OYBtn}},
+    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 2}}, "scarecrow", OYBtn}},
     {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 2}}, "stone", OXBtn}}
 };
 
@@ -273,34 +293,47 @@ void GameView::UpdateEntities()
 
 void GameView::UpdateCamera()
 {
-    // Fit players in view
-    Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
-    Vector2 maxPlayer(0.f);
-
-    for (auto pPlayer : m_players)
+    bool bAnooneAline = false;
+    for (Player* p : m_players)
     {
-        minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
-        minPlayer.y = onut::min(pPlayer->GetPosition().y, minPlayer.y);
-        maxPlayer.x = onut::max(pPlayer->GetPosition().x, maxPlayer.x);
-        maxPlayer.y = onut::max(pPlayer->GetPosition().y, maxPlayer.y);
+        if (p->IsAlive())
+        {
+            bAnooneAline = true;
+            break;
+        }
     }
 
-    minPlayer.x -= 3;
-    minPlayer.y -= 3;
-    maxPlayer.x += 3;
-    maxPlayer.y += 3;
+    if (bAnooneAline)
+    {
+        // Fit players in view
+        Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
+        Vector2 maxPlayer(0.f);
 
-    m_camera = (minPlayer + maxPlayer) * .5f;
+        for (auto pPlayer : m_players)
+        {
+            minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
+            minPlayer.y = onut::min(pPlayer->GetPosition().y, minPlayer.y);
+            maxPlayer.x = onut::max(pPlayer->GetPosition().x, maxPlayer.x);
+            maxPlayer.y = onut::max(pPlayer->GetPosition().y, maxPlayer.y);
+        }
 
-    float playerViewHeight = maxPlayer.y - minPlayer.y;
-    float zoomH = OScreenHf / playerViewHeight;
-    if (zoomH > 64.f) zoomH = 64.f;
+        minPlayer.x -= 3;
+        minPlayer.y -= 3;
+        maxPlayer.x += 3;
+        maxPlayer.y += 3;
 
-    float playerViewWidth = maxPlayer.x - minPlayer.x;
-    float zoomW = OScreenWf / playerViewWidth;
-    if (zoomW > 64.f) zoomW = 64.f;
+        m_camera = (minPlayer + maxPlayer) * .5f;
 
-    m_zoom = onut::min(zoomW, zoomH);
+        float playerViewHeight = maxPlayer.y - minPlayer.y;
+        float zoomH = OScreenHf / playerViewHeight;
+        if (zoomH > 64.f) zoomH = 64.f;
+
+        float playerViewWidth = maxPlayer.x - minPlayer.x;
+        float zoomW = OScreenWf / playerViewWidth;
+        if (zoomW > 64.f) zoomW = 64.f;
+
+        m_zoom = onut::min(zoomW, zoomH);
+    }
 
     // Animate to target position
     m_cameraReal = Vector2::Lerp(m_cameraReal, m_camera, ODT * 1.5f);
@@ -387,7 +420,7 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
         case TimeOfDay::Day:
             break;
         case TimeOfDay::Dusk:   // soir commence
-            m_pMusic->Play("RitualMusicAmbient.mp3", 0.5f);
+            m_pMusic->Play("RitualMusicAmbient.mp3");
             break;
         case TimeOfDay::Dawn:   // matin commence
             KillAllMonsters();
@@ -398,14 +431,34 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
     }
 }
 
+void GameView::KillAllEntities()
+{
+    m_entitiesToKill = m_entities;
+    ClearEntities();
+}
+
 void GameView::KillEntity( Entity* in_toKill )
 {
+    for (auto pEntity : m_entitiesToKill) if (pEntity == in_toKill) return;
     m_entitiesToKill.push_back(in_toKill);
 }
+
 void GameView::ClearEntities()
 {
     for (size_t i = 0; i < m_entitiesToKill.size(); ++i)
     {
+        for (auto it = m_scarecrows.begin(); it != m_scarecrows.end();)
+        {
+            if ((*it) == m_entitiesToKill[i])
+            {
+                it = m_scarecrows.erase(it);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
         for (auto it = m_entities.begin(); it != m_entities.end();)
         {
             if ((*it) == m_entitiesToKill[i])
@@ -430,6 +483,10 @@ void GameView::ClearEntities()
         if (pTile)
         {
             pTile->RegisterEntity(pEntity);
+        }
+        if (dynamic_cast<Scarecrow*>(pEntity))
+        {
+            m_scarecrows.push_back(pEntity);
         }
     }
     m_entitiesToAdd.clear();
@@ -538,7 +595,7 @@ void GameView::SpawnPlayers()
 {
     for (int i = 0; i < 4; ++i)
     {
-        if (OGamePad(i)->isConnected())
+        if (g_activePlayer[i])
         {
             Player* player = new Player();
             // todo pass in what "skin" used
@@ -551,12 +608,24 @@ void GameView::SpawnPlayers()
 
 void GameView::StartDanceSequence()
 {
+    // activate pods
+    for (DancePedestral* d : m_pedestrals)
+    {
+        d->StartEnabledFX();
+    }
+
     m_activeDanceSequence = new DanceSequence();
     m_activeDanceSequence->Init(m_day, m_pFireplace, this);
 }
 
 void GameView::StopDanceSequence()
 {
+    // activate pods
+    for (DancePedestral* d : m_pedestrals)
+    {
+        d->StopFXes();
+    }
+
     if (m_activeDanceSequence)
     {
         delete m_activeDanceSequence;
@@ -780,11 +849,14 @@ void GameView::GrowFire()
 void GameView::OnGameOver()
 {
     StopDanceSequence();
-
-    // todo cleanup
-
     m_gameover = true;
-    SendCommand(seed::eAppCommand::PUSH_VIEW, "GameOverView");
+
+    // start fading the quad anim
+    m_fadeQuad = CreateSprite("healthGaugeFill.png");
+    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 1.f), 5.f);
+    m_fadeQuad->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fadeQuad->SetScale(Vector2(100, 100));
+    AddNode(m_fadeQuad);
 }
 
 bool GameView::AllPlayersAreDead()
@@ -806,6 +878,34 @@ Player* GameView::GetClosestPlayer(const Vector2& position) const
         if (!pPlayer->IsAlive())
             continue;
 
+        float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
+        if (dist < closestDist)
+        {
+            closestDist = dist;
+            pRet = pPlayer;
+        }
+    }
+    return pRet;
+}
+
+Entity* GameView::GetClosestPlayerAsSeenByMonster(const Vector2& position) const
+{
+    float closestDist = 100000.f;
+    Entity* pRet = nullptr;
+    for (auto pPlayer : m_players)
+    {
+        if (!pPlayer->IsAlive())
+            continue;
+
+        float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
+        if (dist < closestDist)
+        {
+            closestDist = dist;
+            pRet = pPlayer;
+        }
+    }
+    for (auto pPlayer : m_scarecrows)
+    {
         float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
         if (dist < closestDist)
         {
@@ -839,4 +939,9 @@ void GameView::OnPlayerSacrifice(Player* in_player)
     }
     KillAllMonsters();
     m_pFireplace->GrowToMax();
+}
+
+void GameView::SplatGore(const Vector2& pos)
+{
+    m_pBloodLayer->SplatGore(pos);
 }

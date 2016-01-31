@@ -497,8 +497,8 @@ namespace onut
             emitter.life.from = std::max<>(0.01f, pex.particleLifeSpan - pex.particleLifespanVariance);
             emitter.life.to = std::max<>(0.01f, pex.particleLifeSpan + pex.particleLifespanVariance);
 
-            emitter.position.from = Vector3(pex.sourcePosition - pex.sourcePositionVariance, 0);
-            emitter.position.to = Vector3(pex.sourcePosition + pex.sourcePositionVariance, 0);
+            emitter.position.from = Vector3( -pex.sourcePositionVariance, 0);
+            emitter.position.to = Vector3( +pex.sourcePositionVariance, 0);
 
             emitter.duration = pex.duration;
 

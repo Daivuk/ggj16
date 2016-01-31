@@ -11,15 +11,9 @@ public:
 
 	virtual void OnShow();
 	virtual void OnHide();
-
-    virtual void OnButtonDown(seed::Button* in_button);
-    virtual void OnButtonUp(seed::Button* in_button);
-    virtual void OnButtonFocused(seed::Button* in_button, int in_playerIndex);
-    virtual void OnButtonFocusLost(seed::Button* in_button, int in_playerIndex);
-
-    virtual bool OnCommand(const string& in_cmd);
+    virtual void OnUpdate() override;
 	
 private:
-
-
+    void CreateDude(seed::Node* pParent, int id);
+    seed::Sprite* m_dudes[4];
 };

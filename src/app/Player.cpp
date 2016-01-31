@@ -12,10 +12,12 @@
 #include "Fireplace.h"
 #include "Stockpile.h"
 #include "Stone.h"
+#include "Scarecrow.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
 #define FRONT_Z_INDEX 30
+#define HEALTH_Z_INDEX 40
 
 Player::Player()
 {
@@ -32,9 +34,9 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_container = in_container;
     SetPosition(in_position);
 
-    m_slash = m_container->CreateSprite("slash.png");
+    m_slash = m_container->CreateSprite("Staff_Weapon.png");
     m_slash->SetAlign(Vector2(.5f, 1.f));
-    m_slash->SetScale(Vector2(SPRITE_SCALE) * .15f);
+    m_slash->SetScale(Vector2(SPRITE_SCALE) * .25f);
     m_slash->SetVisible(false);
     m_slash->SetPosition(Vector2(0, -.5f));
     m_slash->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
@@ -61,9 +63,9 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_slashSoundEmmiter->SetPositionBasedBalance(true);
     Attach(m_slashSoundEmmiter);
 
-    m_sprite = m_container->CreateSpriteWithSpriteAnim("baltAnims.spriteanim", "idle_down");
+    m_sprite = m_container->CreateSpriteWithSpriteAnim("guruAnims.spriteanim", "idle_down" + std::to_string(m_controllerIndex));
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    m_sprite->SetScale(Vector2(SPRITE_SCALE));
+    m_sprite->SetScale(Vector2(SPRITE_SCALE * .65f));
     Attach(m_sprite, PLAYER_Z_INDEX);
 
     m_damageBlood = m_container->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
@@ -81,13 +83,51 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_deathSound->SetPositionBasedVolume(false);
     Attach(m_deathSound);
 
-    m_idleAnim = "idle_down";
+    m_idleAnim = "idle_down" + std::to_string(m_controllerIndex);
 
     m_physicsBody = in_container->CreateCirclePhysicsForNode(this, .25f, false);
+
+    // health bar
+    m_healthGauge = in_container->CreateSprite("healthGauge.png");
+    m_healthGauge->SetPosition(Vector2(0,.5f));
+    m_healthGauge->SetScale(Vector2(SPRITE_SCALE,SPRITE_SCALE * .5f) * .6f);
+    m_healthGauge->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    Attach(m_healthGauge, HEALTH_Z_INDEX);
+    m_healthFill = in_container->CreateSprite("healthGaugeFill.png");
+    m_healthFill->SetAlign(Vector2(0, .5f));
+    m_healthFill->SetPosition(Vector2(m_healthFill->GetWidth() / -2.f, 0));
+    m_healthFill->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_healthFill->SetColor(Color(0,1,0));
+    m_healthGauge->Attach(m_healthFill);
+
+    m_healthGauge->SetVisible(false);
+}
+
+void Player::UpdateHealthBar()
+{
+    if (m_health == 100.f)
+    {
+        m_healthGauge->SetVisible(false);
+        m_healthFill->SetScale(Vector2(1, 1));
+        return;
+    }
+
+    m_healthGauge->SetVisible(true);
+    if (m_lastHealthValue != m_health)
+    {
+        // gotta anim it
+        m_healthAnim.start(m_lastHealthValue, m_health, .2f, OEaseOut);
+        m_lastHealthValue = m_health;
+    }
+
+    float percent = m_healthAnim.get() / 100.f;
+    m_healthFill->SetScale(Vector2(percent, 1));
+    m_healthFill->SetColor(Color(1 - percent, percent, 0));
 }
 
 void Player::UpdateEntity()
 {
+    UpdateHealthBar();
     UpdateInputs();
     UpdateVel();
     UpdatePedestralSnap();
@@ -141,7 +181,8 @@ void Player::UpdateStoneIndicator()
         if (m_pCarryOn)
         {
             auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-            if (pStone)
+            auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+            if (pStone || pScarecrow)
             {
                 auto myPos = GetPosition();
                 auto snappedPosition = myPos;
@@ -208,9 +249,24 @@ void Player::UpdateVel()
     const float fireplaceRadius = .5f;
     if ((fire->GetPosition() - GetPosition()).LengthSquared() < fireplaceRadius * fireplaceRadius)
     {
+        // loose health
+        m_health -= 1;
+        if (m_health < 0) m_health = 0;
+
+        
         // this player dies
-        m_physicsBody->SetTransform(fire->GetPosition(), 0);
-        OnSacrifice();
+        if (m_health <= 0)
+        {
+            m_physicsBody->SetTransform(fire->GetPosition(), 0);
+            OnSacrifice();
+        }
+        else
+        {
+            if (!m_healthAnim.isPlaying())
+            {
+                m_damageSound->Play();
+            }
+        }
     }
 }
 
@@ -220,7 +276,7 @@ void Player::OnSacrifice()
     m_playerState = PlayerState::DEAD;
     OnDeath();
     g_gameView->OnPlayerSacrifice(this);
-    m_sprite->SetSpriteAnim("idle_down");
+    m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
 }
 
 void Player::UpdateSpriteAnim()
@@ -243,13 +299,13 @@ void Player::UpdateSpriteAnim()
                 if (m_vel.x < 0)
                 {
                     newAnim = "run_side";
-                    m_idleAnim = "idle_side";
+                    m_idleAnim = "idle_side" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::LEFT;
                 }
                 else
                 {
                     newAnim = "run_side";
-                    m_idleAnim = "idle_side";
+                    m_idleAnim = "idle_side" + std::to_string(m_controllerIndex);
                     flipped = true;
                     m_currentDirection = ePlayerDirection::RIGHT;
                 }
@@ -260,14 +316,14 @@ void Player::UpdateSpriteAnim()
                 {
                     // move up!
                     newAnim = "run_up";
-                    m_idleAnim = "idle_up";
+                    m_idleAnim = "idle_up" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::UP;
                 }
                 else
                 {
                     // move down!
                     newAnim = "run_down";
-                    m_idleAnim = "idle_down";
+                    m_idleAnim = "idle_down" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::DOWN;
                 }
             }
@@ -275,7 +331,7 @@ void Player::UpdateSpriteAnim()
 
         if (newAnim.length())
         {
-            m_sprite->SetSpriteAnim(newAnim);
+            m_sprite->SetSpriteAnim(newAnim + std::to_string(m_controllerIndex));
             m_sprite->SetFlipped(flipped, false);
         }
         else
@@ -332,7 +388,7 @@ void Player::Attack()
     m_stateTimer.start(.2f, [this]{m_playerState = PlayerState::IDLE; });
 
     // check if we hit enemies
-    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position + attackOffset * .5f, 1.0f);
+    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position + attackOffset * .5f, 2.0f);
     int nbMonster = 0;
     bool bEnemyHit = false;
     for (Entity* e : enemies)
@@ -482,7 +538,8 @@ void Player::UpdateInputs()
         else if (m_pCarryOn)
         {
             auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-            if (pStone)
+            auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+            if (pStone || pScarecrow)
             {
                 if (OGamePadJustPressed(OABtn, m_controllerIndex))
                 {
@@ -558,13 +615,15 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    in_pedestral->StartActivatedFX();
     m_stateTimer.stop();
     DropCarryOn();
     m_playerState = PlayerState::PEDESTRAL;
     m_container->GetPhysicsForNode(this)->SetTransform(in_pedestral->GetPosition(), 0);
-    m_sprite->SetSpriteAnim("idle_down");
+    m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
     in_pedestral->m_isOccupied = true;
     m_currentDancePedestral = in_pedestral;
+    m_slash->SetVisible(false);
 }
 
 void Player::DropCarryOn()
@@ -572,7 +631,8 @@ void Player::DropCarryOn()
     if (!m_pCarryOn) return;
 
     auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-    if (pStone)
+    auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+    if (pStone || pScarecrow)
     {
         auto myPos = GetPosition();
         auto snappedPosition = myPos;
@@ -599,14 +659,20 @@ void Player::DropCarryOn()
         if (pTile)
         {
             if (pTile->isOccupied) return; // Can't place here!
-            pTile->isOccupied = true;
+            if (pStone)
+            {
+                pTile->isOccupied = true;
+            }
         }
 
         m_playerState = PlayerState::IDLE;
         OPlaySound("RitualSFX_Stone_Place.wav");
         m_dottedLine->SetVisible(false);
 
-        pStone->Place(snappedPosition);
+        Detach(m_pCarryOn);
+
+        if (pStone) pStone->Place(snappedPosition);
+        if (pScarecrow) pScarecrow->Place(snappedPosition);
 
         //m_container->DeleteNode(pStone);
         m_pCarryOn = nullptr;
@@ -624,6 +690,7 @@ void Player::DropCarryOn()
         }
 
         m_pCarryOn->SetPosition(GetPosition());
+        Detach(m_pCarryOn);
         g_gameView->AddEntity(m_pCarryOn);
         m_pCarryOn = nullptr;
         m_playerState = PlayerState::IDLE;
@@ -645,6 +712,7 @@ void Player::OnPedestralLockCancel()
     {
         m_playerState = PlayerState::IDLE;
         m_currentDancePedestral->m_isOccupied = false;
+        m_currentDancePedestral->StartEnabledFX();
         m_currentDancePedestral = nullptr;
     }
 }
@@ -682,7 +750,10 @@ void Player::OnDanceSequenceSuccess()
             { Color(1.f, 1.f, 1.f, 0.f), .2f, OLinear },
         });
 
-
+    // increase health
+    const float healthIncreaseForSuccessfulDanceMove = 5;
+    m_health += healthIncreaseForSuccessfulDanceMove;
+    if (m_health > 100.f) m_health = 100.f;
 }
 
 void Player::ResetInputSequence()
