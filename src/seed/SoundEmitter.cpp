@@ -137,6 +137,11 @@ namespace seed
             m_volumeFactor = onut::max(0.f, m_volumeFactor);
             UpdateSoundParams();
         }
+
+        if (m_volume.isPlaying())
+        {
+            UpdateSoundParams();
+        }
     }
 
 
@@ -176,6 +181,15 @@ namespace seed
         m_soundInstance->setLoop(m_loops);
         UpdateSoundParams();
         m_soundInstance->play();
+    }
+
+    bool SoundEmitter::IsPlaying() const
+    {
+        if (m_soundInstance)
+        {
+            return m_soundInstance->isPlaying();
+        }
+        return false;
     }
 
     void SoundEmitter::Stop()

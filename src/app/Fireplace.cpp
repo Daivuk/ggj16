@@ -3,6 +3,7 @@
 #include "GameView.h"
 
 
+#define MAX_RADIUS 10.f
 #define DEFAULT_RADIUS 6.f
 #define FIREPLACE_SPRITESCALE Vector2(SPRITE_SCALE)
 
@@ -25,6 +26,9 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     m_targetRadius = lightRadius = radius;
     lightColor = Color(1.f, .8f, .25f, 1.f) * 1.5f;
     lightEnabled = true;
+
+    m_whispers = pView->CreateSoundEmitter("RitualSFX_WhispersInTheDarkness.wav");
+    Attach(m_whispers);
 }
 
 Fireplace::~Fireplace()
@@ -33,8 +37,12 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    const float growingFactor = 4.f;
+    const float growingFactor = 2.f;
     m_targetRadius += growingFactor;
+    if (m_targetRadius > MAX_RADIUS)
+    {
+        m_targetRadius = MAX_RADIUS;
+    }
     lightRadius.startKeyframed(
     lightRadius.get(), // From
     {
@@ -47,8 +55,7 @@ void Fireplace::Grow()
 
 void Fireplace::GrowToMax()
 {
-    const float maxFireRadius = 20.f;
-    while (m_targetRadius < maxFireRadius)
+    while (m_targetRadius < MAX_RADIUS)
     {
         Grow();
     }
@@ -61,12 +68,43 @@ void Fireplace::UpdateEntity()
     if (m_gameover)
         return;
 
+    // adjust whispers volume
+    if (g_gameView->GetTimeOfDay() == TimeOfDay::Night)
+    {
+        if (!m_whispers->IsPlaying())
+        {
+            m_whispers->Play();
+            m_whispers->SetVolume(0);
+        }
+        else if (g_gameView->GetTimeOfDay() == TimeOfDay::Night && !m_whispers->GetVolumeAnim().isPlaying() && m_whispers->IsPlaying())
+        {
+            // lerp to the target value
+            float targetVolume = 1.f - m_targetRadius / MAX_RADIUS;
+            float currentVolume = m_whispers->GetVolume();
+            currentVolume = currentVolume + (targetVolume - currentVolume) * ODT;
+            m_whispers->SetVolume(currentVolume);
+        }
+    }
+    else
+    {
+        if (m_whispers->GetVolume() > 0 && !m_whispers->GetVolumeAnim().isPlaying())
+        {
+            m_whispers->GetVolumeAnim().startFromCurrent(0, .5f);
+        }
+        else if (m_whispers->GetVolume() == 0)
+        {
+            m_whispers->Stop();
+        }
+    }
+    
+
+    
     if (!lightRadius.isPlaying() && g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
         const float diminishingFactor = 0.2f;
         
         // slowly diminish the fire
-        //m_targetRadius -= diminishingFactor * ODT;
+        m_targetRadius -= diminishingFactor * ODT;
         lightRadius = m_targetRadius;
 
         if (m_targetRadius <= 0)

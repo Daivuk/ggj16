@@ -36,6 +36,7 @@ namespace seed
         bool    GetPositionBasedBalance() const;
         void    SetPositionBasedVolume(bool in_positionBased);
         bool    GetPositionBasedVolume() const;
+        bool    IsPlaying() const;
 
         const string&           GetSource() const;
         vector<string>&         GetRandomFiles();
@@ -43,7 +44,7 @@ namespace seed
 
         // only to be used by the seed sdk
         virtual void        Update() override;
-
+        
     protected:
 
         virtual void        Copy(Node* in_copy) const;

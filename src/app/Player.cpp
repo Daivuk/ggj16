@@ -44,7 +44,17 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_dottedLine->SetScale(Vector2(SPRITE_SCALE));
     m_dottedLine->SetVisible(false);
     m_dottedLine->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    Attach(m_dottedLine, -10);
+    Attach(m_dottedLine);
+    auto pA = m_container->CreateSprite("button_a.png");
+    pA->SetScale(Vector2(.25f));
+    pA->GetPositionAnim().startKeyframed(Vector2(0, -2),
+    {
+        OAnimWait(Vector2(0, -4), .45f),
+        OAnimWait(Vector2(0, -2), .45f)
+    }, OLoop);
+    pA->SetPosition(Vector2(0, -2));
+    pA->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_dottedLine->Attach(pA);
 
     m_slashSoundEmmiter = m_container->CreateSoundEmitter("RitualCues_Player_Attack.cue");
     m_slashSoundEmmiter->SetPositionBasedVolume(false);
@@ -337,6 +347,7 @@ void Player::Attack()
                     m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Rock);
                     Attach(m_pCarryOn);
+                    OPlaySound("RitualSFX_Stone_Collect.wav");
                 }
                 else if (tree)
                 {
@@ -344,6 +355,7 @@ void Player::Attack()
                     m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Wood);
                     Attach(m_pCarryOn);
+                    OPlaySound("RitualSFX_Wood_Collect.wav");
                 }
                 auto pTile = g_gameView->GetTileAt(pClosest->GetPosition());
                 if (pTile) pTile->isOccupied = false;
@@ -430,9 +442,20 @@ void Player::UpdateInputs()
         }
         else if (m_pCarryOn)
         {
-            if (OGamePadJustPressed(OBBtn, m_controllerIndex))
+            auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
+            if (pStone)
             {
-                DropCarryOn();
+                if (OGamePadJustPressed(OABtn, m_controllerIndex))
+                {
+                    DropCarryOn();
+                }
+            }
+            else
+            {
+                if (OGamePadJustPressed(OBBtn, m_controllerIndex))
+                {
+                    DropCarryOn();
+                }
             }
         }
     }
@@ -508,10 +531,64 @@ void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 void Player::DropCarryOn()
 {
     if (!m_pCarryOn) return;
-    m_pCarryOn->SetPosition(GetPosition());
-    g_gameView->AddEntity(m_pCarryOn);
-    m_pCarryOn = nullptr;
-    m_playerState = PlayerState::IDLE;
+
+    auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
+    if (pStone)
+    {
+        auto myPos = GetPosition();
+        auto snappedPosition = myPos;
+        snappedPosition.x = std::floor(snappedPosition.x) + .5f;
+        snappedPosition.y = std::floor(snappedPosition.y) + .5f;
+        m_dottedLine->SetVisible(true);
+        switch (m_currentDirection)
+        {
+            case ePlayerDirection::LEFT:
+                snappedPosition.x -= 1;
+                break;
+            case ePlayerDirection::RIGHT:
+                snappedPosition.x += 1;
+                break;
+            case ePlayerDirection::UP:
+                snappedPosition.y -= 1;
+                break;
+            case ePlayerDirection::DOWN:
+                snappedPosition.y += 1;
+                break;
+        }
+
+        auto pTile = g_gameView->GetTileAt(snappedPosition);
+        if (pTile)
+        {
+            if (pTile->isOccupied) return; // Can't place here!
+            pTile->isOccupied = true;
+        }
+
+        m_playerState = PlayerState::IDLE;
+        OPlaySound("RitualSFX_Stone_Place.wav");
+        m_dottedLine->SetVisible(false);
+
+        pStone->Place(snappedPosition);
+
+        //m_container->DeleteNode(pStone);
+        m_pCarryOn = nullptr;
+    }
+    else
+    {
+        Drop* pDrop = (Drop*)(m_pCarryOn);
+        if (pDrop->type == DropType::Rock)
+        {
+            OPlaySoundCue("RitualCues_Stone_Mine.cue");
+        }
+        if (pDrop->type == DropType::Wood)
+        {
+            OPlaySoundCue("RitualCues_Wood_Chop.cue");
+        }
+
+        m_pCarryOn->SetPosition(GetPosition());
+        g_gameView->AddEntity(m_pCarryOn);
+        m_pCarryOn = nullptr;
+        m_playerState = PlayerState::IDLE;
+    }
 }
 
 DropType Player::GiveCarryOn()

@@ -7,10 +7,10 @@
 enum eTile : uint32_t
 {
     TILE_NONE = 0,
-    TILE_GRASS,
-    TILE_TREE,
-    TILE_ROCK,
-    TILE_FIREPLACE
+    TILE_STONE0 = 20,
+    TILE_STONE1 = 21,
+    TILE_STONE2 = 22,
+    TILE_STONE3 = 23,
 };
 
 enum class TimeOfDay
@@ -62,6 +62,7 @@ public:
     float       GetMonsterSpawnRate() const;
     float       GetNightPercent() const;
 
+    void        SetTileIdAt(const Vector2& position, eTile tileId);
     eTile       GetTileIdAt(const Vector2& position) const;
     Tile*       GetTileAt(const Vector2& position) const;
     Tile*       GetTileAt(int x, int y) const;
