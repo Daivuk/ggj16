@@ -34,8 +34,8 @@ namespace seed
         , m_rootNode(nullptr)
         , m_size(640, 480)
     {
-        memset(m_focusedButtons, 0, 4);
-        memset(m_defaultFocusedButton, 0, 4);
+        memset(m_focusedButtons, 0, 4*sizeof(Button*));
+        memset(m_defaultFocusedButton, 0, 4 * sizeof(Button*));
     }
 
 

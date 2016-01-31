@@ -15,6 +15,12 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     m_sprite->SetScale(FIREPLACE_SPRITESCALE);
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
 
+    auto pFireplaceSprite = pView->CreateSprite("fireplace.png");
+    pFireplaceSprite->SetScale(FIREPLACE_SPRITESCALE);
+    pFireplaceSprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    pFireplaceSprite->SetPosition(Vector2(0, .1f));
+    Attach(pFireplaceSprite, -1);
+
     auto radius = DEFAULT_RADIUS;
     m_targetRadius = lightRadius = radius;
     lightColor = Color(1.f, .8f, .25f, 1.f) * 1.5f;
@@ -51,7 +57,7 @@ void Fireplace::UpdateEntity()
         const float diminishingFactor = 0.5f;
         
         // slowly diminish the fire
-        m_targetRadius -= diminishingFactor * ODT;
+        //m_targetRadius -= diminishingFactor * ODT;
         lightRadius = m_targetRadius;
 
         if (m_targetRadius <= 0)

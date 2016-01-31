@@ -9,15 +9,17 @@
 #include "MusicEmitter.h"
 #include "DancePedestral.h"
 #include "Monster.h"
+#include "BloodLayer.h"
+#include "Stockpile.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
 
 const Vector2 g_playerSpawn[] = {
-    {15.f, 15.f},
-    {17.f, 17.f},
-    {15.f, 17.f},
-    {17.f, 15.f},
+    {14.5f, 14.5f},
+    {18.5f, 18.5f},
+    {14.5f, 18.5f},
+    {18.5f, 14.5f},
 };
 
 static float lerpf(float from, float to, float t)
@@ -34,6 +36,10 @@ GameView::GameView()
 
 GameView::~GameView()
 {
+    if (m_pBloodLayer)
+    {
+        delete m_pBloodLayer;
+    }
     if (m_pTiles)
     {
         delete[] m_pTiles;
@@ -95,6 +101,8 @@ void GameView::OnUpdate()
     UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
+
+    ClearEntities();
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -109,6 +117,79 @@ void GameView::UpdateMonsterSpawning()
         SpawnMonster();
     }
 }
+
+
+vector<Entity*> GameView::GetEntitiesInRadius(const Vector2& in_pos, float in_radius)
+{
+    vector<Entity*> res;
+    Tile* tile = GetTileAt(in_pos);
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    // get all the tiles around it
+    tile = GetTileAt(in_pos + Vector2(-1,0));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(-1, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(0, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, -1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, 0));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(1, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(0, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+
+    tile = GetTileAt(in_pos + Vector2(-1, 1));
+    if (tile)
+    {
+        FillVectorWithEntitiesInRadius(tile, in_pos, in_radius, res);
+    }
+    return res;
+}
+
+void GameView::FillVectorWithEntitiesInRadius(Tile* in_tile, const Vector2& in_pos, float in_radius, vector<Entity*>& inOut_result)
+{
+    for (auto entity = in_tile->pEntities->Head(); entity; entity = in_tile->pEntities->Next(entity))
+    {
+        if ((entity->GetPosition() - in_pos).LengthSquared() < in_radius * in_radius)
+        {
+            inOut_result.push_back(entity);
+        }
+    }
+}
+
 
 void GameView::UpdateEntities()
 {
@@ -245,6 +326,30 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
     }
 }
 
+void GameView::KillEntity( Entity* in_toKill )
+{
+    m_entitiesToKill.push_back(in_toKill);
+}
+void GameView::ClearEntities()
+{
+    for (Entity* e : m_entitiesToKill)
+    {
+        for (auto it = m_entities.begin(); it != m_entities.end();)
+        {
+            if ((*it) == e)
+            {
+                it = m_entities.erase(it);
+                DeleteNode(e);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+}
+
 void GameView::KillAllMonsters()
 {
     for (auto it = m_entities.begin(); it != m_entities.end();)
@@ -366,7 +471,7 @@ void GameView::SpawnPlayers()
 void GameView::StartDanceSequence()
 {
     m_activeDanceSequence = new DanceSequence();
-    m_activeDanceSequence->Init(m_difficulty, m_pFireplace, this);
+    m_activeDanceSequence->Init(m_day, m_pFireplace, this);
 }
 
 void GameView::StopDanceSequence()
@@ -420,7 +525,7 @@ void GameView::UpdateDanceSequence()
 void GameView::CreateTileMap()
 {
     auto pTileMapNode = CreateTiledMapNode("maptemplate.tmx");
-    m_pGameLayer->Attach(pTileMapNode, 0);
+    m_pGameLayer->Attach(pTileMapNode, -10);
 
     m_pTilemap = pTileMapNode->GetTiledMap();
     m_pBackgroundLayer = (onut::TiledMap::sTileLayer*)m_pTilemap->getLayer("backgrounds");
@@ -429,6 +534,8 @@ void GameView::CreateTileMap()
     pTileMapNode->SetScale(Vector2(1.f / m_pTilemap->getTileWidth()));
 
     m_pTiles = new Tile[m_pTilemap->getWidth() * m_pTilemap->getHeight()];
+
+    m_pGameLayer->Attach(m_pBloodLayer = new BloodLayer(m_pTilemap->getWidth(), m_pTilemap->getHeight()), -11);
 }
 
 void GameView::CenterCamera()
@@ -439,6 +546,9 @@ void GameView::CenterCamera()
 void GameView::GenerateMap()
 {
     Vector2 mapCenter((float)m_pTilemap->getWidth() * .5f, (float)m_pTilemap->getHeight() * .5f);
+
+    m_pStockpile = new Stockpile(this, m_pTilemap->getWidth() / 2 + 1, m_pTilemap->getHeight() / 2 - 4);
+    AddEntity(m_pStockpile);
 
     // Spawn a bunch of trees
     for (int i = 0; i < TREE_DENSITY; ++i)
@@ -554,11 +664,10 @@ void GameView::CreateEntities()
         if (i == 1) pedOffset = Vector2(2, -2);
         if (i == 2) pedOffset = Vector2(2, 2);
         if (i == 3) pedOffset = Vector2(-2, 2);
-        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset);
+        DancePedestral* pedes = new DancePedestral(this, GetMapCenter() + pedOffset, i);
         m_pedestrals.push_back(pedes);
         AddEntity(pedes);
     }
-    
 }
 
 void GameView::AddEntity(Entity* pEntity)

@@ -1,0 +1,29 @@
+<sheet texture="ShadowAnim.png" spriteWidth="32" spriteHeight="16" originX="14" originY="8">
+  <anim name="idle_down" fps="12" loop="true">
+    <frame id="0"/>
+  </anim>
+  <anim name="idle_up" fps="12" loop="true">
+    <frame id="0"/>
+  </anim>
+
+  <anim name="run_down" fps="12" loop="true">
+    <frame id="0"/>
+    <frame id="1"/>
+    <frame id="2"/>
+    <frame id="3"/>
+    <frame id="4"/>
+    <frame id="5"/>
+    <frame id="6"/>
+    <frame id="7"/>
+  </anim>
+  <anim name="run_up" fps="12" loop="true">
+    <frame id="9"/>
+    <frame id="10"/>
+    <frame id="11"/>
+    <frame id="12"/>
+    <frame id="13"/>
+    <frame id="14"/>
+    <frame id="15"/>
+    <frame id="16"/>
+  </anim>
+</sheet>

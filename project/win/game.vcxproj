@@ -129,6 +129,7 @@
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
     <ClCompile Include="..\..\Box2D\Rope\b2Rope.cpp" />
+    <ClCompile Include="..\..\src\app\BloodLayer.cpp" />
     <ClCompile Include="..\..\src\app\DanceMove.cpp" />
     <ClCompile Include="..\..\src\app\DancePedestral.cpp" />
     <ClCompile Include="..\..\src\app\DanceSequence.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="..\..\src\app\Rock.cpp" />
     <ClCompile Include="..\..\src\app\SplashView.cpp" />
     <ClCompile Include="..\..\src\app\StartView.cpp" />
+    <ClCompile Include="..\..\src\app\Stockpile.cpp" />
     <ClCompile Include="..\..\src\app\Tile.cpp" />
     <ClCompile Include="..\..\src\app\Tree.cpp" />
     <ClCompile Include="..\..\src\main.cpp" />
@@ -216,6 +218,7 @@
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WeldJoint.h" />
     <ClInclude Include="..\..\Box2D\Dynamics\Joints\b2WheelJoint.h" />
     <ClInclude Include="..\..\Box2D\Rope\b2Rope.h" />
+    <ClInclude Include="..\..\src\app\BloodLayer.h" />
     <ClInclude Include="..\..\src\app\DanceMove.h" />
     <ClInclude Include="..\..\src\app\DancePedestral.h" />
     <ClInclude Include="..\..\src\app\DanceSequence.h" />
@@ -230,6 +233,7 @@
     <ClInclude Include="..\..\src\app\Rock.h" />
     <ClInclude Include="..\..\src\app\SplashView.h" />
     <ClInclude Include="..\..\src\app\StartView.h" />
+    <ClInclude Include="..\..\src\app\Stockpile.h" />
     <ClInclude Include="..\..\src\app\Tile.h" />
     <ClInclude Include="..\..\src\app\Tree.h" />
     <ClInclude Include="..\..\src\seed\App.h" />

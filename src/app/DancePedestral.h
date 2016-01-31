@@ -8,7 +8,7 @@
 class DancePedestral : public Entity
 {
 public:
-    DancePedestral(seed::View* pView, const Vector2& position);
+    DancePedestral(seed::View* pView, const Vector2& position, int index);
     virtual ~DancePedestral();
 
     bool m_isOccupied = false;

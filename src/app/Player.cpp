@@ -5,7 +5,11 @@
 #include "DancePedestral.h"
 #include "GameView.h"
 #include "Tile.h"
+#include "Monster.h"
 
+#define BEHIND_Z_INDEX 10
+#define PLAYER_Z_INDEX 20
+#define FRONT_Z_INDEX 30
 
 Player::Player()
 {
@@ -21,10 +25,25 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_controllerIndex = in_controllerIndex;
     m_container = in_container;
     SetPosition(in_position);
+
+    m_slash = m_container->CreateSprite("slash.png");
+    m_slash->SetAlign(Vector2(.5f, 1.f));
+    m_slash->SetScale(Vector2(SPRITE_SCALE) * .15f);
+    m_slash->SetVisible(false);
+    m_slash->SetPosition(Vector2(0, -.5f));
+    Attach(m_slash, BEHIND_Z_INDEX);
+
+    m_slashSoundEmmiter = m_container->CreateSoundEmitter("RitualCues_Player_Attack.cue");
+    m_slashSoundEmmiter->SetPositionBasedVolume(false);
+    m_slashSoundEmmiter->SetPositionBasedBalance(true);
+    Attach(m_slashSoundEmmiter);
+
     m_sprite = m_container->CreateSpriteWithSpriteAnim("baltAnims.spriteanim", "idle_down");
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_sprite->SetScale(Vector2(SPRITE_SCALE));
-    Attach(m_sprite);
+    Attach(m_sprite, PLAYER_Z_INDEX);
+
+    
 
     m_idleAnim = "idle_down";
 
@@ -70,34 +89,50 @@ void Player::UpdateSpriteAnim()
 {
     if (!m_currentDancePedestral)
     {
+        float horVel = std::abs(m_vel.x);
+        float vertVel = std::abs(m_vel.y);
+
         string newAnim;
         bool flipped = false;
-        if (m_vel.y < 0)
-        {
-            // move up!
-            newAnim = "run_up";
-            m_idleAnim = "idle_up";
-        }
 
-        if (m_vel.y > 0)
+        if (horVel > 0 || vertVel > 0)
         {
-            // move down!
-            newAnim = "run_down";
-            m_idleAnim = "idle_down";
-        }
+            bool goingHorizontal = horVel > vertVel;
+            
 
-        if (m_vel.x < 0)
-        {
-            // moving left
-            newAnim = "run_side";
-            m_idleAnim = "idle_side";
-        }
-
-        if (m_vel.x > 0)
-        {
-            newAnim = "run_side";
-            m_idleAnim = "idle_side";
-            flipped = true;
+            if (goingHorizontal)
+            {
+                if (m_vel.x < 0)
+                {
+                    newAnim = "run_side";
+                    m_idleAnim = "idle_side";
+                    m_currentDirection = ePlayerDirection::LEFT;
+                }
+                else
+                {
+                    newAnim = "run_side";
+                    m_idleAnim = "idle_side";
+                    flipped = true;
+                    m_currentDirection = ePlayerDirection::RIGHT;
+                }
+            }
+            else
+            {
+                if (m_vel.y < 0)
+                {
+                    // move up!
+                    newAnim = "run_up";
+                    m_idleAnim = "idle_up";
+                    m_currentDirection = ePlayerDirection::UP;
+                }
+                else
+                {
+                    // move down!
+                    newAnim = "run_down";
+                    m_idleAnim = "idle_down";
+                    m_currentDirection = ePlayerDirection::DOWN;
+                }
+            }
         }
 
         if (newAnim.length())
@@ -111,6 +146,64 @@ void Player::UpdateSpriteAnim()
         }
     }
 
+}
+
+void Player::Attack()
+{
+    // attack
+    m_slashSoundEmmiter->Play();
+    m_slash->SetVisible(true);
+
+    Detach(m_slash);
+
+    m_slash->SetFlippedH(false);
+    m_slash->SetFlippedV(false);
+
+    Vector2 attackOffset;
+
+    if (m_currentDirection == ePlayerDirection::RIGHT)
+    {
+        m_slash->SetFlippedH(true);
+        m_slash->GetAngleAnim().start(0, 140, .1f);
+        Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(1, 0);
+    }
+    else if (m_currentDirection == ePlayerDirection::LEFT)
+    {
+        m_slash->GetAngleAnim().start(0, -140, .1f);
+        Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(-1, 0);
+    }
+    else if (m_currentDirection == ePlayerDirection::DOWN)
+    {
+        m_slash->SetFlippedH(true);
+        m_slash->GetAngleAnim().start(90, 270, .1f);
+        Attach(m_slash, FRONT_Z_INDEX);
+        attackOffset = Vector2(0, 1);
+    }
+    else if (m_currentDirection == ePlayerDirection::UP)
+    {
+        m_slash->SetFlippedH(true);
+        m_slash->GetAngleAnim().start(-90, 90, .1f);
+        Attach(m_slash, BEHIND_Z_INDEX);
+        attackOffset = Vector2(0, 1);
+    }
+
+
+    // check if we hit enemies
+    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position, 2.f);
+    int nbMonster = 0;
+    for (Entity* e : enemies)
+    {
+        Monster* monster = dynamic_cast<Monster*>(e);
+        if (monster)
+        {
+            monster->InflictDamage(100);
+            Vector2 dir = monster->GetPosition() - m_position;
+            dir.Normalize();
+            monster->AfterDamagePush(dir);
+        }
+    }
 }
 
 
@@ -139,6 +232,18 @@ void Player::UpdateInputs()
             {
                 m_inputSequence.push_back(buttons[i]);
             }
+        }
+    }
+    else
+    {
+        if (!m_slash->GetAngleAnim().isPlaying())
+        {
+            m_slash->SetVisible(false);
+        }
+
+        if (OGamePadJustPressed(OABtn, m_controllerIndex))
+        {
+            Attack();
         }
     }
 }

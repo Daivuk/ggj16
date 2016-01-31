@@ -16,6 +16,7 @@ public:
 
 private:
 
+    OAnimf m_radiusAnim;
     seed::Sprite* m_sprite = nullptr;
     float m_targetRadius = 0;
     bool m_gameover = false;

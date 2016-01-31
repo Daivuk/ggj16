@@ -15,13 +15,23 @@ Monster::Monster(MonsterType monsterType, seed::View* pView, const Vector2& posi
     m_pView = pView;
     SetPosition(position);
 
-    auto pSprite = pView->CreateSprite("crawler.png");
-    pSprite->SetScale(Vector2(SPRITE_SCALE));
-    pSprite->SetPosition(Vector2(3.f, -2.f) * SPRITE_SCALE);
-    pSprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    Attach(pSprite);
+    m_sprite = pView->CreateSpriteWithSpriteAnim("crawler.spriteanim", "idle_down");
+    m_sprite->SetScale(Vector2(SPRITE_SCALE));
+    m_sprite->SetPosition(Vector2(3.f, -2.f) * SPRITE_SCALE);
+    m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    Attach(m_sprite);
 
     m_pPhysicBody = m_pView->CreateCirclePhysicsForNode(this, .25f, false);
+
+
+    m_damageBlood = m_pView->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
+    m_damageBlood->SetVisible(false);
+    Attach(m_damageBlood);
+
+    m_damageSound = m_pView->CreateSoundEmitter("RitualCues_Enemy_Hit.cue");
+    m_damageSound->SetPositionBasedBalance(false);
+    m_damageSound->SetPositionBasedVolume(false);
+    Attach(m_damageSound);
 }
 
 Monster::~Monster()
@@ -34,6 +44,27 @@ void Monster::Kill()
     // Go gore
 }
 
+void Monster::AfterDamagePush(const Vector2& in_direction)
+{
+    m_damageSound->Play();
+
+    m_damageBlood->SetVisible(true);
+    m_damageBlood->SetSpriteAnim("");
+    m_damageBlood->SetSpriteAnim("blood");
+    m_damageBlood->SetScale(Vector2(.1f, .1f));
+    m_damageBlood->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+
+
+    if (m_state != MonsterState::AFTER_DAMAGE_PUSH)
+    {
+        m_previousState = m_state;
+    }
+    m_state = MonsterState::AFTER_DAMAGE_PUSH;
+
+    const float pushForce = 20.f;
+    m_velPushAnim.start(in_direction * pushForce, Vector2(0, 0), .2f);
+}
+
 void Monster::UpdateEntity()
 {
     if (m_state == MonsterState::IDLE)
@@ -41,7 +72,7 @@ void Monster::UpdateEntity()
         auto pTile = g_gameView->GetTileAt(GetPosition());
         Seek();
     }
-
+    
     if (m_state == MonsterState::GO_TO)
     {
         Vector2 dir = m_targetPos - GetPosition();
@@ -66,7 +97,20 @@ void Monster::UpdateEntity()
             m_pPhysicBody->SetTransform(GetPosition(), 0);
             m_pPhysicBody->SetLinearVel(dir * m_speed);
         }
+
+        UpdateSpriteAnim(dir);
     }
+
+    if (m_state == MonsterState::AFTER_DAMAGE_PUSH)
+    {
+        m_pPhysicBody->SetLinearVel(m_velPushAnim);
+        if (!m_velPushAnim.isPlaying())
+        {
+            // we're done
+            m_state = m_previousState;
+        }
+    }
+
 
     Entity::UpdateEntity();
 }
@@ -114,4 +158,40 @@ void Monster::PathTo(const Vector2& position)
         }
     }
     m_state = MonsterState::GO_TO;
+}
+
+void Monster::UpdateSpriteAnim(const Vector2& dir)
+{
+    string newAnim;
+    bool flipped = false;
+    if (dir.y < -0.70710678118654752440084436210485f)
+    {
+        // move up!
+        newAnim = "run_up";
+    }
+
+    if (dir.y > 0.70710678118654752440084436210485f)
+    {
+        // move down!
+        newAnim = "run_down";
+    }
+
+    if (dir.x < -0.70710678118654752440084436210485f)
+    {
+        // moving left
+        newAnim = "run_down";
+        flipped = false;
+    }
+
+    if (dir.x > 0.70710678118654752440084436210485f)
+    {
+        newAnim = "run_down";
+        flipped = true;
+    }
+
+    if (newAnim.length())
+    {
+        m_sprite->SetSpriteAnim(newAnim);
+        m_sprite->SetFlipped(flipped, false);
+    }
 }
