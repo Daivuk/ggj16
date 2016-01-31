@@ -35,6 +35,8 @@ private:
     DanceMove               GetDanceMove(int in_nbButtons);
     void                    ShowNextMove();
 
+    bool                    m_waitingForMoveToHide = false;
+
     static DanceMoveButtonVect    s_possibleButtons;
 
 };

@@ -3,6 +3,7 @@
 #include "View.h"
 #include "Entity.h"
 #include "SoundEmitter.h"
+#include "Emitter.h"
 
 #include <string>
 
@@ -19,9 +20,10 @@ public:
 private:
 
     OAnimf m_radiusAnim;
-    seed::Sprite* m_sprite = nullptr;
     float m_targetRadius = 0;
     bool m_gameover = false;
 
-    seed::SoundEmitter*  m_whispers = nullptr;
+    seed::SoundEmitter*     m_whispers = nullptr;
+    seed::Emitter*          m_fireFX1 = nullptr;
+    seed::Emitter*          m_fireFX2 = nullptr;
 };
