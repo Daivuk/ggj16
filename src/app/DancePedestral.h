@@ -1,5 +1,6 @@
 #pragma once
 #include "Sprite.h"
+#include "Emitter.h"
 #include "View.h"
 #include "Entity.h"
 
@@ -13,7 +14,14 @@ public:
 
     bool m_isOccupied = false;
 
+    void StartEnabledFX();
+    void StartActivatedFX();
+    void StopFXes();
+
 private:
+
+    seed::Emitter* m_baseFX = nullptr;
+    seed::Emitter* m_activatedFX = nullptr;
 
 
 };

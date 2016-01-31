@@ -568,12 +568,24 @@ void GameView::SpawnPlayers()
 
 void GameView::StartDanceSequence()
 {
+    // activate pods
+    for (DancePedestral* d : m_pedestrals)
+    {
+        d->StartEnabledFX();
+    }
+
     m_activeDanceSequence = new DanceSequence();
     m_activeDanceSequence->Init(m_day, m_pFireplace, this);
 }
 
 void GameView::StopDanceSequence()
 {
+    // activate pods
+    for (DancePedestral* d : m_pedestrals)
+    {
+        d->StopFXes();
+    }
+
     if (m_activeDanceSequence)
     {
         delete m_activeDanceSequence;

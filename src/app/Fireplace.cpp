@@ -7,7 +7,6 @@
 #define DEFAULT_RADIUS 6.f
 #define FIREPLACE_SPRITESCALE Vector2(SPRITE_SCALE,SPRITE_SCALE)
 #define FIREPLACE_SPRITESCALE_FX (Vector2(SPRITE_SCALE,SPRITE_SCALE) * .2f)
-#define FIREPLACE_SPRITESCALE_POS Vector2(-1.9, -1)
 
 Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 {
@@ -36,18 +35,16 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     m_fireFX1->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_fireFX1->SetEmitWorld(false);
     m_fireFX1->SetScale(FIREPLACE_SPRITESCALE_FX);
-    m_fireFX1->SetPosition(FIREPLACE_SPRITESCALE_POS);
     Attach(m_fireFX1);
 
     m_fireFX2 = pView->CreateEmitter("FirePitFX2.pex");
     m_fireFX2->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_fireFX2->SetEmitWorld(false);
     m_fireFX2->SetScale(FIREPLACE_SPRITESCALE_FX);
-    m_fireFX2->SetPosition(FIREPLACE_SPRITESCALE_POS);
     Attach(m_fireFX2);
 
-    //m_fireFX1->Start();
-    //m_fireFX2->Start();
+    m_fireFX1->Start();
+    m_fireFX2->Start();
 }
 
 Fireplace::~Fireplace()
@@ -138,7 +135,5 @@ void Fireplace::UpdateEntity()
     // if we are during the night, slowly reduce the fire's radius
     Vector2 scale = lightRadius.get() / DEFAULT_RADIUS * FIREPLACE_SPRITESCALE_FX;
     m_fireFX1->SetScale(scale);
-    m_fireFX1->SetPosition(FIREPLACE_SPRITESCALE_POS * scale);
     m_fireFX2->SetScale(scale);
-    m_fireFX2->SetPosition(FIREPLACE_SPRITESCALE_POS * scale);
 }

@@ -561,6 +561,7 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    in_pedestral->StartActivatedFX();
     m_stateTimer.stop();
     DropCarryOn();
     m_playerState = PlayerState::PEDESTRAL;
@@ -656,6 +657,7 @@ void Player::OnPedestralLockCancel()
     {
         m_playerState = PlayerState::IDLE;
         m_currentDancePedestral->m_isOccupied = false;
+        m_currentDancePedestral->StartEnabledFX();
         m_currentDancePedestral = nullptr;
     }
 }
