@@ -9,9 +9,9 @@ Tree::Tree(seed::View *pView, const Vector2& in_position)
     SetPosition(in_position);
 
     m_pSprite = pView->CreateSprite("tree.png");
-    m_pSprite->SetAlign(Vector2(.5f, .75f));
+    m_pSprite->SetAlign(Vector2(.5f, 0.875f));
     m_pSprite->SetScale(Vector2(SPRITE_SCALE));
-    //m_pSprite->SetPosition(Vector2(0, -1.f));
+    m_pSprite->SetPosition(Vector2(0, .25f) * SPRITE_SCALE);
     m_pSprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     Attach(m_pSprite);
 

@@ -23,8 +23,7 @@ enum class PlayerState
     IDLE,
     PEDESTRAL,
     ATTACKING,
-    CARYING_WOOD,
-    CARYING_ROCKS,
+    CARYING_STUFF,
     RECEIVING_DAMAGE,
     DEAD
 };
@@ -40,6 +39,7 @@ public:
     void OnRender();
     void UpdateEntity() override;
     bool HasCarryOn() const { return m_pCarryOn != nullptr; }
+    DropType GetDropType() const;
 
     DanceMoveButtonVect&    GetInputSequence() { return m_inputSequence; }
     int                     GetControllerIndex() { return m_controllerIndex; }

@@ -11,6 +11,7 @@
 #include "Monster.h"
 #include "BloodLayer.h"
 #include "Stockpile.h"
+#include "Stone.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -114,9 +115,62 @@ void GameView::OnUpdate()
     ClearEntities();
 }
 
+static std::unordered_map<StoreItemType, StoreItem> store = {
+    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 3}}, "scarecrow", OABtn}},
+    {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 2}}, "stone", OXBtn}}
+};
+
 void GameView::UpdateUIs()
 {
     OFindUI("store")->rect.position.x = m_storeAnim;
+
+    for (auto& storeItem : store)
+    {
+        bool canAfford = true;
+        for (auto& kv : storeItem.second.cost)
+        {
+            if (m_pStockpile->resources[kv.first] < kv.second)
+            {
+                canAfford = false;
+                break;
+            }
+        }
+        OFindUI(storeItem.second.ui)->isVisible = canAfford;
+    }
+}
+
+Entity* GameView::Buy(StoreItemType item)
+{
+    auto &storeItem = store[item];
+
+    // Check if we can afford
+    bool canAfford = true;
+    for (auto& kv : storeItem.cost)
+    {
+        if (m_pStockpile->resources[kv.first] < kv.second)
+        {
+            canAfford = false;
+            break;
+        }
+    }
+    if (!canAfford) return nullptr;
+
+    // Deplete resources
+    for (auto& kv : storeItem.cost)
+    {
+        m_pStockpile->resources[kv.first] -= kv.second;
+    }
+
+    // Create a new entity, give it to player
+    switch (item)
+    {
+        case StoreItemType::Scarecrow:
+            assert(false);
+            break;
+        case StoreItemType::Stone:
+            return new Stone(this);
+            break;
+    }
 }
 
 void GameView::UpdateMonsterSpawning()

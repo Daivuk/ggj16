@@ -56,6 +56,7 @@ static T CubicBezier(const std::vector<T>& in_controlPoints, float in_t)
 
 enum class DropType
 {
+    INVALID,
     Wood,
     Rock,
 };
