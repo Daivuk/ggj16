@@ -20,6 +20,7 @@ namespace seed
         PhysicsBody*    CreateBoxPhysicsForNode(Node* in_node, bool in_static);
         PhysicsBody*    CreateCirclePhysicsForNode(Node* in_node, float in_radius, bool in_static);
         PhysicsBody*    GetBodyForNode(Node* in_node);
+        void            DeleteBodyForNode(Node* in_node);
 
 
     private:

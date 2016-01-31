@@ -414,6 +414,8 @@ namespace seed
 
     void View::DeleteNode(Node* in_node)
     {
+        m_physics.DeleteBodyForNode(in_node);
+
         Node* parent = in_node->GetParent();
         if (parent)
         {

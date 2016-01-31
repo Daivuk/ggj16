@@ -14,10 +14,15 @@ namespace seed
 
     PhysicsBody::~PhysicsBody()
     {
+        if (m_body)
+        {
+            m_world->DestroyBody(m_body);
+        }
     }
 
     void PhysicsBody::InitAsBox(const Vector2& in_position, const Vector2& in_dimensions, b2World* in_world, bool in_static)
     {
+        m_world = in_world;
         m_isStatic = in_static;
 
         b2BodyDef bodyDef;
@@ -54,6 +59,7 @@ namespace seed
 
     void PhysicsBody::InitAsCircle(const Vector2& in_position, float in_radius, b2World* in_world, bool in_static)
     {
+        m_world = in_world;
         m_isStatic = in_static;
 
         b2BodyDef bodyDef;

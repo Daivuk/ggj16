@@ -39,5 +39,6 @@ namespace seed
         b2Fixture*  m_fixture;
         float       m_pixelToMeterRatio;
         bool        m_isStatic = false;
+        b2World*    m_world = nullptr;
     };
 }

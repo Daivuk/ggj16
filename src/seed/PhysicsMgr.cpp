@@ -112,4 +112,14 @@ namespace seed
         }
         return it->second;
     }
+
+    void PhysicsMgr::DeleteBodyForNode(Node* in_node)
+    {
+        BodyMap::iterator it = m_bodies.find(in_node);
+        if (it != m_bodies.end())
+        {
+            delete it->second;
+            m_bodies.erase(it);
+        }
+    }
 }
