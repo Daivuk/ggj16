@@ -160,6 +160,7 @@ Entity* GameView::Buy(StoreItemType item)
     {
         m_pStockpile->resources[kv.first] -= kv.second;
     }
+    m_pStockpile->UpdateTexts();
 
     // Create a new entity, give it to player
     switch (item)
@@ -171,6 +172,8 @@ Entity* GameView::Buy(StoreItemType item)
             return new Stone(this);
             break;
     }
+
+    return nullptr;
 }
 
 void GameView::UpdateMonsterSpawning()

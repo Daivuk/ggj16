@@ -77,6 +77,7 @@ private:
     void    UpdateVel();
     void    UpdateSpriteAnim();
     void    UpdatePedestralSnap();
+    void    UpdateStoneIndicator();
 
     void    Attack();
     void    OnDeath();
@@ -87,6 +88,7 @@ private:
     seed::SoundEmitter* m_drumSoundEmmiter = nullptr;
     seed::SoundEmitter* m_slashSoundEmmiter = nullptr;
     seed::Sprite*           m_damageBlood = nullptr;
+    seed::Sprite*           m_dottedLine = nullptr;
     seed::SoundEmitter*     m_damageSound = nullptr;
     seed::SoundEmitter*     m_deathSound = nullptr;
 

@@ -74,6 +74,20 @@ bool Stockpile::IsAround(Player* pPlayer) const
             playerPos.y <= myPos.y + 1.f;
 }
 
+void Stockpile::UpdateTexts()
+{
+    {
+        std::stringstream ss;
+        ss << std::setw(2) << std::setfill('0') << resources[DropType::Rock];
+        m_pRockText->SetCaption(ss.str());
+    }
+    {
+        std::stringstream ss;
+        ss << std::setw(2) << std::setfill('0') << resources[DropType::Wood];
+        m_pWoodText->SetCaption(ss.str());
+    }
+}
+
 void Stockpile::UpdateEntity()
 {
     bool bShowStore = false;
@@ -94,18 +108,14 @@ void Stockpile::UpdateEntity()
                         OPlaySound("RitualSFX_Stone_Collect.wav");
                         m_pRockSprite->GetPositionAnim().startKeyframed(Vector2(8, 4),
                         {OAnimAppleStyleBounce(Vector2(8, 4), Vector2(8, -2))});
-                        std::stringstream ss;
-                        ss << std::setw(2) << std::setfill('0') << resources[dropType];
-                        m_pRockText->SetCaption(ss.str());
+                        UpdateTexts();
                     }
                     if (dropType == DropType::Wood)
                     {
                         OPlaySound("RitualSFX_Wood_Collect.wav");
                         m_pWoodSprite->GetPositionAnim().startKeyframed(Vector2(22, 4),
                         {OAnimAppleStyleBounce(Vector2(22, 4), Vector2(22, -2))});
-                        std::stringstream ss;
-                        ss << std::setw(2) << std::setfill('0') << resources[dropType];
-                        m_pWoodText->SetCaption(ss.str());
+                        UpdateTexts();
                     }
                 }
             }

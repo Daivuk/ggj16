@@ -25,6 +25,8 @@ public:
 
     bool IsAround(Player* pPlayer) const;
 
+    void UpdateTexts();
+
 private:
     seed::View* m_pView = nullptr;
     seed::Sprite* m_pRockSprite = nullptr;
