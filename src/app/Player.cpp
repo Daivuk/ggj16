@@ -93,6 +93,45 @@ void Player::UpdateEntity()
     UpdatePedestralSnap();
     Entity::UpdateEntity();
     UpdateStoneIndicator();
+
+    if (m_playerState == PlayerState::CARYING_STUFF && m_pCarryOn)
+    {
+        switch (m_currentDirection)
+        {
+            case ePlayerDirection::LEFT:
+                m_pCarryOn->SetPosition(Vector2(-.5f, -.25f));
+                if (m_pCarryOn->GetZindex() < 0)
+                {
+                    Detach(m_pCarryOn);
+                    Attach(m_pCarryOn, 40);
+                }
+                break;
+            case ePlayerDirection::RIGHT:
+                m_pCarryOn->SetPosition(Vector2(.5f, -.25f));
+                if (m_pCarryOn->GetZindex() < 0)
+                {
+                    Detach(m_pCarryOn);
+                    Attach(m_pCarryOn, 40);
+                }
+                break;
+            case ePlayerDirection::UP:
+                m_pCarryOn->SetPosition(Vector2(0.f, -1.0f));
+                if (m_pCarryOn->GetZindex() > 0)
+                {
+                    Detach(m_pCarryOn);
+                    Attach(m_pCarryOn, -2);
+                }
+                break;
+            case ePlayerDirection::DOWN:
+                m_pCarryOn->SetPosition(Vector2(0.f, 0.f));
+                if (m_pCarryOn->GetZindex() < 0)
+                {
+                    Detach(m_pCarryOn);
+                    Attach(m_pCarryOn, 40);
+                }
+                break;
+        }
+    }
 }
 
 void Player::UpdateStoneIndicator()
@@ -462,7 +501,7 @@ void Player::UpdateInputs()
     if (m_playerState == PlayerState::IDLE && g_gameView->GetStockpile()->IsAround(this))
     {
         Entity* pBoughtEntity = nullptr;
-        if (OGamePadJustPressed(OABtn, m_controllerIndex))
+        if (OGamePadJustPressed(OYBtn, m_controllerIndex))
         {
             pBoughtEntity = g_gameView->Buy(StoreItemType::Scarecrow);
         }

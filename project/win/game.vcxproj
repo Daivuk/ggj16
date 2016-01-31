@@ -143,6 +143,7 @@
     <ClCompile Include="..\..\src\app\Monster.cpp" />
     <ClCompile Include="..\..\src\app\Player.cpp" />
     <ClCompile Include="..\..\src\app\Rock.cpp" />
+    <ClCompile Include="..\..\src\app\Scarecrow.cpp" />
     <ClCompile Include="..\..\src\app\SplashView.cpp" />
     <ClCompile Include="..\..\src\app\StartView.cpp" />
     <ClCompile Include="..\..\src\app\Stockpile.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="..\..\src\app\Monster.h" />
     <ClInclude Include="..\..\src\app\Player.h" />
     <ClInclude Include="..\..\src\app\Rock.h" />
+    <ClInclude Include="..\..\src\app\Scarecrow.h" />
     <ClInclude Include="..\..\src\app\SplashView.h" />
     <ClInclude Include="..\..\src\app\StartView.h" />
     <ClInclude Include="..\..\src\app\Stockpile.h" />
