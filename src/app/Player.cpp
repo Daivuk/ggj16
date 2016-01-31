@@ -32,9 +32,9 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_container = in_container;
     SetPosition(in_position);
 
-    m_slash = m_container->CreateSprite("slash.png");
+    m_slash = m_container->CreateSprite("Staff_Weapon.png");
     m_slash->SetAlign(Vector2(.5f, 1.f));
-    m_slash->SetScale(Vector2(SPRITE_SCALE) * .15f);
+    m_slash->SetScale(Vector2(SPRITE_SCALE) * .25f);
     m_slash->SetVisible(false);
     m_slash->SetPosition(Vector2(0, -.5f));
     m_slash->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
