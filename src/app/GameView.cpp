@@ -113,7 +113,10 @@ void GameView::OnUpdate()
         {
             // we are done
             SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+            return;
         }
+        UpdateCamera();
+        UpdateUIs();
         return;
     }
 
