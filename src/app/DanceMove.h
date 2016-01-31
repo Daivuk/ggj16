@@ -12,10 +12,11 @@ public:
 
     void Show(float in_time, Entity* in_entity, seed::View* in_container);
     void Hide();
+    bool IsDoneHiding();
 
     bool PlayerNeedsToComplete(int in_playerControllerIndex);
     bool IsNailed(DanceMoveButtonVect& in_playerInputs, int in_playerControllerIndex);
-
+    
 private:
     DanceMoveButtonVect     m_buttons;  // button that needs to be pressed to nail this move!
     seed::SpriteVect        m_displayedButtons;

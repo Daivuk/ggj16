@@ -67,8 +67,26 @@ void DanceSequence::ShowNextMove()
 {
     if (m_currentDanceMove)
     {
-        m_currentDanceMove->Hide();
+        if (!m_waitingForMoveToHide)
+        {
+            m_currentDanceMove->Hide();
+            m_waitingForMoveToHide = true;
+            return;
+        }
+        else
+        {
+            if (m_currentDanceMove->IsDoneHiding())
+            {
+                m_currentDanceMove = nullptr;
+                m_waitingForMoveToHide = false;
+            }
+            else
+            {
+                return;
+            }
+        }
     }
+
     m_timeActive = 0;
     if (m_currentDanceMoveIndex >= (int)m_moves.size() - 1)
     {
