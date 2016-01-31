@@ -228,7 +228,7 @@ void Player::Attack()
         if (monster)
         {
             bEnemyHit = true;
-            monster->InflictDamage(100);
+            monster->InflictDamage(50.f);
             Vector2 dir = monster->GetPosition() - m_position;
             dir.Normalize();
             monster->AfterDamagePush(dir);
@@ -494,6 +494,7 @@ void Player::AfterDamagePush(const Vector2& in_direction)
     {
         m_lastState = m_playerState;
     }
+    OnPedestralLockCancel();
     m_playerState = PlayerState::RECEIVING_DAMAGE;
 
     const float pushForce = 20.f;

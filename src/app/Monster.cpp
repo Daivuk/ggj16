@@ -190,9 +190,10 @@ void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
     // start a monster anim
 
     // inflict damage to players
+    const float damageToPlayer = 10.f;
     for (Entity* e : in_attackablePlayers)
     {
-        e->InflictDamage(50.f);
+        e->InflictDamage(damageToPlayer);
         Player* p = (Player*)e;
 
         Vector2 dir = p->GetPosition() - m_position;
