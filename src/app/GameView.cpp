@@ -105,6 +105,12 @@ void GameView::OnUpdate()
     UpdateCamera();
     UpdateUIs();
 
+    // check if we are game over
+    if (AllPlayersAreDead())
+    {
+        OnGameOver();
+    }
+
     ClearEntities();
 }
 
@@ -720,6 +726,16 @@ void GameView::OnGameOver()
 
     m_gameover = true;
     SendCommand(seed::eAppCommand::PUSH_VIEW, "GameOverView");
+}
+
+bool GameView::AllPlayersAreDead()
+{
+    for (Player* p : m_players)
+    {
+        if (p->IsAlive())
+            return false;
+    }
+    return true;
 }
 
 Player* GameView::GetClosestPlayer(const Vector2& position) const

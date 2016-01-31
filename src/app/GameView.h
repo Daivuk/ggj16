@@ -139,6 +139,8 @@ private:
     vector<Entity*> m_entitiesToAdd;
     OAnimf          m_storeAnim;
 
+    bool AllPlayersAreDead();
+
 };
 
 extern GameView* g_gameView;

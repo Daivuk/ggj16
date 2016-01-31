@@ -449,7 +449,6 @@ namespace seed
     void View::DeleteNodes()
     {
         DeleteNode(m_rootNode);
-        delete m_rootNode;
         m_pooledNodes.clear();
         m_nodePool.clear();
     }

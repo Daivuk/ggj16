@@ -319,7 +319,7 @@ void Player::UpdateInputs()
             }
             else
             {
-                m_playerState = m_lastState;
+                m_playerState = PlayerState::IDLE;
             }
         }
         else
@@ -376,7 +376,10 @@ void Player::UpdateInputs()
 
 void Player::UpdatePedestralSnap()
 {
-    if (m_playerState != PlayerState::PEDESTRAL && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() == 0.f)
+    if (m_playerState != PlayerState::PEDESTRAL
+        && g_gameView->GetTimeOfDay() == TimeOfDay::Night
+        && m_thumb.LengthSquared() == 0.f
+        && m_playerState != PlayerState::RECEIVING_DAMAGE)
     {
         // check if we should snap to a apedestral
         Tile* tile = g_gameView->GetTileAt(m_position);
