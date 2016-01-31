@@ -237,7 +237,7 @@ void Player::UpdateVel()
         // apply thumb pressure to velocity
         m_vel = m_thumb * maxSpeed;
     }
-    UpdateSpriteAnim();
+    if (!m_isDancing) UpdateSpriteAnim();
     //Vector2 newPos = GetPosition();
     //newPos += m_vel * ODT;
     
@@ -277,6 +277,7 @@ void Player::OnSacrifice()
     OnDeath();
     g_gameView->OnPlayerSacrifice(this);
     m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
+    m_physicsBody->SetTransform(GetPosition(), 0);
 }
 
 void Player::UpdateSpriteAnim()
@@ -708,6 +709,7 @@ DropType Player::GiveCarryOn()
 
 void Player::OnPedestralLockCancel()
 {
+    m_isDancing = false;
     if (m_currentDancePedestral)
     {
         m_playerState = PlayerState::IDLE;
@@ -733,6 +735,8 @@ void Player::OnDanceSequenceSuccess()
     }
 
     m_drumSoundEmmiter->Play();
+
+    m_sprite->SetSpriteAnim("dance" + ::to_string(onut::randi() % 4) + std::to_string(m_controllerIndex));
 
     m_danceMoveNailed->GetPositionAnim().start(Vector2(0, 0), Vector2(0, -20.f), .2f, OEaseBoth);
     m_danceMoveNailed->GetScaleAnim().startKeyframed(

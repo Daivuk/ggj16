@@ -232,6 +232,10 @@ void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
 
     OPlaySoundCue("RitualCues_Enemy_Attack.cue");
 
+    m_pPhysicBody->SetLinearVel(Vector2(0, 0));
+    m_pPhysicBody->SetAngularVel(0);
+    m_pPhysicBody->SetTransform(GetPosition(), 0);
+
     // inflict damage to players
     const float damageToPlayer = 10.f;
     for (Entity* e : in_attackablePlayers)

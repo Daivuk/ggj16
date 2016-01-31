@@ -622,12 +622,6 @@ void GameView::StartDanceSequence()
 
 void GameView::StopDanceSequence()
 {
-    // activate pods
-    for (DancePedestral* d : m_pedestrals)
-    {
-        d->StopFXes();
-    }
-
     if (m_activeDanceSequence)
     {
         delete m_activeDanceSequence;
@@ -637,6 +631,12 @@ void GameView::StopDanceSequence()
     for (Player* p : m_players)
     {
         p->OnPedestralLockCancel();
+    }
+
+    // activate pods
+    for (DancePedestral* d : m_pedestrals)
+    {
+        d->StopFXes();
     }
 }
 
@@ -936,7 +936,7 @@ void GameView::OnPlayerSacrifice(Player* in_player)
 {
     for (Player* p : m_players)
     {
-        if (p != in_player)
+        if (p != in_player && p->IsAlive())
         {
             p->RestoreFullHealth();
         }

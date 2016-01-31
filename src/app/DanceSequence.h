@@ -9,7 +9,7 @@ class DanceSequence
 public:
 
     DanceSequence() {};
-    virtual ~DanceSequence() {};
+    virtual ~DanceSequence();
 
     void Init(int in_difficultyLevel, Fireplace* in_fireplace, seed::View* in_container);
     bool Update(); // returns true when the current dance move expired

@@ -60,8 +60,13 @@ void StartView::OnUpdate()
                 m_dudes[i]->GetPositionAnim().startKeyframed(
                     Vector2(0, -3),
                     {
-                        {Vector2(0, -3), 0.f, OTeleport}, {Vector2(0, -5), .15f, OEaseOut}, {Vector2(0, -3), .3f, OBounceOut}
+                        {Vector2(0, -3), 0.f, OTeleport}, {Vector2(0, -10), .15f, OEaseOut}, {Vector2(0, -3), .3f, OBounceOut}
                     });
+                m_dudes[i]->SetSpriteAnim("dance" + std::to_string(i) + std::to_string(i));
+            }
+            else
+            {
+                m_dudes[i]->SetSpriteAnim("idle_down" + std::to_string(i));
             }
         }
         if (g_activePlayer[i])

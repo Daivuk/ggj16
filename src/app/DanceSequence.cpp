@@ -28,6 +28,14 @@ void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace, seed::
     ShowNextMove();
 }
 
+DanceSequence::~DanceSequence()
+{
+    if (m_currentDanceMove)
+    {
+        m_currentDanceMove->ClearButtons();
+    }
+}
+
 void DanceSequence::Skip()
 {
     m_timeActive = m_maxTime;
