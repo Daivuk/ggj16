@@ -43,4 +43,6 @@ void update()
 void render()
 {
 	s_runningApp->Render();
+
+    OGetBMFont("font.fnt")->draw("FPS: " + std::to_string(onut::getTimeInfo().getFPS()), Vector2::Zero);
 }

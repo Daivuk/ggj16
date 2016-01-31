@@ -89,6 +89,8 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
+    DeleteNode(m_pBloodLayer);
+    m_pBloodLayer = nullptr;
     delete m_pPather;
     m_pPather = nullptr;
     KillAllEntities();
@@ -155,7 +157,7 @@ void GameView::OnUpdate()
 
 static std::unordered_map<StoreItemType, StoreItem> store = {
     {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 2}}, "scarecrow", OYBtn}},
-    {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 2}}, "stone", OXBtn}}
+    {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 3}}, "stone", OXBtn}}
 };
 
 void GameView::UpdateUIs()
@@ -737,6 +739,7 @@ void GameView::GenerateMap()
             pos.y = std::round(pos.y) + .5f;
             if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
                 pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
+            if (pos.x < 1.f || pos.y < 1.f || pos.x >(float)m_pTilemap->getWidth() - 1.f || pos.y >(float)m_pTilemap->getHeight() - 1.f) continue;
             auto pTile = GetTileAt(pos);
             if (!pTile) continue;
             if (pTile->isOccupied) continue;
@@ -758,6 +761,7 @@ void GameView::GenerateMap()
             pos.y = std::round(pos.y) + .5f;
             if (pos.x >= mapCenter.x - 3 && pos.y >= mapCenter.y - 3 &&
                 pos.x <= mapCenter.x + 3 && pos.y <= mapCenter.y + 3) continue;
+            if (pos.x < 1.f || pos.y < 1.f || pos.x >(float)m_pTilemap->getWidth() - 1.f || pos.y >(float)m_pTilemap->getHeight() - 1.f) continue;
             auto pTile = GetTileAt(pos);
             if (!pTile) continue;
             if (pTile->isOccupied) continue;
