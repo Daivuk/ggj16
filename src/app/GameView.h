@@ -121,6 +121,8 @@ private:
     void UpdateUIs();
 
     void ClearEntities();
+    void KillAllEntities();
+
     void StartDanceSequence();
     void StopDanceSequence();
     void OnTimeOfDayChanged(TimeOfDay timeOfDay);
