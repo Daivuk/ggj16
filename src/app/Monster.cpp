@@ -197,6 +197,40 @@ void Monster::CheckIfMonsterCanAttack(vector<Entity*>& inOut_attackablePlayers)
 void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
 {
     // start a monster anim
+    string newAnim;
+    bool flipped = false;
+    if (m_lastAnimDir.y < -0.70710678118654752440084436210485f)
+    {
+        // move up!
+        newAnim = "attack_up";
+    }
+
+    if (m_lastAnimDir.y > 0.70710678118654752440084436210485f)
+    {
+        // move down!
+        newAnim = "attack_down";
+    }
+
+    if (m_lastAnimDir.x < -0.70710678118654752440084436210485f)
+    {
+        // moving left
+        newAnim = "attack_down";
+        flipped = false;
+    }
+
+    if (m_lastAnimDir.x > 0.70710678118654752440084436210485f)
+    {
+        newAnim = "attack_down";
+        flipped = true;
+    }
+
+    if (newAnim.length())
+    {
+        m_sprite->SetSpriteAnim(newAnim);
+        m_sprite->SetFlipped(flipped, false);
+    }
+
+    OPlaySoundCue("RitualCues_Enemy_Attack.cue");
 
     // inflict damage to players
     const float damageToPlayer = 10.f;
@@ -271,36 +305,41 @@ void Monster::PathTo(const Vector2& position)
 
 void Monster::UpdateSpriteAnim(const Vector2& dir)
 {
-    string newAnim;
-    bool flipped = false;
-    if (dir.y < -0.70710678118654752440084436210485f)
+    if (m_state != MonsterState::ATTACK)
     {
-        // move up!
-        newAnim = "run_up";
-    }
+        m_lastAnimDir = dir;
 
-    if (dir.y > 0.70710678118654752440084436210485f)
-    {
-        // move down!
-        newAnim = "run_down";
-    }
+        string newAnim;
+        bool flipped = false;
+        if (dir.y < -0.70710678118654752440084436210485f)
+        {
+            // move up!
+            newAnim = "run_up";
+        }
 
-    if (dir.x < -0.70710678118654752440084436210485f)
-    {
-        // moving left
-        newAnim = "run_down";
-        flipped = false;
-    }
+        if (dir.y > 0.70710678118654752440084436210485f)
+        {
+            // move down!
+            newAnim = "run_down";
+        }
 
-    if (dir.x > 0.70710678118654752440084436210485f)
-    {
-        newAnim = "run_down";
-        flipped = true;
-    }
+        if (dir.x < -0.70710678118654752440084436210485f)
+        {
+            // moving left
+            newAnim = "run_down";
+            flipped = false;
+        }
 
-    if (newAnim.length())
-    {
-        m_sprite->SetSpriteAnim(newAnim);
-        m_sprite->SetFlipped(flipped, false);
+        if (dir.x > 0.70710678118654752440084436210485f)
+        {
+            newAnim = "run_down";
+            flipped = true;
+        }
+
+        if (newAnim.length())
+        {
+            m_sprite->SetSpriteAnim(newAnim);
+            m_sprite->SetFlipped(flipped, false);
+        }
     }
 }

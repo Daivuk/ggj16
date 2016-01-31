@@ -53,6 +53,7 @@ private:
     seed::SoundEmitter*     m_damageSound = nullptr;
     seed::SoundEmitter*     m_deathSound = nullptr;
     OAnim<Vector2> m_velPushAnim;
+    Vector2                 m_lastAnimDir;
     
     void OnDeath();
 
