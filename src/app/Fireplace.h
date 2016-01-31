@@ -16,6 +16,7 @@ public:
     void Grow();
     void GrowToMax();
     virtual void UpdateEntity();
+    void OnGameOver();
 
 private:
 

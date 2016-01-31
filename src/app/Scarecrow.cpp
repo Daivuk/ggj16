@@ -19,8 +19,8 @@ Scarecrow::Scarecrow(seed::View* pView)
     m_pEmitters[0] = pView->CreateEmitter("ScarecrowFireFX.pex");
     m_pEmitters[0]->SetEmitWorld(false);
     m_pEmitters[0]->SetPosition(Vector2(0, -10));
-    m_pEmitters[0]->SetScale(Vector2(.25f));
-    m_pSprite->Attach(m_pEmitters[0]);
+    m_pEmitters[0]->SetScale(Vector2(1));
+    m_pSprite->Attach(m_pEmitters[0], -1);
 }
 
 void Scarecrow::Place(const Vector2& position)
