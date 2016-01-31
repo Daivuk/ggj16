@@ -127,7 +127,7 @@ void GameView::OnUpdate()
 }
 
 static std::unordered_map<StoreItemType, StoreItem> store = {
-    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 3}}, "scarecrow", OYBtn}},
+    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 2}}, "scarecrow", OYBtn}},
     {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 2}}, "stone", OXBtn}}
 };
 

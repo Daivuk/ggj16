@@ -14,5 +14,5 @@
     <Sprite name="ped2" zIndex="2147483647" x="846" y="610" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral2.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
     <Sprite name="ped3" zIndex="2147483647" x="988" y="558" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral3.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
     <Emitter name="" zIndex="2147483647" x="247" y="556.71429" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="DancePodActivatedFX.pex" filter="Linear" blend="Add" emitWorld="1"/>
-    <SpriteString name="" zIndex="2147483647" x="640" y="132.57141" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0" font="cartoon.fnt" caption="Fire Whisperers"/>
+    <SpriteString name="" zIndex="2147483647" x="640" y="132.57141" scaleX="1.2316602" scaleY="1.2316602" angle="0" r="1" g="0.65098041" b="0.1254902" a="1" visible="1" alignX="0.5" alignY="0.5" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0" font="feastofflesh.fnt" caption="Fire Whisperers"/>
 </View>
