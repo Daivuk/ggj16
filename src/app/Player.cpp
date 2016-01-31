@@ -63,7 +63,7 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_slashSoundEmmiter->SetPositionBasedBalance(true);
     Attach(m_slashSoundEmmiter);
 
-    m_sprite = m_container->CreateSpriteWithSpriteAnim("guruAnims.spriteanim", "idle_down");
+    m_sprite = m_container->CreateSpriteWithSpriteAnim("guruAnims.spriteanim", "idle_down" + std::to_string(m_controllerIndex));
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_sprite->SetScale(Vector2(SPRITE_SCALE * .65f));
     Attach(m_sprite, PLAYER_Z_INDEX);
@@ -83,7 +83,7 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_deathSound->SetPositionBasedVolume(false);
     Attach(m_deathSound);
 
-    m_idleAnim = "idle_down";
+    m_idleAnim = "idle_down" + std::to_string(m_controllerIndex);
 
     m_physicsBody = in_container->CreateCirclePhysicsForNode(this, .25f, false);
 
@@ -261,7 +261,7 @@ void Player::OnSacrifice()
     m_playerState = PlayerState::DEAD;
     OnDeath();
     g_gameView->OnPlayerSacrifice(this);
-    m_sprite->SetSpriteAnim("idle_down");
+    m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
 }
 
 void Player::UpdateSpriteAnim()
@@ -284,13 +284,13 @@ void Player::UpdateSpriteAnim()
                 if (m_vel.x < 0)
                 {
                     newAnim = "run_side";
-                    m_idleAnim = "idle_side";
+                    m_idleAnim = "idle_side" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::LEFT;
                 }
                 else
                 {
                     newAnim = "run_side";
-                    m_idleAnim = "idle_side";
+                    m_idleAnim = "idle_side" + std::to_string(m_controllerIndex);
                     flipped = true;
                     m_currentDirection = ePlayerDirection::RIGHT;
                 }
@@ -301,14 +301,14 @@ void Player::UpdateSpriteAnim()
                 {
                     // move up!
                     newAnim = "run_up";
-                    m_idleAnim = "idle_up";
+                    m_idleAnim = "idle_up" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::UP;
                 }
                 else
                 {
                     // move down!
                     newAnim = "run_down";
-                    m_idleAnim = "idle_down";
+                    m_idleAnim = "idle_down" + std::to_string(m_controllerIndex);
                     m_currentDirection = ePlayerDirection::DOWN;
                 }
             }
@@ -316,7 +316,7 @@ void Player::UpdateSpriteAnim()
 
         if (newAnim.length())
         {
-            m_sprite->SetSpriteAnim(newAnim);
+            m_sprite->SetSpriteAnim(newAnim + std::to_string(m_controllerIndex));
             m_sprite->SetFlipped(flipped, false);
         }
         else
@@ -605,7 +605,7 @@ void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
     DropCarryOn();
     m_playerState = PlayerState::PEDESTRAL;
     m_container->GetPhysicsForNode(this)->SetTransform(in_pedestral->GetPosition(), 0);
-    m_sprite->SetSpriteAnim("idle_down");
+    m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
     in_pedestral->m_isOccupied = true;
     m_currentDancePedestral = in_pedestral;
     m_slash->SetVisible(false);
