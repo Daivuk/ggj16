@@ -8,6 +8,8 @@
 Scarecrow::Scarecrow(seed::View* pView)
     : m_pView(pView)
 {
+    m_health = 200;
+
     m_pSprite = pView->CreateSprite("scarecrow.png");
     m_pSprite->SetScale(Vector2(SPRITE_SCALE));
     m_pSprite->SetAlign(Vector2(.5f, .75f));

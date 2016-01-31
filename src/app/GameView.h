@@ -168,6 +168,8 @@ private:
 
     bool AllPlayersAreDead();
 
+    seed::Sprite*       m_fadeQuad = nullptr;
+
 };
 
 extern GameView* g_gameView;

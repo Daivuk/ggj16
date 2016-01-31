@@ -8,6 +8,11 @@
 #define FIREPLACE_SPRITESCALE Vector2(SPRITE_SCALE,SPRITE_SCALE)
 #define FIREPLACE_SPRITESCALE_FX (Vector2(SPRITE_SCALE,SPRITE_SCALE) * .2f)
 
+// balancing stuff
+#define DIMINISHING_FACTOR 0.4f
+#define GROWING_FACTOR 2.f
+
+
 Fireplace::Fireplace(seed::View* pView, const Vector2& position)
 {
     m_position = position;
@@ -61,8 +66,7 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    const float growingFactor = 2.f;
-    m_targetRadius += growingFactor;
+    m_targetRadius += GROWING_FACTOR;
     if (m_targetRadius > MAX_RADIUS)
     {
         m_targetRadius = MAX_RADIUS;
@@ -125,10 +129,8 @@ void Fireplace::UpdateEntity()
     
     if (!lightRadius.isPlaying() && g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
-        const float diminishingFactor = 0.2f;
-        
         // slowly diminish the fire
-        m_targetRadius -= diminishingFactor * ODT;
+        m_targetRadius -= DIMINISHING_FACTOR * ODT;
         lightRadius = m_targetRadius;
 
         if (m_targetRadius <= 0)

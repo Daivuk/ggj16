@@ -108,7 +108,17 @@ void GameView::CreateMusic()
 void GameView::OnUpdate()
 {
     if (m_gameover)
+    {
+        if (!m_fadeQuad->GetColorAnim().isPlaying())
+        {
+            // we are done
+            SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+            return;
+        }
+        UpdateCamera();
+        UpdateUIs();
         return;
+    }
 
     UpdateTime();
     UpdateDanceSequence();
@@ -283,36 +293,47 @@ void GameView::UpdateEntities()
 
 void GameView::UpdateCamera()
 {
-    // Fit players in view
-    Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
-    Vector2 maxPlayer(0.f);
-
-    if (m_players.empty()) return;
-
-    for (auto pPlayer : m_players)
+    bool bAnooneAline = false;
+    for (Player* p : m_players)
     {
-        minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
-        minPlayer.y = onut::min(pPlayer->GetPosition().y, minPlayer.y);
-        maxPlayer.x = onut::max(pPlayer->GetPosition().x, maxPlayer.x);
-        maxPlayer.y = onut::max(pPlayer->GetPosition().y, maxPlayer.y);
+        if (p->IsAlive())
+        {
+            bAnooneAline = true;
+            break;
+        }
     }
 
-    minPlayer.x -= 3;
-    minPlayer.y -= 3;
-    maxPlayer.x += 3;
-    maxPlayer.y += 3;
+    if (bAnooneAline)
+    {
+        // Fit players in view
+        Vector2 minPlayer((float)m_pTilemap->getWidth(), (float)m_pTilemap->getHeight());
+        Vector2 maxPlayer(0.f);
 
-    m_camera = (minPlayer + maxPlayer) * .5f;
+        for (auto pPlayer : m_players)
+        {
+            minPlayer.x = onut::min(pPlayer->GetPosition().x, minPlayer.x);
+            minPlayer.y = onut::min(pPlayer->GetPosition().y, minPlayer.y);
+            maxPlayer.x = onut::max(pPlayer->GetPosition().x, maxPlayer.x);
+            maxPlayer.y = onut::max(pPlayer->GetPosition().y, maxPlayer.y);
+        }
 
-    float playerViewHeight = maxPlayer.y - minPlayer.y;
-    float zoomH = OScreenHf / playerViewHeight;
-    if (zoomH > 64.f) zoomH = 64.f;
+        minPlayer.x -= 3;
+        minPlayer.y -= 3;
+        maxPlayer.x += 3;
+        maxPlayer.y += 3;
 
-    float playerViewWidth = maxPlayer.x - minPlayer.x;
-    float zoomW = OScreenWf / playerViewWidth;
-    if (zoomW > 64.f) zoomW = 64.f;
+        m_camera = (minPlayer + maxPlayer) * .5f;
 
-    m_zoom = onut::min(zoomW, zoomH);
+        float playerViewHeight = maxPlayer.y - minPlayer.y;
+        float zoomH = OScreenHf / playerViewHeight;
+        if (zoomH > 64.f) zoomH = 64.f;
+
+        float playerViewWidth = maxPlayer.x - minPlayer.x;
+        float zoomW = OScreenWf / playerViewWidth;
+        if (zoomW > 64.f) zoomW = 64.f;
+
+        m_zoom = onut::min(zoomW, zoomH);
+    }
 
     // Animate to target position
     m_cameraReal = Vector2::Lerp(m_cameraReal, m_camera, ODT * 1.5f);
@@ -828,11 +849,14 @@ void GameView::GrowFire()
 void GameView::OnGameOver()
 {
     StopDanceSequence();
-
-    // todo cleanup
-
     m_gameover = true;
-    SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
+
+    // start fading the quad anim
+    m_fadeQuad = CreateSprite("healthGaugeFill.png");
+    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 1.f), 5.f);
+    m_fadeQuad->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fadeQuad->SetScale(Vector2(100, 100));
+    AddNode(m_fadeQuad);
 }
 
 bool GameView::AllPlayersAreDead()

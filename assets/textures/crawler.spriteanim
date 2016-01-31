@@ -26,4 +26,23 @@
     <frame id="15"/>
     <frame id="16"/>
   </anim>
+  
+  <anim name="attack_down" fps="20" loop="false">
+    <frame id="18"/>
+    <frame id="19"/>
+    <frame id="20"/>
+    <frame id="21"/>
+    <frame id="22"/>
+    <frame id="23"/>
+    <frame id="24"/>
+  </anim>
+  <anim name="attack_up" fps="20" loop="false">
+    <frame id="27"/>
+    <frame id="28"/>
+    <frame id="29"/>
+    <frame id="30"/>
+    <frame id="31"/>
+    <frame id="32"/>
+    <frame id="33"/>
+  </anim>
 </sheet>

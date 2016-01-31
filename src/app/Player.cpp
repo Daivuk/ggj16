@@ -388,7 +388,7 @@ void Player::Attack()
     m_stateTimer.start(.2f, [this]{m_playerState = PlayerState::IDLE; });
 
     // check if we hit enemies
-    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position + attackOffset * .5f, 1.0f);
+    vector<Entity*> enemies = g_gameView->GetEntitiesInRadius(m_position + attackOffset * .5f, 2.0f);
     int nbMonster = 0;
     bool bEnemyHit = false;
     for (Entity* e : enemies)
