@@ -180,9 +180,12 @@ void Monster::CheckIfMonsterCanAttack(vector<Entity*>& inOut_attackablePlayers)
     const EntityVect& scarecrows = g_gameView->GetScarecrows();
     for (Player* p : players)
     {
-        if ((p->GetPosition() - m_position).LengthSquared() < monsterAttackRadius * monsterAttackRadius)
+        if (p->IsAlive())
         {
-            inOut_attackablePlayers.push_back(p);
+            if ((p->GetPosition() - m_position).LengthSquared() < monsterAttackRadius * monsterAttackRadius)
+            {
+                inOut_attackablePlayers.push_back(p);
+            }
         }
     }
     for (Entity* p : scarecrows)
