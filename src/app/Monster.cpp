@@ -153,7 +153,7 @@ void Monster::UpdateEntity()
             }
             else
             {
-                m_state = m_previousState;
+                m_state = MonsterState::IDLE;
             }
         }
     }
