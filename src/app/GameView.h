@@ -76,6 +76,9 @@ public:
 
     const PlayerVect& GetPlayers() const { return m_players; }
 
+    void ShowStore();
+    void HideStore();
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -93,6 +96,7 @@ private:
     void UpdateCamera();
     void UpdateDanceSequence();
     void UpdateMonsterSpawning();
+    void UpdateUIs();
 
     void ClearEntities();
     void StartDanceSequence();
@@ -133,6 +137,7 @@ private:
 
     vector<Entity*> m_entitiesToKill;
     vector<Entity*> m_entitiesToAdd;
+    OAnimf          m_storeAnim;
 
 };
 

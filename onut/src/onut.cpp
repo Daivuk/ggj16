@@ -403,6 +403,7 @@ namespace onut
             }
             OParticles->render();
             OSB->begin();
+            OSB->changeFiltering(onut::SpriteBatch::eFiltering::Nearest);
             OUI->render(*OUIContext);
             OSB->end();
             ORenderer->endFrame();
