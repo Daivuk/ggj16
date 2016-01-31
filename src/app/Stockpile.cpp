@@ -102,9 +102,9 @@ void Stockpile::UpdateEntity()
                 if (pPlayer->GetDropType() != DropType::INVALID)
                 {
                     auto dropType = pPlayer->GiveCarryOn();
-                    resources[dropType]++;
                     if (dropType == DropType::Rock)
                     {
+                        resources[dropType] += 2;
                         OPlaySound("RitualSFX_Stone_Deposit.wav");
                         m_pRockSprite->GetPositionAnim().startKeyframed(Vector2(8, 4),
                         {OAnimAppleStyleBounce(Vector2(8, 4), Vector2(8, -2))});
@@ -112,6 +112,7 @@ void Stockpile::UpdateEntity()
                     }
                     if (dropType == DropType::Wood)
                     {
+                        resources[dropType]++;
                         OPlaySound("RitualSFX_Wood_Deposit.wav");
                         m_pWoodSprite->GetPositionAnim().startKeyframed(Vector2(22, 4),
                         {OAnimAppleStyleBounce(Vector2(22, 4), Vector2(22, -2))});
