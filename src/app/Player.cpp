@@ -652,6 +652,7 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    OPlaySoundCue("RitualCues_TakePosition.cue");
     in_pedestral->StartActivatedFX();
     m_stateTimer.stop();
     DropCarryOn();
