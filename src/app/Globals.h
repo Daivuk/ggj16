@@ -39,8 +39,8 @@ static T CubicBezier(const std::vector<T>& in_controlPoints, float in_t)
 
 #define NIGHT_DURATION 42.f
 #define DAWN_DURATION 5.f
-#define DAY_DURATION 20.f
-#define DUSK_DURATION 8.f
+#define DAY_DURATION 10.f
+#define DUSK_DURATION 5.f
 
 #define DAY_TOTAL_DURATION (NIGHT_DURATION + DAWN_DURATION + DAY_DURATION + DUSK_DURATION)
 
