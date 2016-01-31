@@ -12,6 +12,7 @@
 #include "BloodLayer.h"
 #include "Stockpile.h"
 #include "Stone.h"
+#include "Scarecrow.h"
 
 #define TREE_DENSITY 50
 #define ROCK_DENSITY 30
@@ -116,7 +117,7 @@ void GameView::OnUpdate()
 }
 
 static std::unordered_map<StoreItemType, StoreItem> store = {
-    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 3}}, "scarecrow", OABtn}},
+    {StoreItemType::Scarecrow, {StoreItemType::Scarecrow, {{DropType::Wood, 3}}, "scarecrow", OYBtn}},
     {StoreItemType::Stone, {StoreItemType::Stone, {{DropType::Rock, 2}}, "stone", OXBtn}}
 };
 
@@ -166,7 +167,7 @@ Entity* GameView::Buy(StoreItemType item)
     switch (item)
     {
         case StoreItemType::Scarecrow:
-            assert(false);
+            return new Scarecrow(this);
             break;
         case StoreItemType::Stone:
             return new Stone(this);
