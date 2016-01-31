@@ -759,6 +759,8 @@ void Player::OnDanceSequenceSuccess()
         m_sprite->Attach(m_drumSoundEmmiter);
     }
 
+    OPlaySoundCue("RitualCues_ButtonPress.cue");
+
     m_drumSoundEmmiter->Play();
 
     m_sprite->SetSpriteAnim("dance" + ::to_string(onut::randi() % 4) + std::to_string(m_controllerIndex));
