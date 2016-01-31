@@ -69,10 +69,14 @@ private:
     Vector2         m_thumb;
     Vector2         m_vel;
     Entity*         m_pCarryOn = nullptr;
+
+    seed::Sprite*   m_healthGauge = nullptr;
+    seed::Sprite*   m_healthFill = nullptr;
     
 
     DanceMoveButtonVect m_inputSequence; // accumulated button sequence
 
+    void    UpdateHealthBar();
     void    UpdateInputs();
     void    UpdateVel();
     void    UpdateSpriteAnim();
@@ -100,5 +104,8 @@ private:
     OAnim<Vector2> m_velPushAnim;
 
     seed::PhysicsBody* m_physicsBody = nullptr;
+
+    float   m_lastHealthValue = 100.f;
+    OAnim<float>    m_healthAnim;
 
 };
