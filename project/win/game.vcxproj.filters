@@ -243,6 +243,9 @@
     <ClCompile Include="..\..\src\app\Drop.cpp">
       <Filter>app</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\app\Stone.cpp">
+      <Filter>app\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="seed">
@@ -511,6 +514,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\app\Drop.h">
       <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\app\Stone.h">
+      <Filter>app\Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

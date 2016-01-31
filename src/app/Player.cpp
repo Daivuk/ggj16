@@ -9,6 +9,9 @@
 #include "Rock.h"
 #include "Tree.h"
 #include "Drop.h"
+#include "Fireplace.h"
+#include "Stockpile.h"
+#include "Stone.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -34,7 +37,14 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_slash->SetScale(Vector2(SPRITE_SCALE) * .15f);
     m_slash->SetVisible(false);
     m_slash->SetPosition(Vector2(0, -.5f));
+    m_slash->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     Attach(m_slash, BEHIND_Z_INDEX);
+
+    m_dottedLine = m_container->CreateSprite("DottedLine.png");
+    m_dottedLine->SetScale(Vector2(SPRITE_SCALE));
+    m_dottedLine->SetVisible(false);
+    m_dottedLine->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    Attach(m_dottedLine, -10);
 
     m_slashSoundEmmiter = m_container->CreateSoundEmitter("RitualCues_Player_Attack.cue");
     m_slashSoundEmmiter->SetPositionBasedVolume(false);
@@ -47,6 +57,7 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     Attach(m_sprite, PLAYER_Z_INDEX);
 
     m_damageBlood = m_container->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
+    m_damageBlood->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
     m_damageBlood->SetVisible(false);
     Attach(m_damageBlood);
 
@@ -71,11 +82,45 @@ void Player::UpdateEntity()
     UpdateVel();
     UpdatePedestralSnap();
     Entity::UpdateEntity();
+    UpdateStoneIndicator();
+}
+
+void Player::UpdateStoneIndicator()
+{
+    if (m_playerState == PlayerState::CARYING_STUFF)
+    {
+        if (m_pCarryOn)
+        {
+            auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
+            if (pStone)
+            {
+                auto myPos = GetPosition();
+                auto snappedPosition = myPos;
+                snappedPosition.x = std::floor(snappedPosition.x) + .5f;
+                snappedPosition.y = std::floor(snappedPosition.y) + .5f;
+                m_dottedLine->SetVisible(true);
+                switch (m_currentDirection)
+                {
+                    case ePlayerDirection::LEFT:
+                        m_dottedLine->SetPosition(Vector2(snappedPosition.x - myPos.x - 1, snappedPosition.y - myPos.y));
+                        break;
+                    case ePlayerDirection::RIGHT:
+                        m_dottedLine->SetPosition(Vector2(snappedPosition.x + 1 - myPos.x, snappedPosition.y - myPos.y));
+                        break;
+                    case ePlayerDirection::UP:
+                        m_dottedLine->SetPosition(Vector2(snappedPosition.x - myPos.x, snappedPosition.y - 1 - myPos.y));
+                        break;
+                    case ePlayerDirection::DOWN:
+                        m_dottedLine->SetPosition(Vector2(snappedPosition.x - myPos.x, snappedPosition.y + 1 - myPos.y));
+                        break;
+                }
+            }
+        }
+    }
 }
 
 void Player::OnRender()
 {
-
 }
 
 void Player::UpdateVel()
@@ -108,6 +153,25 @@ void Player::UpdateVel()
     
     m_physicsBody->SetTransform(GetPosition(), 0);
     m_physicsBody->SetLinearVel(m_vel);
+
+    // check if we are in the fireplace
+    Fireplace* fire = g_gameView->GetFireplace();
+    const float fireplaceRadius = .5f;
+    if ((fire->GetPosition() - GetPosition()).LengthSquared() < fireplaceRadius * fireplaceRadius)
+    {
+        // this player dies
+        m_physicsBody->SetTransform(fire->GetPosition(), 0);
+        OnSacrifice();
+    }
+}
+
+void Player::OnSacrifice()
+{
+    m_health = 0;
+    m_playerState = PlayerState::DEAD;
+    OnDeath();
+    g_gameView->OnPlayerSacrifice(this);
+    m_sprite->SetSpriteAnim("idle_down");
 }
 
 void Player::UpdateSpriteAnim()
@@ -213,7 +277,7 @@ void Player::Attack()
         m_slash->SetFlippedH(true);
         m_slash->GetAngleAnim().start(-90, 90, .1f);
         Attach(m_slash, BEHIND_Z_INDEX);
-        attackOffset = Vector2(0, 1);
+        attackOffset = Vector2(0, -1);
     }
 
     m_stateTimer.start(.2f, [this]{m_playerState = PlayerState::IDLE; });
@@ -270,14 +334,14 @@ void Player::Attack()
                 if (rock)
                 {
                     m_stateTimer.stop();
-                    m_playerState = PlayerState::CARYING_ROCKS;
+                    m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Rock);
                     Attach(m_pCarryOn);
                 }
                 else if (tree)
                 {
                     m_stateTimer.stop();
-                    m_playerState = PlayerState::CARYING_WOOD;
+                    m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Wood);
                     Attach(m_pCarryOn);
                 }
@@ -319,7 +383,7 @@ void Player::UpdateInputs()
             }
             else
             {
-                m_playerState = m_lastState;
+                m_playerState = PlayerState::IDLE;
             }
         }
         else
@@ -372,11 +436,41 @@ void Player::UpdateInputs()
             }
         }
     }
+    if (m_playerState == PlayerState::IDLE && g_gameView->GetStockpile()->IsAround(this))
+    {
+        Entity* pBoughtEntity = nullptr;
+        if (OGamePadJustPressed(OABtn, m_controllerIndex))
+        {
+            pBoughtEntity = g_gameView->Buy(StoreItemType::Scarecrow);
+        }
+        else if (OGamePadJustPressed(OXBtn, m_controllerIndex))
+        {
+            pBoughtEntity = g_gameView->Buy(StoreItemType::Stone);
+        }
+        if (pBoughtEntity)
+        {
+            m_pCarryOn = pBoughtEntity;
+            m_playerState = PlayerState::CARYING_STUFF;
+            Attach(m_pCarryOn);
+        }
+    }
+}
+
+DropType Player::GetDropType() const
+{
+    if (!m_pCarryOn) return DropType::INVALID;
+    if (m_playerState != PlayerState::CARYING_STUFF) return DropType::INVALID;
+    auto pDrop = dynamic_cast<Drop*>(m_pCarryOn);
+    if (!pDrop) return DropType::INVALID;
+    return pDrop->type;
 }
 
 void Player::UpdatePedestralSnap()
 {
-    if (m_playerState != PlayerState::PEDESTRAL && g_gameView->GetTimeOfDay() == TimeOfDay::Night && m_thumb.LengthSquared() == 0.f)
+    if (m_playerState != PlayerState::PEDESTRAL
+        && g_gameView->GetTimeOfDay() == TimeOfDay::Night
+        && m_thumb.LengthSquared() == 0.f
+        && m_playerState != PlayerState::RECEIVING_DAMAGE)
     {
         // check if we should snap to a apedestral
         Tile* tile = g_gameView->GetTileAt(m_position);

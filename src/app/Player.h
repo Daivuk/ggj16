@@ -23,8 +23,7 @@ enum class PlayerState
     IDLE,
     PEDESTRAL,
     ATTACKING,
-    CARYING_WOOD,
-    CARYING_ROCKS,
+    CARYING_STUFF,
     RECEIVING_DAMAGE,
     DEAD
 };
@@ -40,6 +39,7 @@ public:
     void OnRender();
     void UpdateEntity() override;
     bool HasCarryOn() const { return m_pCarryOn != nullptr; }
+    DropType GetDropType() const;
 
     DanceMoveButtonVect&    GetInputSequence() { return m_inputSequence; }
     int                     GetControllerIndex() { return m_controllerIndex; }
@@ -77,15 +77,18 @@ private:
     void    UpdateVel();
     void    UpdateSpriteAnim();
     void    UpdatePedestralSnap();
+    void    UpdateStoneIndicator();
 
     void    Attack();
     void    OnDeath();
+    void    OnSacrifice();
 
     DancePedestral * m_currentDancePedestral = nullptr;
 
     seed::SoundEmitter* m_drumSoundEmmiter = nullptr;
     seed::SoundEmitter* m_slashSoundEmmiter = nullptr;
     seed::Sprite*           m_damageBlood = nullptr;
+    seed::Sprite*           m_dottedLine = nullptr;
     seed::SoundEmitter*     m_damageSound = nullptr;
     seed::SoundEmitter*     m_deathSound = nullptr;
 
@@ -97,4 +100,5 @@ private:
     OAnim<Vector2> m_velPushAnim;
 
     seed::PhysicsBody* m_physicsBody = nullptr;
+
 };
