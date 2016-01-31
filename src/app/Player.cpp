@@ -62,9 +62,9 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
     m_slashSoundEmmiter->SetPositionBasedBalance(true);
     Attach(m_slashSoundEmmiter);
 
-    m_sprite = m_container->CreateSpriteWithSpriteAnim("baltAnims.spriteanim", "idle_down");
+    m_sprite = m_container->CreateSpriteWithSpriteAnim("guruAnims.spriteanim", "idle_down");
     m_sprite->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    m_sprite->SetScale(Vector2(SPRITE_SCALE));
+    m_sprite->SetScale(Vector2(SPRITE_SCALE * .65f));
     Attach(m_sprite, PLAYER_Z_INDEX);
 
     m_damageBlood = m_container->CreateSpriteWithSpriteAnim("fxAnims.spriteanim", "blood");
