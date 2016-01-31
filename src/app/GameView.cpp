@@ -914,3 +914,8 @@ void GameView::OnPlayerSacrifice(Player* in_player)
     KillAllMonsters();
     m_pFireplace->GrowToMax();
 }
+
+void GameView::SplatGore(const Vector2& pos)
+{
+    m_pBloodLayer->SplatGore(pos);
+}

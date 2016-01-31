@@ -46,7 +46,6 @@ Monster::~Monster()
 
 void Monster::Kill()
 {
-    // Go gore
 }
 
 void Monster::OnDeath()
@@ -54,6 +53,8 @@ void Monster::OnDeath()
     m_deathSound->Play();
     m_sprite->GetScaleAnim().startFromCurrent(m_sprite->GetScale() * 2.f, .3f);
     m_sprite->GetColorAnim().startFromCurrent(Color(1, 1, 1, 0), .3f);
+
+    g_gameView->SplatGore(GetPosition());
 }
 
 void Monster::AfterDamagePush(const Vector2& in_direction)
