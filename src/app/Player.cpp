@@ -481,7 +481,7 @@ void Player::Attack()
                     m_playerState = PlayerState::CARYING_STUFF;
                     m_pCarryOn = new Drop(m_container, DropType::Wood);
                     Attach(m_pCarryOn);
-                    OPlaySoundCue("RitualSFX_Wood_Collect.cue");
+                    OPlaySoundCue("RitualCues_Wood_Collect.cue");
                 }
                 auto pTile = g_gameView->GetTileAt(pClosest->GetPosition());
                 if (pTile) pTile->isOccupied = false;

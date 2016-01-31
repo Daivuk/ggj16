@@ -37,10 +37,10 @@ static T CubicBezier(const std::vector<T>& in_controlPoints, float in_t)
 
 #define SPRITE_SCALE (1.f / 16.f)
 
-#define NIGHT_DURATION 60.f
+#define NIGHT_DURATION 42.f
 #define DAWN_DURATION 5.f
-#define DAY_DURATION 30.f
-#define DUSK_DURATION 15.f
+#define DAY_DURATION 20.f
+#define DUSK_DURATION 8.f
 
 #define DAY_TOTAL_DURATION (NIGHT_DURATION + DAWN_DURATION + DAY_DURATION + DUSK_DURATION)
 
