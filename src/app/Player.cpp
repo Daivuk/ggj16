@@ -12,6 +12,7 @@
 #include "Fireplace.h"
 #include "Stockpile.h"
 #include "Stone.h"
+#include "Scarecrow.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -141,7 +142,8 @@ void Player::UpdateStoneIndicator()
         if (m_pCarryOn)
         {
             auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-            if (pStone)
+            auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+            if (pStone || pScarecrow)
             {
                 auto myPos = GetPosition();
                 auto snappedPosition = myPos;
@@ -482,7 +484,8 @@ void Player::UpdateInputs()
         else if (m_pCarryOn)
         {
             auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-            if (pStone)
+            auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+            if (pStone || pScarecrow)
             {
                 if (OGamePadJustPressed(OABtn, m_controllerIndex))
                 {
@@ -572,7 +575,8 @@ void Player::DropCarryOn()
     if (!m_pCarryOn) return;
 
     auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
-    if (pStone)
+    auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
+    if (pStone || pScarecrow)
     {
         auto myPos = GetPosition();
         auto snappedPosition = myPos;
@@ -599,14 +603,20 @@ void Player::DropCarryOn()
         if (pTile)
         {
             if (pTile->isOccupied) return; // Can't place here!
-            pTile->isOccupied = true;
+            if (pStone)
+            {
+                pTile->isOccupied = true;
+            }
         }
 
         m_playerState = PlayerState::IDLE;
         OPlaySound("RitualSFX_Stone_Place.wav");
         m_dottedLine->SetVisible(false);
 
-        pStone->Place(snappedPosition);
+        Detach(m_pCarryOn);
+
+        if (pStone) pStone->Place(snappedPosition);
+        if (pScarecrow) pScarecrow->Place(snappedPosition);
 
         //m_container->DeleteNode(pStone);
         m_pCarryOn = nullptr;
@@ -624,6 +634,7 @@ void Player::DropCarryOn()
         }
 
         m_pCarryOn->SetPosition(GetPosition());
+        Detach(m_pCarryOn);
         g_gameView->AddEntity(m_pCarryOn);
         m_pCarryOn = nullptr;
         m_playerState = PlayerState::IDLE;
