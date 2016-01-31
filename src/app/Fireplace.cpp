@@ -40,7 +40,22 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     lightEnabled = true;
 
     m_whispers = pView->CreateSoundEmitter("RitualSFX_WhispersInTheDarkness.wav");
+    m_whispers->SetLoops(true);
     Attach(m_whispers);
+
+    m_baseSound = pView->CreateSoundEmitter("RitualSFX_Fire_BaseLoop.wav");
+    m_baseSound->SetVolume(.2f);
+    m_baseSound->SetLoops(true);
+    m_baseSound->Play();
+    Attach(m_baseSound);
+
+    m_roarSound = pView->CreateSoundEmitter("RitualSFX_Fire_Roar.wav");
+    m_roarSound->SetVolume(.1f);
+    m_roarSound->SetLoops(true);
+    Attach(m_roarSound);
+    
+
+    
 
     m_fireFX1 = pView->CreateEmitter("FirePitFX1.pex");
     m_fireFX1->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
@@ -96,9 +111,25 @@ void Fireplace::UpdateEntity()
     if (m_gameover)
         return;
 
-    // adjust whispers volume
+    // adjust whispers+roar volume
     if (g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
+        // roar
+        if (!m_roarSound->IsPlaying())
+        {
+            m_roarSound->Play();
+            m_roarSound->SetVolume(0);
+        }
+        else if (g_gameView->GetTimeOfDay() == TimeOfDay::Night && !m_roarSound->GetVolumeAnim().isPlaying() && m_roarSound->IsPlaying())
+        {
+            // lerp to the target value
+            float targetVolume = m_targetRadius / MAX_RADIUS;
+            float currentVolume = m_roarSound->GetVolume();
+            currentVolume = currentVolume + (targetVolume - currentVolume) * ODT;
+            m_roarSound->SetVolume(currentVolume);
+        }
+
+        // whispers
         if (!m_whispers->IsPlaying())
         {
             m_whispers->Play();
@@ -115,6 +146,18 @@ void Fireplace::UpdateEntity()
     }
     else
     {
+        //roar
+        if (m_roarSound->GetVolume() > 0 && !m_roarSound->GetVolumeAnim().isPlaying())
+        {
+            m_roarSound->GetVolumeAnim().startFromCurrent(0, .5f);
+        }
+        else if (m_roarSound->GetVolume() == 0)
+        {
+            m_roarSound->Stop();
+        }
+
+
+        // whipsers
         if (m_whispers->GetVolume() > 0 && !m_whispers->GetVolumeAnim().isPlaying())
         {
             m_whispers->GetVolumeAnim().startFromCurrent(0, .5f);
