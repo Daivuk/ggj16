@@ -10,6 +10,8 @@ DanceMove::DanceMove(const DanceMoveButtonVect& in_buttons)
 
 void DanceMove::Show(float in_time, Entity* in_entity, seed::View* in_container)
 {
+    OPlaySoundCue("RitualCues_LetterAppear.cue");
+
     m_playerCompleted.clear();
     m_container = in_container;
     const float timeToDisplayMove = in_time;
