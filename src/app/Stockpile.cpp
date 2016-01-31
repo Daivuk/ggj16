@@ -105,14 +105,14 @@ void Stockpile::UpdateEntity()
                     resources[dropType]++;
                     if (dropType == DropType::Rock)
                     {
-                        OPlaySound("RitualSFX_Stone_Collect.wav");
+                        OPlaySoundCue("RitualCues_Stone_Mine.cue");
                         m_pRockSprite->GetPositionAnim().startKeyframed(Vector2(8, 4),
                         {OAnimAppleStyleBounce(Vector2(8, 4), Vector2(8, -2))});
                         UpdateTexts();
                     }
                     if (dropType == DropType::Wood)
                     {
-                        OPlaySound("RitualSFX_Wood_Collect.wav");
+                        OPlaySoundCue("RitualCues_Wood_Chop.cue");
                         m_pWoodSprite->GetPositionAnim().startKeyframed(Vector2(22, 4),
                         {OAnimAppleStyleBounce(Vector2(22, 4), Vector2(22, -2))});
                         UpdateTexts();

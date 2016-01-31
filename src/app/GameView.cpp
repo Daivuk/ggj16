@@ -713,6 +713,11 @@ eTile GameView::GetTileIdAt(const Vector2& position) const
     return (eTile)m_pTilemap->getTileAt(m_pTileLayer, (int)position.x, (int)position.y);
 }
 
+void GameView::SetTileIdAt(const Vector2& position, eTile tileId)
+{
+    m_pTilemap->setTileAt(m_pTileLayer, (int)position.x, (int)position.y, (int)tileId);
+}
+
 Tile *GameView::GetTileAt(const Vector2& position) const
 {
     auto x = (int)position.x;
