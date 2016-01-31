@@ -12,6 +12,7 @@ public:
     virtual ~Fireplace();
 
     void Grow();
+    void GrowToMax();
     virtual void UpdateEntity();
 
 private:

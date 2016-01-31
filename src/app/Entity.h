@@ -16,6 +16,7 @@ public:
     float GetCollisionRadius() const { return m_collisionRadius; }
 
     virtual bool InflictDamage(float in_damage); // return true if the damage killed it
+    virtual void RestoreFullHealth() { m_health = 100.f; }
     
 protected:
     bool m_collide = false;

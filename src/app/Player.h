@@ -80,6 +80,7 @@ private:
 
     void    Attack();
     void    OnDeath();
+    void    OnSacrifice();
 
     DancePedestral * m_currentDancePedestral = nullptr;
 
@@ -97,4 +98,5 @@ private:
     OAnim<Vector2> m_velPushAnim;
 
     seed::PhysicsBody* m_physicsBody = nullptr;
+
 };

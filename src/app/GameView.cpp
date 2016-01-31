@@ -379,17 +379,13 @@ void GameView::ClearEntities()
 
 void GameView::KillAllMonsters()
 {
-    for (auto it = m_entities.begin(); it != m_entities.end();)
+    for (auto it = m_entities.begin(); it != m_entities.end(); ++it )
     {
         auto pMonster = dynamic_cast<Monster*>(*it);
         if (pMonster)
         {
-            pMonster->Kill();
-            it = m_entities.erase(it);
-            DeleteNode(pMonster);
-            continue;
+            KillEntity(pMonster);
         }
-        ++it;
     }
 }
 
@@ -767,4 +763,17 @@ void GameView::HideStore()
 {
     m_storeAnim.stop(false);
     m_storeAnim.startFromCurrent(OFindUI("store")->rect.size.x, .25f, OEaseIn);
+}
+
+void GameView::OnPlayerSacrifice(Player* in_player)
+{
+    for (Player* p : m_players)
+    {
+        if (p != in_player)
+        {
+            p->RestoreFullHealth();
+        }
+    }
+    KillAllMonsters();
+    m_pFireplace->GrowToMax();
 }

@@ -79,6 +79,9 @@ public:
     void ShowStore();
     void HideStore();
 
+    Fireplace* GetFireplace() { return m_pFireplace; }
+    void OnPlayerSacrifice(Player* in_player);
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 

@@ -33,7 +33,7 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    const float growingFactor = 2.f;
+    const float growingFactor = 4.f;
     m_targetRadius += growingFactor;
     lightRadius.startKeyframed(
     lightRadius.get(), // From
@@ -45,6 +45,15 @@ void Fireplace::Grow()
     );
 }
 
+void Fireplace::GrowToMax()
+{
+    const float maxFireRadius = 20.f;
+    while (m_targetRadius < maxFireRadius)
+    {
+        Grow();
+    }
+}
+
 void Fireplace::UpdateEntity()
 {
     Entity::UpdateEntity();
@@ -54,7 +63,7 @@ void Fireplace::UpdateEntity()
 
     if (!lightRadius.isPlaying() && g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
-        const float diminishingFactor = 0.5f;
+        const float diminishingFactor = 0.2f;
         
         // slowly diminish the fire
         //m_targetRadius -= diminishingFactor * ODT;

@@ -9,6 +9,7 @@
 #include "Rock.h"
 #include "Tree.h"
 #include "Drop.h"
+#include "Fireplace.h"
 
 #define BEHIND_Z_INDEX 10
 #define PLAYER_Z_INDEX 20
@@ -108,6 +109,25 @@ void Player::UpdateVel()
     
     m_physicsBody->SetTransform(GetPosition(), 0);
     m_physicsBody->SetLinearVel(m_vel);
+
+    // check if we are in the fireplace
+    Fireplace* fire = g_gameView->GetFireplace();
+    const float fireplaceRadius = .5f;
+    if ((fire->GetPosition() - GetPosition()).LengthSquared() < fireplaceRadius * fireplaceRadius)
+    {
+        // this player dies
+        m_physicsBody->SetTransform(fire->GetPosition(), 0);
+        OnSacrifice();
+    }
+}
+
+void Player::OnSacrifice()
+{
+    m_health = 0;
+    m_playerState = PlayerState::DEAD;
+    OnDeath();
+    g_gameView->OnPlayerSacrifice(this);
+    m_sprite->SetSpriteAnim("idle_down");
 }
 
 void Player::UpdateSpriteAnim()
