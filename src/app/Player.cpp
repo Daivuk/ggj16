@@ -105,6 +105,12 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
 
 void Player::UpdateHealthBar()
 {
+    if (!IsAlive())
+    {
+        m_healthGauge->SetVisible(false);
+        return;
+    }
+
     if (m_health == 100.f)
     {
         m_healthGauge->SetVisible(false);
@@ -171,6 +177,19 @@ void Player::UpdateEntity()
                 }
                 break;
         }
+    }
+
+    // Hax0rz
+    if (m_physicsBody)
+    {
+        if (m_physicsBody->GetPosition().x < 1) 
+            m_physicsBody->SetTransform(Vector2(1, GetPosition().y), 0.f);
+        if (m_physicsBody->GetPosition().x >(float)g_gameView->GetMapWidth() - 1) 
+            m_physicsBody->SetTransform(Vector2((float)g_gameView->GetMapWidth() - 1, GetPosition().y), 0);
+        if (m_physicsBody->GetPosition().y < 1) 
+            m_physicsBody->SetTransform(Vector2(GetPosition().x, 1), 0.f);
+        if (m_physicsBody->GetPosition().y >(float)g_gameView->GetMapHeight() - 1) 
+            m_physicsBody->SetTransform(Vector2(GetPosition().x, (float)g_gameView->GetMapHeight() - 1), 0);
     }
 }
 
@@ -469,6 +488,12 @@ float Clamp(float n, float lower, float upper)
 
 void Player::OnDeath()
 {
+    m_vel = Vector2(0, 0);
+    m_physicsBody->SetLinearVel(Vector2(0, 0));
+    m_physicsBody->SetAngularVel(0);
+    m_physicsBody->SetTransform(GetPosition(), 0);
+
+    m_healthGauge->SetVisible(false);
     m_deathSound->Play();
     m_sprite->GetColorAnim().start(Color(1, 1, 1, 1), Color(0, 0, 0, 1), .5f);
 }

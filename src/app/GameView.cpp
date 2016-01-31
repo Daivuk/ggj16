@@ -79,10 +79,18 @@ void GameView::OnShow()
     CenterCamera();
     SpawnPlayers();
     CreatePathFinder();
+
+    m_fadeQuad = CreateSprite("healthGaugeFill.png");
+    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 1.f), Color(0.f, 0.f, 0.f, 0.f), 3.f);
+    m_fadeQuad->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
+    m_fadeQuad->SetScale(Vector2(100, 100));
+    AddNode(m_fadeQuad);
 }
 
 void GameView::OnHide()
 {
+    delete m_pPather;
+    m_pPather = nullptr;
     KillAllEntities();
     m_entities.clear();
     m_players.clear();
@@ -120,6 +128,13 @@ void GameView::OnUpdate()
         UpdateCamera();
         UpdateUIs();
         return;
+    }
+    else
+    {
+        if (!m_fadeQuad->GetColorAnim().isPlaying())
+        {
+            m_fadeQuad->SetVisible(false);
+        }
     }
 
     UpdateTime();
@@ -420,9 +435,10 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
             m_monsterSpawnTime = 0.f;
             break;
         case TimeOfDay::Day:
+            PlayRandomDayMusic();
             break;
         case TimeOfDay::Dusk:   // soir commence
-            m_pMusic->Play("RitualMusicAmbient.mp3");
+            m_pMusic->Play("RitualMusicAmbient.mp3", 1.f, 2.f);
             break;
         case TimeOfDay::Dawn:   // matin commence
             KillAllMonsters();
@@ -431,6 +447,13 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
             m_day++;
             break;
     }
+}
+
+void GameView::PlayRandomDayMusic()
+{
+    int musicIndex = onut::randi(1, 5);
+    string music = "RitualSFX_DaytimeAmbience0" + to_string(musicIndex) + ".mp3";
+    m_pMusic->Play(music, 1, 2);
 }
 
 void GameView::KillAllEntities()
@@ -743,6 +766,14 @@ void GameView::GenerateMap()
             AddEntity(pRock);
         }
     }
+
+    for (int i = 0; i < m_pTilemap->getWidth(); ++i)
+    {
+        GetTileAt(i, 0)->isOccupied = true;
+        GetTileAt(0, i)->isOccupied = true;
+        GetTileAt(i, m_pTilemap->getHeight() - 1)->isOccupied = true;
+        GetTileAt(m_pTilemap->getWidth() - 1, i)->isOccupied = true;
+    }
 }
 
 void GameView::SpawnMonster()
@@ -850,17 +881,20 @@ void GameView::GrowFire()
 
 void GameView::OnGameOver()
 {
-    g_daysSurvived = m_day;
+    g_daysSurvived = m_day - 1;
 
     StopDanceSequence();
     m_gameover = true;
 
+    const float fadeTime = 5.f;
+
     // start fading the quad anim
-    m_fadeQuad = CreateSprite("healthGaugeFill.png");
-    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 1.f), 5.f);
-    m_fadeQuad->SetFilter(onut::SpriteBatch::eFiltering::Nearest);
-    m_fadeQuad->SetScale(Vector2(100, 100));
-    AddNode(m_fadeQuad);
+    m_fadeQuad->GetColorAnim().start(Color(0.f, 0.f, 0.f, 0.f), Color(0.f, 0.f, 0.f, 1.f), fadeTime);
+    m_fadeQuad->SetVisible(true);
+
+    m_pMusic->Stop(fadeTime);
+
+    m_pFireplace->OnGameOver();
 }
 
 bool GameView::AllPlayersAreDead()
