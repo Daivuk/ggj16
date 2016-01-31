@@ -17,9 +17,9 @@ void DanceSequence::Init(int in_difficultyLevel, Fireplace* in_fireplace, seed::
 {
     m_container = in_container;
     m_timeActive = 0;
-    m_maxTime = 2.f;
     m_fireplace = in_fireplace;
     const int nbButtons = GetNbButtonsPerDanceMoveForDifficulty(in_difficultyLevel);
+    m_maxTime = .4f * nbButtons;
     const int nbDanceMoves = 10;
     for (int i = 0; i < nbDanceMoves; ++i)
     {
