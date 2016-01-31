@@ -170,6 +170,8 @@ private:
 
     seed::Sprite*       m_fadeQuad = nullptr;
 
+    void PlayRandomDayMusic();
+
 };
 
 extern GameView* g_gameView;

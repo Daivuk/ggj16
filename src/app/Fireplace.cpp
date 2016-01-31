@@ -44,7 +44,8 @@ Fireplace::Fireplace(seed::View* pView, const Vector2& position)
     Attach(m_whispers);
 
     m_baseSound = pView->CreateSoundEmitter("RitualSFX_Fire_BaseLoop.wav");
-    m_baseSound->SetVolume(.2f);
+    m_baseSound->SetVolume(0);
+    m_baseSound->GetVolumeAnim().start(0, .2f, 3.f);
     m_baseSound->SetLoops(true);
     m_baseSound->Play();
     Attach(m_baseSound);
@@ -189,4 +190,9 @@ void Fireplace::UpdateEntity()
     Vector2 scale = lightRadius.get() / DEFAULT_RADIUS * FIREPLACE_SPRITESCALE_FX;
     m_fireFX1->SetScale(scale);
     m_fireFX2->SetScale(scale);
+}
+
+void Fireplace::OnGameOver()
+{
+    m_baseSound->GetVolumeAnim().startFromCurrent(0, 3.f);
 }
