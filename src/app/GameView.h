@@ -106,6 +106,8 @@ public:
     int GetMapWidth() const { return m_pTilemap->getWidth(); }
     int GetMapHeight() const { return m_pTilemap->getHeight(); }
 
+    int GetAlivePlayerCount();
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
@@ -151,7 +153,7 @@ private:
     EntityVect      m_scarecrows;
     
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = NOON;
+    float           m_dayTime = DUSK_START;
     int             m_day = 1;
     vector<DancePedestral*> m_pedestrals;
     float           m_monsterSpawnTime = 0.f;

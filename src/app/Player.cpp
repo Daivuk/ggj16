@@ -239,6 +239,7 @@ void Player::UpdateVel()
         m_physicsBody->SetTransform(GetPosition(), 0);
         m_physicsBody->SetLinearVel(Vector2(0,0));
         m_physicsBody->GetB2Body()->SetActive(false);
+        m_sprite->GetPositionAnim().stop(true);
         return;
     }
 
@@ -250,11 +251,21 @@ void Player::UpdateVel()
     {
         // not pressing anything or on a dance pedestral, slowly decellerate
         m_vel = Vector2(0,0);
+        m_sprite->GetPositionAnim().stop(true);
     }
     else
     {
         // apply thumb pressure to velocity
         m_vel = m_thumb * maxSpeed;
+        if (!m_sprite->GetPositionAnim().isPlaying())
+        {
+            m_sprite->GetPositionAnim().startKeyframed(
+                Vector2::Zero,
+                {
+                    {Vector2(0, -2) * SPRITE_SCALE, .1f, OEaseOut},
+                    {Vector2::Zero, .1f, OEaseIn},
+                }, OLoop);
+        }
     }
     if (!m_isDancing) UpdateSpriteAnim();
     //Vector2 newPos = GetPosition();
@@ -641,9 +652,10 @@ void Player::UpdatePedestralSnap()
 
 void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
 {
+    OPlaySoundCue("RitualCues_TakePosition.cue");
     in_pedestral->StartActivatedFX();
     m_stateTimer.stop();
-    DropCarryOn();
+    DropCarryOn(true);
     m_playerState = PlayerState::PEDESTRAL;
     m_container->GetPhysicsForNode(this)->SetTransform(in_pedestral->GetPosition(), 0);
     m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
@@ -652,9 +664,19 @@ void Player::OnPedestralLockedIn(DancePedestral* in_pedestral)
     m_slash->SetVisible(false);
 }
 
-void Player::DropCarryOn()
+void Player::DropCarryOn(bool bDontPlace)
 {
     if (!m_pCarryOn) return;
+
+    if (bDontPlace)
+    {
+        m_pCarryOn->SetPosition(GetPosition());
+        Detach(m_pCarryOn);
+        g_gameView->AddEntity(m_pCarryOn);
+        m_pCarryOn = nullptr;
+        m_playerState = PlayerState::IDLE;
+        return;
+    }
 
     auto pStone = dynamic_cast<Stone*>(m_pCarryOn);
     auto pScarecrow = dynamic_cast<Scarecrow*>(m_pCarryOn);
@@ -794,6 +816,11 @@ void Player::ResetInputSequence()
 
 void Player::AfterDamagePush(const Vector2& in_direction)
 {
+    if (m_playerState == PlayerState::CARYING_STUFF)
+    {
+        DropCarryOn(true);
+    }
+
     m_damageSound->Play();
 
     m_damageBlood->SetVisible(true);
