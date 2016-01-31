@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include "View.h"
 #include "Entity.h"
+#include "SoundEmitter.h"
 
 #include <string>
 
@@ -21,4 +22,6 @@ private:
     seed::Sprite* m_sprite = nullptr;
     float m_targetRadius = 0;
     bool m_gameover = false;
+
+    seed::SoundEmitter*  m_whispers = nullptr;
 };

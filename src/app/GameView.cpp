@@ -383,7 +383,7 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
         case TimeOfDay::Day:
             break;
         case TimeOfDay::Dusk:   // soir commence
-            m_pMusic->Play("RitualMusicAmbient.mp3", 1.f);
+            m_pMusic->Play("RitualMusicAmbient.mp3", 0.5f);
             break;
         case TimeOfDay::Dawn:   // matin commence
             KillAllMonsters();
