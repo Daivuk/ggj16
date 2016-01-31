@@ -349,6 +349,18 @@ void GameView::ClearEntities()
         }
     }
     m_entitiesToKill.clear();
+
+    for (auto pEntity : m_entitiesToAdd)
+    {
+        m_pGameLayer->Attach(pEntity, (int)(pEntity->GetPosition().y * 16.f));
+        m_entities.push_back(pEntity);
+        auto pTile = GetTileAt(pEntity->GetPosition());
+        if (pTile)
+        {
+            pTile->RegisterEntity(pEntity);
+        }
+    }
+    m_entitiesToAdd.clear();
 }
 
 void GameView::KillAllMonsters()
@@ -673,13 +685,7 @@ void GameView::CreateEntities()
 
 void GameView::AddEntity(Entity* pEntity)
 {
-    m_pGameLayer->Attach(pEntity, (int)(pEntity->GetPosition().y * 16.f));
-    m_entities.push_back(pEntity);
-    auto pTile = GetTileAt(pEntity->GetPosition());
-    if (pTile)
-    {
-        pTile->RegisterEntity(pEntity);
-    }
+    m_entitiesToAdd.push_back(pEntity);
 }
 
 void GameView::OnEntityMoved(Entity* pEntity)

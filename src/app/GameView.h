@@ -132,6 +132,7 @@ private:
     void FillVectorWithEntitiesInRadius(Tile* in_tile, const Vector2& in_pos, float in_radius, vector<Entity*>& inOut_result);
 
     vector<Entity*> m_entitiesToKill;
+    vector<Entity*> m_entitiesToAdd;
 
 };
 
