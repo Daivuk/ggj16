@@ -8,6 +8,26 @@
 #include <sstream>
 #include <iomanip>
 
+enum class StoreItemType
+{
+    Scarecrow,
+    Stone
+};
+
+struct StoreItem
+{
+    StoreItemType type;
+    int wood;
+    int rock;
+    std::string ui;
+    onut::GamePad::eGamePad buyButton;
+};
+
+static const std::vector<StoreItem> store = {
+    {StoreItemType::Scarecrow, 3, 0, "scarecrow", OABtn},
+    {StoreItemType::Scarecrow, 0, 2, "stone", OXBtn}
+};
+
 Stockpile::Stockpile(seed::View* pView, int x, int y)
     : m_pView(pView)
 {
@@ -53,6 +73,10 @@ Stockpile::Stockpile(seed::View* pView, int x, int y)
     if (pTile) pTile->isOccupied = true;
 
     pView->CreateBoxPhysicsForNode(this, true);
+
+    lightEnabled = true;
+    lightRadius = 3.f;
+    lightColor = Color::White * .5f;
 }
 
 Stockpile::~Stockpile()
