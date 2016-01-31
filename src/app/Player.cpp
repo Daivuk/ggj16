@@ -259,6 +259,8 @@ void Player::Attack()
                     m_pCarryOn = new Drop(m_container, DropType::Wood);
                     Attach(m_pCarryOn);
                 }
+                auto pTile = g_gameView->GetTileAt(pClosest->GetPosition());
+                if (pTile) pTile->isOccupied = false;
                 g_gameView->KillEntity(pClosest);
             }
         }
@@ -309,10 +311,7 @@ void Player::UpdateInputs()
         }
         else if (m_pCarryOn)
         {
-            if (OGamePadJustPressed(OABtn, m_controllerIndex) ||
-                OGamePadJustPressed(OBBtn, m_controllerIndex) ||
-                OGamePadJustPressed(OXBtn, m_controllerIndex) ||
-                OGamePadJustPressed(OYBtn, m_controllerIndex))
+            if (OGamePadJustPressed(OBBtn, m_controllerIndex))
             {
                 DropCarryOn();
             }
@@ -362,6 +361,17 @@ void Player::DropCarryOn()
     if (!m_pCarryOn) return;
     m_pCarryOn->SetPosition(GetPosition());
     g_gameView->AddEntity(m_pCarryOn);
+    m_pCarryOn = nullptr;
+    m_playerState = PlayerState::IDLE;
+}
+
+DropType Player::GiveCarryOn()
+{
+    DropType dropType = ((Drop*)m_pCarryOn)->type;
+    m_container->DeleteNode(m_pCarryOn);
+    m_pCarryOn = nullptr;
+    m_playerState = PlayerState::IDLE;
+    return dropType;
 }
 
 void Player::OnPedestralLockCancel()

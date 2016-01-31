@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Entity.h"
 #include "SoundEmitter.h"
+#include "Globals.h"
 
 #include <string>
 
@@ -34,8 +35,9 @@ public:
     virtual ~Player();
 
     void Init(const Vector2& in_position, seed::View* in_container, int in_controllerIndex);
-	void OnRender();
+    void OnRender();
     void UpdateEntity() override;
+    bool HasCarryOn() const { return m_pCarryOn != nullptr; }
 
     DanceMoveButtonVect&    GetInputSequence() { return m_inputSequence; }
     int                     GetControllerIndex() { return m_controllerIndex; }
@@ -45,6 +47,7 @@ public:
     void                    OnPedestralLockedIn(DancePedestral* in_pedestral);
     void                    OnPedestralLockCancel();
     void                    DropCarryOn();
+    DropType                GiveCarryOn();
 
     virtual float   GetWidth() const { return .5f; }
     virtual float   GetHeight() const { return .5f; }

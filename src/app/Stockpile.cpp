@@ -3,6 +3,7 @@
 #include "View.h"
 #include "Sprite.h"
 #include "GameView.h"
+#include "Player.h"
 
 Stockpile::Stockpile(seed::View* pView, int x, int y)
     : m_pView(pView)
@@ -25,4 +26,27 @@ Stockpile::Stockpile(seed::View* pView, int x, int y)
 
 Stockpile::~Stockpile()
 {
+}
+
+void Stockpile::UpdateEntity()
+{
+    auto& players = g_gameView->GetPlayers();
+    for (auto pPlayer : players)
+    {
+        if (pPlayer)
+        {
+            if (pPlayer->HasCarryOn())
+            {
+                auto& playerPos = pPlayer->GetPosition();
+                auto& myPos = GetPosition();
+                if (playerPos.x >= myPos.x - 1.5f &&
+                    playerPos.y >= myPos.y - 1.f &&
+                    playerPos.x <= myPos.x + 1.5f &&
+                    playerPos.y >= myPos.y + 1.f)
+                {
+                    auto dropType = pPlayer->GiveCarryOn();
+                }
+            }
+        }
+    }
 }

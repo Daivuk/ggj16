@@ -1,11 +1,6 @@
 #pragma once
 #include "Entity.h"
-
-enum class DropType
-{
-    Wood,
-    Rock,
-};
+#include "Globals.h"
 
 class Drop : public Entity
 {

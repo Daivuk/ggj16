@@ -10,6 +10,8 @@ public:
     virtual float   GetWidth() const { return 2.f; }
     virtual float   GetHeight() const { return 1.f; }
 
+    virtual void UpdateEntity() override;
+
 private:
     seed::View* m_pView = nullptr;
 };

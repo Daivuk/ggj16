@@ -74,6 +74,8 @@ public:
     void KillEntity(Entity* in_toKill);
     void AddEntity(Entity* pEntity);
 
+    const PlayerVect& GetPlayers() const { return m_players; }
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 
