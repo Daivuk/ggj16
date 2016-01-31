@@ -32,6 +32,8 @@ GameView* g_gameView = nullptr;
 GameView::GameView()
 {
     g_gameView = this;
+    OUI->add(OLoadUI("../../assets/uis/game.json"));
+    m_storeAnim = OFindUI("store")->rect.size.x;
 }
 
 GameView::~GameView()
@@ -101,8 +103,14 @@ void GameView::OnUpdate()
     UpdateMonsterSpawning();
     UpdateEntities();
     UpdateCamera();
+    UpdateUIs();
 
     ClearEntities();
+}
+
+void GameView::UpdateUIs()
+{
+    OFindUI("store")->rect.position.x = m_storeAnim;
 }
 
 void GameView::UpdateMonsterSpawning()
@@ -731,4 +739,16 @@ Player* GameView::GetClosestPlayer(const Vector2& position) const
         }
     }
     return pRet;
+}
+
+void GameView::ShowStore()
+{
+    m_storeAnim.stop(false);
+    m_storeAnim.startFromCurrent(0.f, .25f, OSpringOut);
+}
+
+void GameView::HideStore()
+{
+    m_storeAnim.stop(false);
+    m_storeAnim.startFromCurrent(OFindUI("store")->rect.size.x, .25f, OEaseIn);
 }
