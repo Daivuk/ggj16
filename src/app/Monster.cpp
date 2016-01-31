@@ -32,6 +32,11 @@ Monster::Monster(MonsterType monsterType, seed::View* pView, const Vector2& posi
     m_damageSound->SetPositionBasedBalance(false);
     m_damageSound->SetPositionBasedVolume(false);
     Attach(m_damageSound);
+
+    m_deathSound = m_pView->CreateSoundEmitter("RitualCues_Enemy_Die.cue");
+    m_deathSound->SetPositionBasedBalance(false);
+    m_deathSound->SetPositionBasedVolume(false);
+    Attach(m_deathSound);
 }
 
 Monster::~Monster()
@@ -42,6 +47,13 @@ Monster::~Monster()
 void Monster::Kill()
 {
     // Go gore
+}
+
+void Monster::OnDeath()
+{
+    m_deathSound->Play();
+    m_sprite->GetScaleAnim().startFromCurrent(m_sprite->GetScale() * 2.f, .3f);
+    m_sprite->GetColorAnim().startFromCurrent(Color(1, 1, 1, 0), .3f);
 }
 
 void Monster::AfterDamagePush(const Vector2& in_direction)
@@ -107,7 +119,25 @@ void Monster::UpdateEntity()
         if (!m_velPushAnim.isPlaying())
         {
             // we're done
-            m_state = m_previousState;
+            if (m_health <= 0)
+            {
+                m_state = MonsterState::DEAD;
+                OnDeath();
+            }
+            else
+            {
+                m_state = m_previousState;
+            }
+        }
+    }
+
+    if (m_state == MonsterState::DEAD)
+    {
+        if (!m_sprite->GetScaleAnim().isPlaying())
+        {
+            // this one is done
+            g_gameView->KillEntity(this);
+            return;
         }
     }
 

@@ -33,7 +33,7 @@ Fireplace::~Fireplace()
 
 void Fireplace::Grow()
 {
-    const float growingFactor = 1.f;
+    const float growingFactor = 2.f;
     m_targetRadius += growingFactor;
     lightRadius.startKeyframed(
     lightRadius.get(), // From
