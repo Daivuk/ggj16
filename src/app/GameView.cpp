@@ -871,7 +871,7 @@ void GameView::GrowFire()
 
 void GameView::OnGameOver()
 {
-    g_daysSurvived = m_day;
+    g_daysSurvived = m_day - 1;
 
     StopDanceSequence();
     m_gameover = true;

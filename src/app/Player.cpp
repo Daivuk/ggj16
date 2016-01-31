@@ -105,6 +105,12 @@ void Player::Init(const Vector2& in_position, seed::View* in_container, int in_c
 
 void Player::UpdateHealthBar()
 {
+    if (!IsAlive())
+    {
+        m_healthGauge->SetVisible(false);
+        return;
+    }
+
     if (m_health == 100.f)
     {
         m_healthGauge->SetVisible(false);
@@ -469,6 +475,12 @@ float Clamp(float n, float lower, float upper)
 
 void Player::OnDeath()
 {
+    m_vel = Vector2(0, 0);
+    m_physicsBody->SetLinearVel(Vector2(0, 0));
+    m_physicsBody->SetAngularVel(0);
+    m_physicsBody->SetTransform(GetPosition(), 0);
+
+    m_healthGauge->SetVisible(false);
     m_deathSound->Play();
     m_sprite->GetColorAnim().start(Color(1, 1, 1, 1), Color(0, 0, 0, 1), .5f);
 }
