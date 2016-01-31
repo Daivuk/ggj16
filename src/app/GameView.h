@@ -103,6 +103,9 @@ public:
 
     void SplatGore(const Vector2& pos);
 
+    int GetMapWidth() const { return m_pTilemap->getWidth(); }
+    int GetMapHeight() const { return m_pTilemap->getHeight(); }
+
 private:
     PlayerVect  m_players;      // index 0 = player 1, etc
 

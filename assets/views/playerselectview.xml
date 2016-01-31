@@ -1,18 +1,25 @@
 <View width="1280" height="748">
-    <Sprite name="" zIndex="2147483647" x="1072" y="774" scaleX="33.450001" scaleY="8.6499996" angle="0" r="0.27450982" g="0.27450982" b="0.27450982" a="1" visible="1" alignX="0.5" alignY="0.5" texture="GroundTiles.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="" zIndex="2147483647" x="1132.5714" y="405.42856" scaleX="6" scaleY="6" angle="0" r="0.38039216" g="0.38039216" b="0.38039216" a="1" visible="1" alignX="0.5" alignY="0.5" texture="stockpile.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Node name="Trees" zIndex="2147483647" x="640" y="374" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1"/>
-    <TiledMapNode name="" zIndex="2147483647" x="-979" y="519" scaleX="9.375" scaleY="9.375" angle="0" r="1" g="1" b="1" a="1" visible="1" map="maptemplate.tmx"/>
-    <Sprite name="" zIndex="2147483647" x="29.999969" y="721.14282" scaleX="3.6785715" scaleY="3.1428571" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="rock.png" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="" zIndex="2147483647" x="640" y="576" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="fireplace.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="glow1" zIndex="2147483647" x="642.85712" y="564" scaleX="2.1160715" scaleY="0.86607146" angle="0" r="0.98431373" g="0.51764709" b="0" a="1" visible="1" alignX="0.5" alignY="0.5" texture="light.png" filter="Linear" blend="Add" flippedH="0" flippedV="0"/>
-    <Emitter name="fire1" zIndex="2147483647" x="635.71429" y="545.42859" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="FirePitFX1.pex" filter="Linear" blend="PreMultiplied" emitWorld="1"/>
-    <Emitter name="fire2" zIndex="2147483647" x="641.42859" y="565.42859" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="FirePitFX2.pex" filter="Linear" blend="PreMultiplied" emitWorld="1"/>
-    <Sprite name="glow2" zIndex="2147483647" x="634.28571" y="508.28571" scaleX="1.3125" scaleY="2.0937498" angle="0" r="1" g="0.7019608" b="0.29019609" a="1" visible="1" alignX="0.5" alignY="0.5" texture="light.png" filter="Linear" blend="Add" flippedH="0" flippedV="0"/>
-    <Sprite name="ped0" zIndex="2147483647" x="248" y="578" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral0.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="ped1" zIndex="2147483647" x="416" y="618" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral1.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="ped2" zIndex="2147483647" x="846" y="610" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral2.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Sprite name="ped3" zIndex="2147483647" x="988" y="558" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral3.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
-    <Emitter name="" zIndex="2147483647" x="247" y="556.71429" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="DancePodActivatedFX.pex" filter="Linear" blend="Add" emitWorld="1"/>
-    <SpriteString name="" zIndex="2147483647" x="640" y="132.57141" scaleX="1.2316602" scaleY="1.2316602" angle="0" r="1" g="0.65098041" b="0.1254902" a="1" visible="1" alignX="0.5" alignY="0.5" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0" font="feastofflesh.fnt" caption="Fire Whisperers"/>
+    <Effect name="" zIndex="2147483647" x="640" y="374" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1">
+        <Sprite name="" zIndex="2147483647" x="432" y="400" scaleX="33.450001" scaleY="8.6499996" angle="0" r="0.27450982" g="0.27450982" b="0.27450982" a="1" visible="1" alignX="0.5" alignY="0.5" texture="GroundTiles.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="" zIndex="2147483647" x="492.57141" y="31.428558" scaleX="6" scaleY="6" angle="0" r="0.38039216" g="0.38039216" b="0.38039216" a="1" visible="1" alignX="0.5" alignY="0.5" texture="stockpile.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Node name="Trees" zIndex="2147483647" x="0" y="0" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1"/>
+        <TiledMapNode name="" zIndex="2147483647" x="-1619" y="145" scaleX="9.375" scaleY="9.375" angle="0" r="1" g="1" b="1" a="1" visible="1" map="maptemplate.tmx"/>
+        <Sprite name="" zIndex="2147483647" x="-610" y="347.14282" scaleX="3.6785715" scaleY="3.1428571" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="rock.png" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="" zIndex="2147483647" x="0" y="202" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="fireplace.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="glow1" zIndex="2147483647" x="2.8571167" y="190" scaleX="2.1160715" scaleY="0.86607146" angle="0" r="0.98431373" g="0.51764709" b="0" a="1" visible="1" alignX="0.5" alignY="0.5" texture="light.png" filter="Linear" blend="Add" flippedH="0" flippedV="0"/>
+        <Emitter name="fire1" zIndex="2147483647" x="-4.2857056" y="171.42859" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="FirePitFX1.pex" filter="Linear" blend="PreMultiplied" emitWorld="1"/>
+        <Emitter name="fire2" zIndex="2147483647" x="1.4285889" y="191.42859" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="FirePitFX2.pex" filter="Linear" blend="PreMultiplied" emitWorld="1"/>
+        <Sprite name="glow2" zIndex="2147483647" x="-5.7142944" y="134.28571" scaleX="1.3125" scaleY="2.0937498" angle="0" r="1" g="0.7019608" b="0.29019609" a="1" visible="1" alignX="0.5" alignY="0.5" texture="light.png" filter="Linear" blend="Add" flippedH="0" flippedV="0"/>
+        <Sprite name="ped0" zIndex="2147483647" x="-392" y="204" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral0.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="ped1" zIndex="2147483647" x="-224" y="244" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral1.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="ped2" zIndex="2147483647" x="206" y="236" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral2.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Sprite name="ped3" zIndex="2147483647" x="348" y="184" scaleX="6" scaleY="6" angle="0" r="1" g="1" b="1" a="1" visible="1" alignX="0.5" alignY="0.5" texture="dancePedestral3.png" filter="Nearest" blend="PreMultiplied" flippedH="0" flippedV="0"/>
+        <Emitter name="" zIndex="2147483647" x="-393" y="182.71429" scaleX="1" scaleY="1" angle="0" r="1" g="1" b="1" a="1" visible="1" fx="DancePodActivatedFX.pex" filter="Linear" blend="Add" emitWorld="1"/>
+        <SpriteString name="" zIndex="2147483647" x="0" y="-241.42859" scaleX="1.2316602" scaleY="1.2316602" angle="0" r="1" g="0.65098041" b="0.1254902" a="1" visible="1" alignX="0.5" alignY="0.5" filter="Linear" blend="PreMultiplied" flippedH="0" flippedV="0" font="feastofflesh.fnt" caption="Fire Whisperers"/>
+        <Filter type="blur" enabled="0" amount="16"/>
+        <Filter type="sepia" enabled="1" toneR="1.4" toneG="1.1" toneB="0.89999998" saturation="0.88999999" amount="0.75"/>
+        <Filter type="crt" enabled="0"/>
+        <Filter type="cartoon" enabled="0" toneR="2" toneG="5" toneB="1"/>
+        <Filter type="vignette" enabled="1" amount="0.55000001"/>
+    </Effect>
 </View>

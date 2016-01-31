@@ -89,6 +89,8 @@ void GameView::OnShow()
 
 void GameView::OnHide()
 {
+    delete m_pPather;
+    m_pPather = nullptr;
     KillAllEntities();
     m_entities.clear();
     m_players.clear();
@@ -763,6 +765,14 @@ void GameView::GenerateMap()
             auto pRock = new Rock(this, pos);
             AddEntity(pRock);
         }
+    }
+
+    for (int i = 0; i < m_pTilemap->getWidth(); ++i)
+    {
+        GetTileAt(i, 0)->isOccupied = true;
+        GetTileAt(0, i)->isOccupied = true;
+        GetTileAt(i, m_pTilemap->getHeight() - 1)->isOccupied = true;
+        GetTileAt(m_pTilemap->getWidth() - 1, i)->isOccupied = true;
     }
 }
 
