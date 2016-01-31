@@ -36,6 +36,7 @@ GameView::GameView()
     g_gameView = this;
     OUI->add(OLoadUI("../../assets/uis/game.json"));
     m_storeAnim = OFindUI("store")->rect.size.x;
+    OFindUI("store")->rect.position.x = 140;
 }
 
 GameView::~GameView()
@@ -829,7 +830,7 @@ void GameView::OnGameOver()
     // todo cleanup
 
     m_gameover = true;
-    SendCommand(seed::eAppCommand::PUSH_VIEW, "GameOverView");
+    SendCommand(seed::eAppCommand::SWITCH_VIEW, "GameOverView");
 }
 
 bool GameView::AllPlayersAreDead()

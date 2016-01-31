@@ -1,27 +1,24 @@
 #include "Node.h"
 #include "GameOverView.h"
 #include "SpriteString.h"
+#include "Video.h"
+#include "Emitter.h"
 
 void GameOverView::OnShow()
 {
-    auto pText = CreateSpriteString("cartoon.fnt");
-    pText->SetPosition(OScreenCenterf);
-    pText->SetCaption("GAME OVER");
-    AddNode(pText);
-
-    pText->GetScaleAnim().start(Vector2(5, 5), Vector2(1.0f, 1.0f), .5f, OEaseIn);
+    Load("../../assets/views/gameover.xml");
+    ((seed::Video*)FindNode("video"))->Play();
+    ((seed::Emitter*)FindNode("fire1"))->Start();
+    ((seed::Emitter*)FindNode("fire2"))->Start();
 }
 
 void GameOverView::OnUpdate()
 {
-    if (OGamePadJustPressed(OABtn,0)
-        || OGamePadJustPressed(OABtn, 1)
-        || OGamePadJustPressed(OABtn, 2)
-        || OGamePadJustPressed(OABtn, 3)
-       )
+    if (OGamePadJustPressed(OStartBtn, 0) ||
+        OGamePadJustPressed(OStartBtn, 1) ||
+        OGamePadJustPressed(OStartBtn, 2) ||
+        OGamePadJustPressed(OStartBtn, 3))
     {
-        SendCommand(seed::eAppCommand::POP_VIEW, "");
-        SendCommand(seed::eAppCommand::POP_VIEW, "");
-        SendCommand(seed::eAppCommand::PUSH_VIEW, "StartView");
+        SendCommand(seed::eAppCommand::SWITCH_VIEW, "StartView");
     }
 }
