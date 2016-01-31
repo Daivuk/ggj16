@@ -16,5 +16,4 @@ public:
 private:
     void CreateDude(seed::Node* pParent, int id);
     seed::Sprite* m_dudes[4];
-    bool m_activePlayer[4];
 };

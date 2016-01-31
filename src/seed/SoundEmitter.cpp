@@ -151,7 +151,7 @@ namespace seed
         {
             if (m_source.length() > 0)
             {
-                OPlaySoundCue(m_source.c_str(), m_volume * m_volumeFactor, m_balance);
+                OPlaySoundCue(m_source.c_str(), m_volume * m_volumeFactor, 0.f);
             }
             return;
         }
