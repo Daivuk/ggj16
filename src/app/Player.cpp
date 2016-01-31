@@ -277,6 +277,7 @@ void Player::OnSacrifice()
     OnDeath();
     g_gameView->OnPlayerSacrifice(this);
     m_sprite->SetSpriteAnim("idle_down" + std::to_string(m_controllerIndex));
+    m_physicsBody->SetTransform(GetPosition(), 0);
 }
 
 void Player::UpdateSpriteAnim()

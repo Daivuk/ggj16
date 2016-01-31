@@ -70,12 +70,17 @@ bool DanceMove::IsDoneHiding()
     }
 
     // if we're here it means we are done
+    ClearButtons();
+    return true;
+}
+
+void DanceMove::ClearButtons()
+{
     for (size_t i = 0; i < m_displayedButtons.size(); ++i)
     {
         m_container->DeleteNode(m_displayedButtons[i]);
     }
     m_displayedButtons.clear();
-    return true;
 }
 
 bool DanceMove::IsNailed(DanceMoveButtonVect& in_playerInputs, int in_playerControllerIndex)

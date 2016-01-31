@@ -16,6 +16,8 @@ public:
 
     bool PlayerNeedsToComplete(int in_playerControllerIndex);
     bool IsNailed(DanceMoveButtonVect& in_playerInputs, int in_playerControllerIndex);
+
+    void ClearButtons();
     
 private:
     DanceMoveButtonVect     m_buttons;  // button that needs to be pressed to nail this move!

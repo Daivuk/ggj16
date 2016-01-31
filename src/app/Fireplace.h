@@ -24,6 +24,8 @@ private:
     bool m_gameover = false;
 
     seed::SoundEmitter*     m_whispers = nullptr;
+    seed::SoundEmitter*     m_baseSound = nullptr;
+    seed::SoundEmitter*     m_roarSound = nullptr;
     seed::Emitter*          m_fireFX1 = nullptr;
     seed::Emitter*          m_fireFX2 = nullptr;
 };
