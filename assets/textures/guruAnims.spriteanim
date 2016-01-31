@@ -1,0 +1,42 @@
+<sheet texture="CharacterAnim_48x48.png" spriteWidth="48" spriteHeight="48" originX="24" originY="30">
+  <anim name="idle_down" fps="6" loop="true">
+    <frame id="3"/>
+  </anim>
+  <anim name="idle_up" fps="6" loop="true">
+    <frame id="3"/>
+  </anim>
+  <anim name="idle_side" fps="6" loop="true">
+    <frame id="43"/>
+  </anim>
+
+  <anim name="run_down" fps="20" loop="true">
+    <frame id="0"/>
+    <frame id="1"/>
+    <frame id="2"/>
+    <frame id="3"/>
+    <frame id="4"/>
+    <frame id="5"/>
+    <frame id="6"/>
+    <frame id="7"/>
+  </anim>
+  <anim name="run_up" fps="20" loop="true">
+    <frame id="0"/>
+    <frame id="1"/>
+    <frame id="2"/>
+    <frame id="3"/>
+    <frame id="4"/>
+    <frame id="5"/>
+    <frame id="6"/>
+    <frame id="7"/>
+  </anim>
+  <anim name="run_side" fps="20" loop="true">
+    <frame id="40"/>
+    <frame id="41"/>
+    <frame id="42"/>
+    <frame id="43"/>
+    <frame id="44"/>
+    <frame id="45"/>
+    <frame id="46"/>
+    <frame id="47"/>
+  </anim>
+</sheet>

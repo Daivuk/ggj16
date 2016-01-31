@@ -400,12 +400,25 @@ void GameView::OnTimeOfDayChanged(TimeOfDay timeOfDay)
 
 void GameView::KillEntity( Entity* in_toKill )
 {
+    for (auto pEntity : m_entitiesToKill) if (pEntity == in_toKill) return;
     m_entitiesToKill.push_back(in_toKill);
 }
 void GameView::ClearEntities()
 {
     for (size_t i = 0; i < m_entitiesToKill.size(); ++i)
     {
+        for (auto it = m_scarecrows.begin(); it != m_scarecrows.end();)
+        {
+            if ((*it) == m_entitiesToKill[i])
+            {
+                it = m_scarecrows.erase(it);
+                break;
+            }
+            else
+            {
+                ++it;
+            }
+        }
         for (auto it = m_entities.begin(); it != m_entities.end();)
         {
             if ((*it) == m_entitiesToKill[i])
@@ -430,6 +443,10 @@ void GameView::ClearEntities()
         if (pTile)
         {
             pTile->RegisterEntity(pEntity);
+        }
+        if (dynamic_cast<Scarecrow*>(pEntity))
+        {
+            m_scarecrows.push_back(pEntity);
         }
     }
     m_entitiesToAdd.clear();
@@ -806,6 +823,34 @@ Player* GameView::GetClosestPlayer(const Vector2& position) const
         if (!pPlayer->IsAlive())
             continue;
 
+        float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
+        if (dist < closestDist)
+        {
+            closestDist = dist;
+            pRet = pPlayer;
+        }
+    }
+    return pRet;
+}
+
+Entity* GameView::GetClosestPlayerAsSeenByMonster(const Vector2& position) const
+{
+    float closestDist = 100000.f;
+    Entity* pRet = nullptr;
+    for (auto pPlayer : m_players)
+    {
+        if (!pPlayer->IsAlive())
+            continue;
+
+        float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
+        if (dist < closestDist)
+        {
+            closestDist = dist;
+            pRet = pPlayer;
+        }
+    }
+    for (auto pPlayer : m_scarecrows)
+    {
         float dist = Vector2::DistanceSquared(pPlayer->GetPosition(), position);
         if (dist < closestDist)
         {

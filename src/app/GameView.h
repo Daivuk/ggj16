@@ -71,6 +71,7 @@ public:
     void        OnEntityMoved(Entity* pEntity);
 
     Player*     GetClosestPlayer(const Vector2& position) const;
+    Entity*     GetClosestPlayerAsSeenByMonster(const Vector2& position) const;
 
     vector<DancePedestral*>& GetPedestrals() { return m_pedestrals; }
     vector<Entity*>          GetEntitiesInRadius(const Vector2& in_pos, float in_radius);
@@ -90,6 +91,7 @@ public:
     void AddEntity(Entity* pEntity);
 
     const PlayerVect& GetPlayers() const { return m_players; }
+    const EntityVect& GetScarecrows() const { return m_scarecrows; }
 
     void ShowStore();
     void HideStore();
@@ -139,6 +141,7 @@ private:
     DanceSequence*  m_activeDanceSequence = nullptr;
     
     EntityVect      m_entities;
+    EntityVect      m_scarecrows;
 
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
     float           m_dayTime = NOON;

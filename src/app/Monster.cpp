@@ -176,7 +176,15 @@ void Monster::CheckIfMonsterCanAttack(vector<Entity*>& inOut_attackablePlayers)
 {
     const float monsterAttackRadius = 1.f;
     const PlayerVect& players = g_gameView->GetPlayers();
+    const EntityVect& scarecrows = g_gameView->GetScarecrows();
     for (Player* p : players)
+    {
+        if ((p->GetPosition() - m_position).LengthSquared() < monsterAttackRadius * monsterAttackRadius)
+        {
+            inOut_attackablePlayers.push_back(p);
+        }
+    }
+    for (Entity* p : scarecrows)
     {
         if ((p->GetPosition() - m_position).LengthSquared() < monsterAttackRadius * monsterAttackRadius)
         {
@@ -193,12 +201,23 @@ void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
     const float damageToPlayer = 10.f;
     for (Entity* e : in_attackablePlayers)
     {
-        e->InflictDamage(damageToPlayer);
-        Player* p = (Player*)e;
+        if (e->InflictDamage(damageToPlayer))
+        {
+            Player* p = dynamic_cast<Player*>(e);
+            if (!p)
+            {
+                g_gameView->KillEntity(e);
+                continue;
+            }
+        }
 
-        Vector2 dir = p->GetPosition() - m_position;
-        dir.Normalize();
-        p->AfterDamagePush(dir);
+        Player* p = dynamic_cast<Player*>(e);
+        if (p)
+        {
+            Vector2 dir = p->GetPosition() - m_position;
+            dir.Normalize();
+            p->AfterDamagePush(dir);
+        }
     }
     const float delayBetweenAttacks = 2.f;
     m_attackTimer = delayBetweenAttacks;
@@ -206,7 +225,7 @@ void Monster::OnMonsterAttack(vector<Entity*>& in_attackablePlayers)
 
 void Monster::Seek()
 {
-    auto pPlayer = g_gameView->GetClosestPlayer(GetPosition());
+    auto pPlayer = g_gameView->GetClosestPlayerAsSeenByMonster(GetPosition());
     if (pPlayer)
     {
         PathTo(pPlayer->GetPosition());
