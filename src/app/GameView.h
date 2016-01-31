@@ -153,7 +153,7 @@ private:
     EntityVect      m_scarecrows;
     
     TimeOfDay       m_previousTimeOfDay = TimeOfDay::INVALID;
-    float           m_dayTime = DUSK_START;
+    float           m_dayTime = NOON;
     int             m_day = 1;
     vector<DancePedestral*> m_pedestrals;
     float           m_monsterSpawnTime = 0.f;

@@ -175,7 +175,7 @@ void Fireplace::UpdateEntity()
     if (!lightRadius.isPlaying() && g_gameView->GetTimeOfDay() == TimeOfDay::Night)
     {
         // slowly diminish the fire
-        const float dimish = g_gameView->GetAlivePlayerCount() * DIMINISHING_FACTOR;
+        const float dimish = g_gameView->GetAlivePlayerCount() * DIMINISHING_FACTOR * .5f;
         m_targetRadius -= dimish * ODT;
         lightRadius = m_targetRadius;
 
