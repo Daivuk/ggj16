@@ -178,6 +178,19 @@ void Player::UpdateEntity()
                 break;
         }
     }
+
+    // Hax0rz
+    if (m_physicsBody)
+    {
+        if (m_physicsBody->GetPosition().x < 1) 
+            m_physicsBody->SetTransform(Vector2(1, GetPosition().y), 0.f);
+        if (m_physicsBody->GetPosition().x >(float)g_gameView->GetMapWidth() - 1) 
+            m_physicsBody->SetTransform(Vector2((float)g_gameView->GetMapWidth() - 1, GetPosition().y), 0);
+        if (m_physicsBody->GetPosition().y < 1) 
+            m_physicsBody->SetTransform(Vector2(GetPosition().x, 1), 0.f);
+        if (m_physicsBody->GetPosition().y >(float)g_gameView->GetMapHeight() - 1) 
+            m_physicsBody->SetTransform(Vector2(GetPosition().x, (float)g_gameView->GetMapHeight() - 1), 0);
+    }
 }
 
 void Player::UpdateStoneIndicator()

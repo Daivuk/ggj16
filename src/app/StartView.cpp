@@ -57,6 +57,7 @@ void StartView::OnUpdate()
             g_activePlayer[i] = !g_activePlayer[i];
             if (g_activePlayer[i])
             {
+                OPlaySoundCue("RitualCues_ButtonPress.cue");
                 m_dudes[i]->GetPositionAnim().startKeyframed(
                     Vector2(0, -3),
                     {
