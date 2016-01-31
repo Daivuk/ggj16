@@ -48,7 +48,7 @@ public:
     void                    ResetInputSequence();
     void                    OnPedestralLockedIn(DancePedestral* in_pedestral);
     void                    OnPedestralLockCancel();
-    void                    DropCarryOn();
+    void                    DropCarryOn(bool bDontPlace = false);
     DropType                GiveCarryOn();
 
     virtual float   GetWidth() const { return .5f; }
